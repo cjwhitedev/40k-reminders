@@ -40,6 +40,8 @@
     "data:aos4:cache:verify": "vite-node --script src/aos4/data/cacheCommand.ts verify",
     "data:aos4:candidate": "vite-node --script src/aos4/data/candidateCommand.ts",
     "data:aos4:candidate:bsdata": "vite-node --script src/aos4/data/bsdata/acquireCommand.ts",
+    "data:wh40k11e:candidate": "vite-node --script src/wh40k11e/data/acquireCommand.ts",
+    "data:wh40k11e:index": "vite-node --script src/wh40k11e/data/indexCommand.ts",
     "data:aos4:discover-official": "vite-node --script src/aos4/data/gamesWorkshop/catalogCommand.ts",
     "data:aos4:certify": "vite-node --script src/aos4/review/certificationCommand.ts",
     "data:aos4:certify:prepare": "vite-node --script src/aos4/review/certificationPrepareCommand.ts",

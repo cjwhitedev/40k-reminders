@@ -31,13 +31,15 @@ export const extractWhenClause = (text: string): string | undefined => {
 }
 
 const PHASES = '(command|movement|shooting|charge|fight)'
-const OWNER = "(your opponent's|your|either player's|the|any)"
+const OWNER = "(your opponent's|your|either player's|each player's|the|any)"
 
 const perspectiveOf = (owner: string | undefined): Wh40kPerspective =>
   owner === 'your' ? 'your' : owner === "your opponent's" ? 'opponent' : 'either'
 
+const ORDINALS = ['first', 'second', 'third', 'fourth', 'fifth']
+
 const PART = new RegExp(
-  `^(?:the )?(?:(start|end) of )?(?:${OWNER} )?(?:${PHASES} phase|(phase)|(turn)|(battle round)|(battle))$`
+  `^(?:the )?(?:(start|end) of )?(?:${OWNER} )?(?:(first |second |third |fourth |fifth )?${PHASES} phase|(phase)|(turn)|(first |second |third |fourth |fifth )?(battle round)|(battle))$`
 )
 const STEP_PART = new RegExp(
   `^(?:the )?(?:(start|end) of )?(?:the )?([a-z-]+) step of (?:${OWNER} )?${PHASES} phase$`
@@ -66,15 +68,28 @@ const parsePart = (
   }
   const match = part.match(PART)
   if (!match) return undefined
-  const [, momentText, owner, phase, anyPhase, turn, battleRound, battle] = match
+  const [, momentText, owner, phaseOrdinal, phase, anyPhase, turn, ordinal, battleRound, battle] = match
   const moment: Wh40kMoment = momentText === 'start' ? 'start' : momentText === 'end' ? 'end' : 'during'
   const perspective = perspectiveOf(owner)
-  if (phase) return { kind: 'turn-phase', phase: phase as Wh40kPhaseId, moment, perspective }
+  const roundOf = (value: string | undefined) => ORDINALS.indexOf(value?.trim() ?? '') + 1
+  if (phase) {
+    const round = roundOf(phaseOrdinal)
+    return {
+      kind: 'turn-phase',
+      phase: phase as Wh40kPhaseId,
+      moment,
+      perspective,
+      ...(round ? { round } : {}),
+    }
+  }
   if (anyPhase && owner === 'any') return { kind: 'any-phase', moments: [moment], perspective: 'either' }
   if (turn && moment !== 'during') {
     return { kind: 'turn-step', step: moment === 'start' ? 'start-of-turn' : 'end-of-turn', perspective }
   }
-  if (battleRound && moment !== 'during') return { kind: 'battle-round', moment }
+  if (battleRound && moment !== 'during') {
+    const round = roundOf(ordinal)
+    return { kind: 'battle-round', moment, ...(round ? { round } : {}) }
+  }
   if (battle && moment !== 'during') return { kind: 'battle', moment }
   return undefined
 }

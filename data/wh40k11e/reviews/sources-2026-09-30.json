@@ -130,8 +130,8 @@
     },
     {
       "classification": "forge-world",
-      "context": "forge-world",
-      "reason": "Forge World datasheets are kept in their own context rather than dropped or merged. Official 11th-edition faction packs publish them in separate Imperial Armour sections (for example the Imperial Knights faction pack contents list Imperial Armour Datasheets after the main datasheets); whether the default army builder offers them is a product decision still to be made."
+      "context": "current",
+      "reason": "Forge World datasheets are offered by default in the current context (product decision, 2026-09-30). Official 11th-edition faction packs publish them alongside the main datasheets in separate Imperial Armour sections (for example the Imperial Knights faction pack contents list Imperial Armour Datasheets after the main datasheets). Each datasheet keeps its forge-world classification for provenance."
     },
     {
       "classification": "previous-edition",

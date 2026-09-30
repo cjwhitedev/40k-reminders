@@ -33,7 +33,10 @@ const PRE_BATTLE =
 const REACTION =
   /^(?:each time|every time|when|whenever|the first time|after|just after|before|one (?:unit|model) from your army with this ability can use it when|you can target|you can use the [a-z' -]{1,40}? stratagem|you can change)\b/i
 const PASSIVE =
-  /^(?:while|whilst|if|unless otherwise stated|for the purposes of|this (?:model|unit|officer|[a-z-]+ model)\b|this [a-z' -]{1,40}? can issue\b|the bearer|models in (?:this|the bearer's) unit|each model in this unit|friendly|enemy units|attacks that target|ranged weapons|melee weapons|weapons equipped|add \d|subtract \d|you can re-roll|you can ignore|units can|improve|worsen|you cannot include|your army cannot)\b/i
+  /^(?:while|whilst|if|unless otherwise stated|for the purposes of|this (?:model|unit|officer|[a-z-]+ model)\b|this [a-z' -]{1,40}? can issue\b|the bearer|models in (?:this|the bearer's) unit|each model in this unit|friendly|enemy units|attacks that target|ranged weapons|melee weapons|weapons equipped|add \d|subtract \d|you can re-roll|you can ignore|units can|improve|worsen|you cannot include|your army cannot|your army can only include|you cannot re-roll|enemy models cannot|(?:ranged |melee )?attacks that target|(?:the area|certain areas) of the battlefield)\b/i
+// "Kroot models from your army have ...": a keyword subject followed by a standing verb.
+const PASSIVE_SUBJECT =
+  /^[^,.:;]{1,80}? (?:units?|models?) from your army (?:have|has|gain|gains|are eligible|is eligible|can ignore)\b/i
 
 const USAGE_PERIODS: Record<string, Wh40kUsagePeriod> = {
   'battle round': 'battle-round',
@@ -112,7 +115,7 @@ export const parseWh40kAbilityTiming = (
     }
   } else if (REACTION.test(rest)) {
     return { ...base, kind: 'reaction', diagnostics }
-  } else if (PASSIVE.test(rest)) {
+  } else if (PASSIVE.test(rest) || PASSIVE_SUBJECT.test(rest)) {
     return { ...base, kind: 'passive', diagnostics }
   }
 

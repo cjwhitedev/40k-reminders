@@ -578,6 +578,20 @@
         "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010245002"
       ],
       "reason": "3 unscoped copies of New Orders typed 'Core Stratagem – Strategic Ploy Stratagem'. New Orders is not among the ten core stratagems the official Core Rules prints (15.02-15.12), so these copies are not offered to every army."
+    },
+    {
+      "id": "designers-notes",
+      "sourceRecordIds": [
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008536%3ATL",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000000087%3A7",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000000745%3A2",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000000746%3A2",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002098%3A3",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002202%3A4",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004009%3A2",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004010%3A2"
+      ],
+      "reason": "8 Designer's Notes filed as abilities: clarifications, token-tracking advice and points commentary that explain another rule rather than grant one, so they are not reminders."
     }
   ]
 }

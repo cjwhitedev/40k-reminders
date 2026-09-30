@@ -94,6 +94,18 @@ describe('parseWh40kAbilityTiming', () => {
     ).toEqual([{ kind: 'any-phase', moments: ['end'], perspective: 'either' }])
   })
 
+  it('treats keyword-subject standing rules as always active', () => {
+    expect(
+      parseWh40kAbilityTiming(
+        'Kroot models from your army have a 6+ invulnerable save against melee attacks.'
+      ).kind
+    ).toBe('passive')
+    expect(
+      parseWh40kAbilityTiming('TRAITOR GUARDSMEN SQUAD units from your army gain the BATTLELINE keyword.')
+        .kind
+    ).toBe('passive')
+  })
+
   it('does not treat an army-building permission as a reaction', () => {
     expect(
       parseWh40kAbilityTiming(
@@ -104,7 +116,7 @@ describe('parseWh40kAbilityTiming', () => {
 
   it('leaves unfamiliar openers unclassified for review', () => {
     const result = parseWh40kAbilityTiming(
-      'ADEPTUS ASTARTES units from your army are eligible to declare a charge.'
+      'Keep a tally of how many enemy models are destroyed by this unit.'
     )
     expect(result.kind).toBe('unclassified')
     expect(result.diagnostics.map(item => item.code)).toEqual(['unclassified-timing'])

@@ -81,7 +81,8 @@
     "start": "vite",
     "test": "cross-env TZ=UTC vitest",
     "up": "yarn install && yarn upgrade-interactive --latest",
-    "data:wh40k11e:rules": "vite-node --script src/wh40k11e/data/rulesCommand.ts"
+    "data:wh40k11e:rules": "vite-node --script src/wh40k11e/data/rulesCommand.ts",
+    "data:wh40k11e:reminders": "vite-node --script src/wh40k11e/data/remindersCommand.ts"
   },
   "browserslist": {
     "production": [

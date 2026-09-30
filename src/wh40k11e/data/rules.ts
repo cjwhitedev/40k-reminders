@@ -1,46 +1,22 @@
 import type { SourceRecordId } from '../../aos4/domain'
 import { normalizeSourceText } from '../../aos4/normalize/text'
+import type {
+  Wh40kCatalog,
+  Wh40kDatasheet,
+  Wh40kDetachment,
+  Wh40kRule,
+  Wh40kRuleKind,
+  Wh40kRuleScope,
+  Wh40kTimingKind,
+} from '../domain/rules'
 import type { Wh40kTiming } from '../domain/timing'
-import { parseWh40kAbilityTiming, type Wh40kAbilityTimingKind } from '../normalize/ability'
+import { parseWh40kAbilityTiming } from '../normalize/ability'
 import { parseWh40kRuleTiming } from '../normalize/when'
 import type { Wh40kReviewedSources } from './review'
 import { compareCodeUnits, type Wh40kWahapediaRecord } from './wahapedia/decode'
 import type { Wh40kLinkedDatasheet, Wh40kWahapediaLinkedDataset } from './wahapedia/link'
 
-export type Wh40kRuleKind =
-  | 'core-stratagem'
-  | 'stratagem'
-  | 'army-rule'
-  | 'detachment-rule'
-  | 'enhancement'
-  | 'core-ability'
-  | 'datasheet-ability'
-
-export type Wh40kRuleScope =
-  | { kind: 'all-armies' }
-  | { kind: 'faction'; factionId: string }
-  | { kind: 'detachment'; factionId: string; detachmentId: string }
-  | { kind: 'datasheet'; datasheetId: SourceRecordId }
-
-export type Wh40kRuleCost = { kind: 'command-points'; value: number } | { kind: 'points'; value: number }
-
-export interface Wh40kRule {
-  sourceRecordId: SourceRecordId
-  kind: Wh40kRuleKind
-  name: string
-  text: string
-  scope: Wh40kRuleScope
-  /** Boarding Actions detachments are a separate game mode, never offered in matched play. */
-  gameMode: 'matched-play' | 'boarding-actions'
-  cost?: Wh40kRuleCost
-  timingKind: Wh40kAbilityTimingKind
-  timing?: Wh40kTiming
-  timingSource: 'printed' | 'reviewed' | 'unresolved'
-  /** A core ability's printed parameter, e.g. "5+" for Feel No Pain 5+. */
-  parameter?: string
-  /** Enhancement eligibility or army-faction condition the rule is printed with. */
-  condition?: string
-}
+export type { Wh40kRule, Wh40kRuleKind, Wh40kRuleScope } from '../domain/rules'
 
 export interface Wh40kRuleBuildResult {
   rules: Wh40kRule[]
@@ -77,7 +53,7 @@ export const buildWh40kRules = (
   const add = (
     record: Wh40kWahapediaRecord,
     rule: Omit<Wh40kRule, 'sourceRecordId' | 'timingKind' | 'timing' | 'timingSource' | 'gameMode'>,
-    parsed: { kind: Wh40kAbilityTimingKind; timing?: Wh40kTiming; reason?: string },
+    parsed: { kind: Wh40kTimingKind; timing?: Wh40kTiming; reason?: string },
     gameMode: Wh40kRule['gameMode'] = 'matched-play'
   ) => {
     const override = reviewed.timingOverrides.get(record.sourceRecordId)
@@ -270,4 +246,49 @@ export const buildWh40kRules = (
   rules.sort((left, right) => compareCodeUnits(left.sourceRecordId, right.sourceRecordId))
   unresolved.sort((left, right) => compareCodeUnits(left.sourceRecordId, right.sourceRecordId))
   return { rules, unresolved }
+}
+
+/** The source-independent catalog army selection and reminders consume. */
+export const buildWh40kCatalog = (
+  records: Records,
+  linked: Wh40kWahapediaLinkedDataset,
+  reviewed: Wh40kReviewedSources,
+  rules: Wh40kRule[]
+): Wh40kCatalog => {
+  const ruleIds = new Set(rules.map(rule => rule.sourceRecordId))
+  const datasheets: Wh40kDatasheet[] = []
+  for (const sheet of linked.datasheets) {
+    const context = reviewed.datasheetContexts.get(sheet.record.sourceRecordId)
+    if (context !== 'current' && context !== 'legends') continue
+    datasheets.push({
+      sourceRecordId: sheet.record.sourceRecordId,
+      name: sheet.record.values.name,
+      factionId: sheet.record.values.faction_id,
+      context,
+      sharedRules: sheet.abilities.flatMap(({ record, shared }) =>
+        shared && ruleIds.has(shared.sourceRecordId)
+          ? [
+              {
+                ruleId: shared.sourceRecordId,
+                ...(record.values.parameter ? { parameter: record.values.parameter } : {}),
+              },
+            ]
+          : []
+      ),
+    })
+  }
+  const detachments: Wh40kDetachment[] = records['Detachments.csv'].map(record => ({
+    id: record.values.id,
+    name: record.values.name,
+    factionId: record.values.faction_id,
+    gameMode: record.values.type === 'Boarding Actions' ? 'boarding-actions' : 'matched-play',
+  }))
+  return {
+    factions: records['Factions.csv']
+      .map(record => ({ id: record.values.id, name: record.values.name }))
+      .sort((left, right) => compareCodeUnits(left.id, right.id)),
+    detachments: detachments.sort((left, right) => compareCodeUnits(left.id, right.id)),
+    datasheets: datasheets.sort((left, right) => compareCodeUnits(left.sourceRecordId, right.sourceRecordId)),
+    rules,
+  }
 }

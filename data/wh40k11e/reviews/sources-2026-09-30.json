@@ -526,6 +526,58 @@
         "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000011128002"
       ],
       "reason": "Wahapedia files 30 Core Rules move, shoot and fight types (Normal Move, Advance Move, Charge Move, Pile-in Move, Normal Shooting, Assault Shooting and similar) in Stratagems.csv with type 'Movement Ability' or 'Shooting Ability'. They are how every unit acts, not stratagems or optional rules, so they are not reminders."
+    },
+    {
+      "id": "previous-edition-core-stratagems",
+      "sourceRecordIds": [
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335003",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335004",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335005",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335006",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335007",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335008",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335009",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335010",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335011",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335012"
+      ],
+      "reason": "11 unscoped stratagems typed 'Core – …' (Go To Ground, Tank Shock, Grenade, and 10th-edition copies of other core stratagems). The official 11th-edition Core Rules prints exactly ten core stratagems (15.02-15.12, 15.09 being Snap Shooting), which Wahapedia carries as the ten rows typed 'Core Stratagem'; Go To Ground, Tank Shock, and Grenade are not among them. These rows are not 11th-edition core stratagems."
+    },
+    {
+      "id": "boarding-actions-core-stratagems",
+      "sourceRecordIds": [
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009218002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009218003",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009218004",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009218005",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009218006"
+      ],
+      "reason": "5 unscoped stratagems typed 'Boarding Actions – …' belong to the Boarding Actions game mode, not matched play."
+    },
+    {
+      "id": "challenger-card-stratagems",
+      "sourceRecordIds": [
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010247002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010248002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010249002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010250002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010251002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010252002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010253002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010254002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010255002"
+      ],
+      "reason": "9 unscoped stratagems typed 'Challenger – …' come from mission-pack Challenger cards, which are drawn during a game rather than available to every army; they are not core stratagems."
+    },
+    {
+      "id": "unscoped-new-orders",
+      "sourceRecordIds": [
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008539002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009063002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010245002"
+      ],
+      "reason": "3 unscoped copies of New Orders typed 'Core Stratagem – Strategic Ploy Stratagem'. New Orders is not among the ten core stratagems the official Core Rules prints (15.02-15.12), so these copies are not offered to every army."
     }
   ]
 }

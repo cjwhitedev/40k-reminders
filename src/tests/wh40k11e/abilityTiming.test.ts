@@ -68,6 +68,40 @@ describe('parseWh40kAbilityTiming', () => {
     expect(parseWh40kAbilityTiming('The bearer has the Feel No Pain 5+ ability.').kind).toBe('passive')
   })
 
+  it('reads "Twice per" and per-token limits, stratagem permissions, and standing restrictions', () => {
+    expect(
+      parseWh40kAbilityTiming(
+        'Twice per battle, in your Movement phase, you can select one other friendly Infantry model.'
+      ).timing
+    ).toMatchObject({ windows: [{ phase: 'movement' }], usage: { limit: 2, period: 'battle' } })
+    expect(
+      parseWh40kAbilityTiming(
+        'Once per battle for each Aspect Shrine token this unit has, you can change the result of one Hit roll.'
+      )
+    ).toMatchObject({ kind: 'reaction', usage: { limit: 1, period: 'battle' } })
+    expect(
+      parseWh40kAbilityTiming('You can target this model with the Fire Overwatch Stratagem for 0CP.').kind
+    ).toBe('reaction')
+    expect(
+      parseWh40kAbilityTiming('Once per battle, you can use the Rapid Ingress Stratagem for 0CP.').kind
+    ).toBe('reaction')
+    expect(
+      parseWh40kAbilityTiming('Your army cannot contain both Captain Tycho and Tycho the Lost.').kind
+    ).toBe('passive')
+    expect(
+      parseWh40kAbilityTiming('At the end of each phase, that model regains all of its lost wounds.').timing
+        ?.windows
+    ).toEqual([{ kind: 'any-phase', moments: ['end'], perspective: 'either' }])
+  })
+
+  it('does not treat an army-building permission as a reaction', () => {
+    expect(
+      parseWh40kAbilityTiming(
+        'You can use the ADEPTUS TITANICUS datasheets in this document to represent models.'
+      ).kind
+    ).toBe('unclassified')
+  })
+
   it('leaves unfamiliar openers unclassified for review', () => {
     const result = parseWh40kAbilityTiming(
       'ADEPTUS ASTARTES units from your army are eligible to declare a charge.'

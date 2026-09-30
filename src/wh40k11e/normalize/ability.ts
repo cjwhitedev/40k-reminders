@@ -23,16 +23,17 @@ export interface Wh40kAbilityTimingResult {
 
 const ELIGIBILITY = /^([^.\n]{1,160}? only(?: \([^)\n]*\))?)\.\s*/i
 const ARMY_FACTION = /^if your army faction is ([^,]+),\s*/i
-const USAGE = /^\(?once per (battle round|battle|turn|phase)(?:, per (?:unit|army|player|model))?\)?[,:]?\s*/i
+const USAGE =
+  /^\(?(once|twice) per (battle round|battle|turn|phase)(?: for each [^,]+)?(?:, per (?:unit|army|player|model))?\)?[,:]?\s*/i
 const TIMED = /^(?:in|at|during) ([^,]+?)(?: \([^)]*\))?,/i
 // A named step outside any phase ("the Read Mission Objectives step") is a pre-battle step; steps
 // inside a phase ("the Battle-shock step of your Command phase") are parsed as phase windows.
 const PRE_BATTLE =
   /^(?:in|at the start of|at the end of|during|before the battle, in) the ((?:[a-z-]+ ){1,4}step)\b(?! of)/i
 const REACTION =
-  /^(?:each time|every time|when|whenever|the first time|after|just after|one (?:unit|model) from your army with this ability can use it when)\b/i
+  /^(?:each time|every time|when|whenever|the first time|after|just after|before|one (?:unit|model) from your army with this ability can use it when|you can target|you can use the [a-z' -]{1,40}? stratagem|you can change)\b/i
 const PASSIVE =
-  /^(?:while|if|this (?:model|unit)|the bearer|models in (?:this|the bearer's) unit|each model in this unit|friendly|enemy units|ranged weapons|melee weapons|weapons equipped|add \d|subtract \d|you can re-roll|units can|improve|worsen)\b/i
+  /^(?:while|whilst|if|unless otherwise stated|for the purposes of|this (?:model|unit|officer|[a-z-]+ model)\b|this [a-z' -]{1,40}? can issue\b|the bearer|models in (?:this|the bearer's) unit|each model in this unit|friendly|enemy units|attacks that target|ranged weapons|melee weapons|weapons equipped|add \d|subtract \d|you can re-roll|you can ignore|units can|improve|worsen|you cannot include|your army cannot)\b/i
 
 const USAGE_PERIODS: Record<string, Wh40kUsagePeriod> = {
   'battle round': 'battle-round',
@@ -74,7 +75,10 @@ export const parseWh40kAbilityTiming = (
   let usage: Wh40kTiming['usage']
   const usageMatch = rest.match(USAGE)
   if (usageMatch) {
-    usage = { limit: 1, period: USAGE_PERIODS[usageMatch[1].toLowerCase()] }
+    usage = {
+      limit: usageMatch[1].toLowerCase() === 'twice' ? 2 : 1,
+      period: USAGE_PERIODS[usageMatch[2].toLowerCase()],
+    }
     rest = rest.slice(usageMatch[0].length)
   }
 
@@ -97,7 +101,12 @@ export const parseWh40kAbilityTiming = (
   const timed = rest.match(TIMED)
   if (timed) {
     // "In your Shooting phase and the Fight phase" lists two windows, like the WHEN clause's "or".
-    const timing = parseWh40kWhen(timed[1].replace(/ and /g, ' or '))
+    const timing = parseWh40kWhen(
+      timed[1]
+        .replace(/ and /g, ' or ')
+        .replace(/^the end of each phase$/i, 'end of any phase')
+        .replace(/^the start of each phase$/i, 'start of any phase')
+    )
     if (timing) {
       return { ...base, kind: 'timed', timing: { ...timing, ...(usage ? { usage } : {}) }, diagnostics }
     }

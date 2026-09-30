@@ -43,7 +43,7 @@ export interface Wh40kTiming {
   /** The event inside the window that triggers the rule, kept as printed text. */
   trigger?: string
   /** A printed "Once per ..." limit. */
-  usage?: { limit: 1; period: Wh40kUsagePeriod }
+  usage?: { limit: number; period: Wh40kUsagePeriod }
   raw: string
 }
 

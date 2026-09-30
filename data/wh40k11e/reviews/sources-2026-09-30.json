@@ -1,0 +1,290 @@
+{
+  "schemaVersion": 1,
+  "revision": "wh40k11e-sources-2026-09-30",
+  "inputs": {
+    "bsdata": {
+      "repository": "BSData/wh40k-11e",
+      "commit": "4eedf7d80cae4baef20bdc117563c1357499482c"
+    },
+    "wahapediaExports": [
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Abilities.csv",
+        "checksum": "f3fc44a0fd91b7b45b38ae477632517e732bda64b4a0c548033a9f874664c7f3"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Datasheets.csv",
+        "checksum": "ba363e9a68e6d7ee19f93a32abc06ba3f6a5f1efd0da5aaab32701a130a15623"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Datasheets_abilities.csv",
+        "checksum": "5aba5ff1d7a2353904fac32d2b2b234c03573bef418f1bf4afabca1001cc2109"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Datasheets_detachment_abilities.csv",
+        "checksum": "843395ebfa4f2dceab87b56792fff48d03d861cbfcb1eda6df3bbf2fe822ba38"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Datasheets_enhancements.csv",
+        "checksum": "1d6576003a346565168369b75efc586d3c12a766d8514571ed81ff333d241376"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Datasheets_keywords.csv",
+        "checksum": "10cb386fc3134257bdf3bad3bb1fd94615ea94a5fe3c94aad874da390b1ec1df"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Datasheets_leader.csv",
+        "checksum": "c75b00eed968babbc89c6b7e077b40f7234c3040537816692ae0e609ebca174c"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Datasheets_models.csv",
+        "checksum": "dddb131c2b81fa199832f5250f0469f7cef4ba4fef77b6e477380b592d61e6ff"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Datasheets_models_cost.csv",
+        "checksum": "2e2f9be00eae5924a62dd27c4322bdb6b663070fd80781a81ca1b5305ed24c47"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Datasheets_options.csv",
+        "checksum": "4b729297fe68b3c7cfc2c99205610a1741f838e29ae7150501d84365882e8d13"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Datasheets_stratagems.csv",
+        "checksum": "7dacd927c0cf17b3516fdad5344e6d9f569bf172f3fbfe6a96e010bcfea5b67c"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Datasheets_unit_composition.csv",
+        "checksum": "fca0b694f146a13f56c828d78f2aaa0dbe79341273173c68f534b8985494b03f"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Datasheets_wargear.csv",
+        "checksum": "eeaa33777769367d836cab0562a82bb84bcb8fc1a8064539a58ead972d302241"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Detachment_abilities.csv",
+        "checksum": "d7e4966e2b094d43feaa88a66e10608301ff817d92393b9c7f04ec2ac1ed6a44"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Detachments.csv",
+        "checksum": "445af298071f5014f7f1e49e55669b4a6bbaf8e798d95717d9ea85fb94314e5e"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Detachments_chapter_dp.csv",
+        "checksum": "d02a18c505cf6adb0cce01a45046a5487a1391fde4358f75a043124e1d5ef02c"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Enhancements.csv",
+        "checksum": "7e7fa39c9e1f9d268bda75affa8cd647c72b5511726631a8ee4110c8e86bc212"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Factions.csv",
+        "checksum": "d5038518059e5deeafa8d74e814a51598929a45c2864d3056c92c8629e7d4608"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Last_update.csv",
+        "checksum": "4b3a7e63006be965073bdc34022bdd17f6f7b063602b46a4640a11ac641b20a9"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Source.csv",
+        "checksum": "e6f74afb7b43f6779ec9a03ad0699ff11dd27b9d2f08243d5c04dd07fd99f6e0"
+      },
+      {
+        "url": "https://wahapedia.ru/wh40k11ed/Stratagems.csv",
+        "checksum": "2ed24cacbe826c4eccea0920385669ac2fea5ebf3aca8822169d15d03f5814cb"
+      }
+    ],
+    "officialDocuments": [
+      {
+        "url": "https://assets.warhammer-community.com/eng_30-09_wh40k_faction_pack_chaos_daemons-e67vyzvv3x-mownb49uc3.pdf",
+        "checksum": "de3f7c0319fa96530dfa687a516668cf7e52dc9d5a87954c44c7e38842569075"
+      },
+      {
+        "url": "https://assets.warhammer-community.com/eng_wh40k_faction_pack_aeldari-r7ubocxyoz-nhd972kesl.pdf",
+        "checksum": "07cfef8fbf48a3e6be28563b0bbc3151cd173848052a2466029c09f16f8ba20e"
+      },
+      {
+        "url": "https://assets.warhammer-community.com/eng_wh40k_faction_pack_imperial_knights-n1irjnjygs-w8jfnk8kdn.pdf",
+        "checksum": "7c8c814350363760acda3c53ba4a01d8c5c5703f8e5e16a7b5911d06d612fa81"
+      }
+    ]
+  },
+  "decoderDiagnosticPolicies": [
+    {
+      "code": "duplicate-identical-record",
+      "reason": "The decoder compares complete row bytes and keeps one copy of a byte-identical repeated row; the repeats carry no additional fact (4,186 keyword rows and 19 leader rows in the 2026-09-28 export)."
+    },
+    {
+      "code": "empty-placeholder-record",
+      "reason": "Empty wargear and faction-keyword placeholder rows carry no game fact and are excluded by the decoder."
+    }
+  ],
+  "classificationPolicies": [
+    {
+      "classification": "current",
+      "context": "current",
+      "reason": "Datasheets whose Wahapedia source is an 11th-edition publication (Source.csv edition 11) belong to the current rules context."
+    },
+    {
+      "classification": "legends",
+      "context": "legends",
+      "reason": "Warhammer Legends faction packs are kept in a separate Legends context that an army must opt into, matching the AoS Reminders allowsLegends overlay."
+    },
+    {
+      "classification": "forge-world",
+      "context": "forge-world",
+      "reason": "Forge World datasheets are kept in their own context rather than dropped or merged. Official 11th-edition faction packs publish them in separate Imperial Armour sections (for example the Imperial Knights faction pack contents list Imperial Armour Datasheets after the main datasheets); whether the default army builder offers them is a product decision still to be made."
+    },
+    {
+      "classification": "previous-edition",
+      "context": "excluded",
+      "reason": "Deathwatch and Death Korps of Krieg datasheets cite only 10th-edition publications, and the 11th-edition downloads observed on 2026-09-30 carry no Deathwatch faction pack. They stay out of every 11th-edition context until official 11th-edition material covers them."
+    }
+  ],
+  "linkDispositions": [
+    {
+      "id": "orphans-of-unpublished-datasheets",
+      "match": {
+        "code": "dangling-reference",
+        "field": "datasheet_id",
+        "values": [
+          "000000007",
+          "000000014",
+          "000000023",
+          "000000035",
+          "000000037",
+          "000000051",
+          "000000052",
+          "000000055",
+          "000000057",
+          "000000824",
+          "000000825",
+          "000000829",
+          "000000830",
+          "000000832",
+          "000000833",
+          "000001248",
+          "000001249",
+          "000001254",
+          "000001258",
+          "000001259",
+          "000001385",
+          "000001386",
+          "000001387",
+          "000001388",
+          "000001389",
+          "000001538",
+          "000001539",
+          "000001540",
+          "000001541",
+          "000001542",
+          "000001593",
+          "000001636",
+          "000001638",
+          "000001993",
+          "000002080",
+          "000002453",
+          "000002492",
+          "000002736",
+          "000003709",
+          "000004101",
+          "000004230"
+        ]
+      },
+      "expectedCount": 303,
+      "action": "exclude-records",
+      "reason": "Child rows (288 unit-to-stratagem links plus wargear, keyword, model and ability rows) whose datasheet Wahapedia no longer publishes in Datasheets.csv. Without the parent datasheet they are unreachable and carry no selectable fact, so they are excluded rather than attached to a guessed unit."
+    },
+    {
+      "id": "orphans-of-chaos-daemons-templates",
+      "match": {
+        "code": "dangling-reference",
+        "field": "datasheet_id",
+        "values": ["000004150", "000004151", "000004152", "000004153"]
+      },
+      "expectedCount": 38,
+      "action": "exclude-records",
+      "reason": "Model, keyword, composition, wargear and ability rows for four generic Chaos Daemons templates (Greater Daemon, Lesser Daemons, Abomination, Daemonic Beasts) that have no Datasheets.csv record. They are not selectable datasheets and are excluded."
+    },
+    {
+      "id": "links-to-unpublished-stratagem",
+      "match": {
+        "code": "dangling-reference",
+        "field": "stratagem_id",
+        "values": ["000010677006"]
+      },
+      "expectedCount": 9,
+      "action": "exclude-records",
+      "reason": "Nine unit-to-stratagem association rows (Battleline Space Marine squads) point at stratagem 000010677006, which Stratagems.csv does not publish. The association rows carry no rule text of their own and are excluded."
+    },
+    {
+      "id": "tormentbringer-unpublished-leader-target",
+      "match": {
+        "code": "dangling-reference",
+        "field": "attached_id",
+        "values": ["000004101"]
+      },
+      "expectedCount": 1,
+      "action": "exclude-records",
+      "reason": "Tormentbringer has two leader rows; the other already targets Hellflayers. The official Chaos Daemons faction pack lists Hellflayers as the only unit Tormentbringer can join, so the row pointing at an unpublished datasheet is excluded.",
+      "officialEvidence": [
+        {
+          "url": "https://assets.warhammer-community.com/eng_30-09_wh40k_faction_pack_chaos_daemons-e67vyzvv3x-mownb49uc3.pdf",
+          "page": 101,
+          "quote": "LEADER This model can be attached to the following unit: ■ Hellflayers"
+        }
+      ]
+    },
+    {
+      "id": "aeldari-agile-manoeuvres",
+      "match": {
+        "code": "dangling-reference",
+        "field": "detachment_id",
+        "values": ["000000783"]
+      },
+      "expectedCount": 6,
+      "action": "army-rule",
+      "reason": "Six Aeldari rows (Star Engines, Flitting Shadows, Sudden Strike, Fade Back, Swift as the Wind, Opportunity Seized) point at an 'Army Rules' detachment Detachments.csv does not publish, and carry no CP cost or stratagem type. They are Agile Manoeuvres of the Battle Focus army rule, not detachment stratagems: the official Aeldari faction pack amends 'Agile Manoeuvres, Star Engines' under ARMY RULES and describes the Fade Back Agile Manoeuvre as spending a Battle Focus token. They are retained as faction army rules. The pack names two of the six directly; the other four share the same army-rule rows.",
+      "officialEvidence": [
+        {
+          "url": "https://assets.warhammer-community.com/eng_wh40k_faction_pack_aeldari-r7ubocxyoz-nhd972kesl.pdf",
+          "page": 30,
+          "quote": "ARMY RULES Agile Manoeuvres, Star Engines"
+        },
+        {
+          "url": "https://assets.warhammer-community.com/eng_wh40k_faction_pack_aeldari-r7ubocxyoz-nhd972kesl.pdf",
+          "page": 8,
+          "quote": "This unit can perform the Fade Back Agile Manoeuvre without spending a Battle Focus token"
+        }
+      ]
+    },
+    {
+      "id": "knight-destrier-source",
+      "match": {
+        "code": "missing-reference",
+        "field": "source_id",
+        "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets.csv%3A000004213"]
+      },
+      "expectedCount": 1,
+      "action": "assign-classification",
+      "classification": "current",
+      "reason": "Wahapedia publishes Knight Destrier with no source. The official Imperial Knights faction pack prints it as a main datasheet (page 7), ahead of its separate Imperial Armour section, so it is current.",
+      "officialEvidence": [
+        {
+          "url": "https://assets.warhammer-community.com/eng_wh40k_faction_pack_imperial_knights-n1irjnjygs-w8jfnk8kdn.pdf",
+          "page": 7,
+          "quote": "KNIGHT DESTRIER KEYWORDS: Vehicle, Walker, Titanic, Towering, Bellatus, Character, Imperium, Knight Destrier"
+        }
+      ]
+    },
+    {
+      "id": "example-wargear-placeholder",
+      "match": {
+        "code": "missing-reference",
+        "field": "source_id",
+        "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets.csv%3A000003708"]
+      },
+      "expectedCount": 1,
+      "action": "exclude-records",
+      "reason": "'Example Wargear' is a virtual Space Marines datasheet with no source, models or abilities: an illustration of the wargear format, not a playable unit. It is excluded, as AoS Reminders excludes Wahapedia's illustrative example ability cards."
+    }
+  ]
+}

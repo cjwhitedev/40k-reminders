@@ -2,12 +2,14 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { assertArtifactChecksum } from '../../aos4/data/artifact'
 import { FileArtifactCache } from '../../aos4/data/cache'
+import type { ArtifactManifestEntry } from '../../aos4/data/manifest'
 import type { Wh40kCandidateArtifact } from './candidate'
 
 export const WH40K_ARTIFACT_CACHE_DIRECTORY = path.join('.cache', 'wh40k11e', 'artifacts')
 
 export interface VerifiedCandidateArtifact extends Wh40kCandidateArtifact {
   bytes: Uint8Array
+  manifestEntry: ArtifactManifestEntry
 }
 
 type JsonRecord = Record<string, unknown>
@@ -52,7 +54,11 @@ export const loadVerifiedCandidateArtifacts = async (
     const bytes = await cache.get(artifact.checksum)
     if (!bytes) throw new Error(`Artifact cache is missing ${artifact.checksum} (${artifact.url})`)
     assertArtifactChecksum(bytes, artifact.checksum, 'cache-corrupt')
-    artifacts.push({ ...(artifact as unknown as Wh40kCandidateArtifact), bytes })
+    artifacts.push({
+      ...(artifact as unknown as Wh40kCandidateArtifact),
+      bytes,
+      manifestEntry: entry as unknown as ArtifactManifestEntry,
+    })
   }
   return { provenance, artifacts }
 }

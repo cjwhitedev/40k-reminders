@@ -43,6 +43,7 @@
     "data:wh40k11e:candidate": "vite-node --script src/wh40k11e/data/acquireCommand.ts",
     "data:wh40k11e:check-exports": "vite-node --script src/wh40k11e/data/checkExportsCommand.ts",
     "data:wh40k11e:compare": "vite-node --script src/wh40k11e/data/compareCommand.ts",
+    "data:wh40k11e:review": "vite-node --script src/wh40k11e/data/reviewCommand.ts",
     "data:wh40k11e:index": "vite-node --script src/wh40k11e/data/indexCommand.ts",
     "data:aos4:discover-official": "vite-node --script src/aos4/data/gamesWorkshop/catalogCommand.ts",
     "data:aos4:certify": "vite-node --script src/aos4/review/certificationCommand.ts",

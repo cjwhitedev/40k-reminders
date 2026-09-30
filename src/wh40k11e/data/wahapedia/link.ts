@@ -24,6 +24,7 @@ export interface Wh40kLinkDiagnostic {
   severity: 'error' | 'warning'
   file: Wh40kWahapediaExportFile
   line: number
+  sourceRecordId: SourceRecordId
   field: string
   value: string
   message: string
@@ -126,6 +127,7 @@ export const linkWh40kWahapediaRecords = (records: Records): Wh40kWahapediaLinke
       severity,
       file: record.file,
       line: record.line,
+      sourceRecordId: record.sourceRecordId,
       field,
       value: record.values[field],
       message: `${record.file} line ${record.line}: ${message}`,

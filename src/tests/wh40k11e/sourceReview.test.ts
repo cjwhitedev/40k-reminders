@@ -71,7 +71,8 @@ const review = (overrides: Partial<Wh40kSourceReview> = {}): Wh40kSourceReview =
 const run = (
   reviewFile: Wh40kSourceReview,
   diagnostics: Wh40kLinkDiagnostic[] = [dangling('w1', 'GONE'), dangling('w2', 'GONE')],
-  pageText = 'LEADER\n  Hellflayers   only'
+  pageText = 'LEADER\n  Hellflayers   only',
+  records = {} as Wh40kWahapediaDecodeResult['records']
 ) =>
   applyWh40kSourceReview({
     review: reviewFile,
@@ -80,7 +81,7 @@ const run = (
     officialDocuments: [pdf],
     decoded: {
       status: 'candidate-review-required',
-      records: {} as Wh40kWahapediaDecodeResult['records'],
+      records,
       diagnostics: [
         { code: 'duplicate-identical-record', severity: 'warning', file: 'Factions.csv', message: 'dup' },
       ],
@@ -137,6 +138,51 @@ describe('applyWh40kSourceReview', () => {
     expect(result.findings.map(item => item.code)).toEqual([
       'missing-classification-policy',
       'undispositioned-decoder-warning',
+    ])
+  })
+
+  it('applies timing overrides and ignored rules only to known records decided once', () => {
+    const known = sourceRecordId('test', 'ability')
+    const moveType = sourceRecordId('test', 'move')
+    const records = {
+      'Abilities.csv': [{ ...sheet('ability', 'current').record, sourceRecordId: known }],
+      'Stratagems.csv': [{ ...sheet('move', 'current').record, sourceRecordId: moveType }],
+    } as unknown as Wh40kWahapediaDecodeResult['records']
+    const valid = review({
+      timingOverrides: [
+        {
+          id: 'core',
+          sourceRecordIds: [known],
+          kind: 'timed',
+          windows: [{ kind: 'pre-battle', step: 'Deployment' }],
+          reason: 'core rule',
+          officialEvidence: [{ url: pdf.url, page: 3, quote: 'Hellflayers only' }],
+        },
+      ],
+      ignoredRules: [{ id: 'moves', sourceRecordIds: [moveType], reason: 'core move type' }],
+    })
+    const result = run(valid, undefined, undefined, records)
+
+    expect(result.status).toBe('reviewed')
+    expect(result.timingOverrides.get(known)?.id).toBe('core')
+    expect(result.ignoredSourceRecordIds).toEqual([moveType])
+
+    const broken = review({
+      timingOverrides: [
+        { id: 'unwindowed', sourceRecordIds: [known], kind: 'timed', reason: 'no windows' },
+        {
+          id: 'ghost',
+          sourceRecordIds: [sourceRecordId('test', 'ghost')],
+          kind: 'passive',
+          reason: 'unknown',
+        },
+      ],
+      ignoredRules: [{ id: 'twice', sourceRecordIds: [known], reason: 'also ignored' }],
+    })
+    expect(run(broken, undefined, undefined, records).findings.map(item => item.code)).toEqual([
+      'duplicate-rule-decision',
+      'invalid-timing-override',
+      'unknown-record',
     ])
   })
 })

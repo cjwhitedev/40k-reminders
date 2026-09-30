@@ -2,6 +2,25 @@ import { describe, expect, it } from 'vitest'
 import { parseWh40kAbilityTiming } from '../../wh40k11e/normalize/ability'
 
 describe('parseWh40kAbilityTiming', () => {
+  it('records an army faction condition and classifies the rule that follows it', () => {
+    const result = parseWh40kAbilityTiming(
+      'If your Army Faction is ADEPTUS ASTARTES, at the start of your Command phase, select one enemy unit.'
+    )
+    expect(result).toMatchObject({
+      kind: 'timed',
+      armyFaction: 'ADEPTUS ASTARTES',
+      timing: { windows: [{ kind: 'turn-phase', phase: 'command', moment: 'start', perspective: 'your' }] },
+    })
+    expect(
+      parseWh40kAbilityTiming(
+        'If your Army Faction is TYRANIDS, once per battle, in either player’s Command phase, you can unleash it.'
+      ).timing
+    ).toMatchObject({
+      windows: [{ kind: 'turn-phase', phase: 'command', perspective: 'either' }],
+      usage: { limit: 1, period: 'battle' },
+    })
+  })
+
   it('reads a timed opener with a usage limit and a specific battle round', () => {
     const result = parseWh40kAbilityTiming(
       'Once per battle, at the start of your first Movement phase, this unit can move.'

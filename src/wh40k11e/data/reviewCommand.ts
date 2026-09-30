@@ -68,7 +68,9 @@ const run = async (): Promise<void> => {
 
   const evidencePages = new Map<string, string>()
   const citedUrls = new Set(
-    review.linkDispositions.flatMap(disposition => (disposition.officialEvidence ?? []).map(item => item.url))
+    [...review.linkDispositions, ...(review.timingOverrides ?? [])].flatMap(decision =>
+      (decision.officialEvidence ?? []).map(item => item.url)
+    )
   )
   for (const artifact of official.artifacts.filter(item => citedUrls.has(item.url))) {
     const extracted = await extractGamesWorkshopPdfText(
@@ -113,18 +115,29 @@ const run = async (): Promise<void> => {
     evidencePages,
   })
 
+  const report = {
+    schemaVersion: 1,
+    revision: review.revision,
+    review: options.review,
+    ...reviewed,
+    timingOverrides: Array.from(reviewed.timingOverrides.keys())
+      .sort()
+      .map(sourceRecordId => ({
+        sourceRecordId,
+        override: reviewed.timingOverrides.get(sourceRecordId)?.id,
+      })),
+  }
   const output = path.resolve(options.output)
   await mkdir(path.dirname(output), { recursive: true })
-  await writeFile(
-    output,
-    `${JSON.stringify({ schemaVersion: 1, revision: review.revision, review: options.review, ...reviewed }, null, 2)}\n`,
-    { encoding: 'utf8', flag: 'wx' }
-  )
+  await writeFile(output, `${JSON.stringify(report, null, 2)}\n`, { encoding: 'utf8', flag: 'wx' })
   console.log(`Review ${review.revision}: ${reviewed.status}`)
   for (const disposition of reviewed.dispositions) {
     console.log(`  ${disposition.id}: ${disposition.action}, ${disposition.matched} record(s)`)
   }
   console.log(`  contexts: ${JSON.stringify(reviewed.contexts)}`)
+  console.log(
+    `  timing overrides: ${reviewed.timingOverrides.size} record(s); ignored rules: ${reviewed.ignoredSourceRecordIds.length}`
+  )
   reviewed.findings.forEach(item => console.log(`  FINDING ${item.code}: ${item.message}`))
   console.log(`40K source review: ${output}`)
   if (reviewed.status === 'blocked')

@@ -12,6 +12,8 @@ export interface Wh40kAbilityTimingResult {
   usage?: Wh40kTiming['usage']
   /** Eligibility printed before an enhancement's rule, e.g. "Warlord model only." */
   eligibility?: string
+  /** Army faction condition an army rule opens with, e.g. "ADEPTUS ASTARTES". */
+  armyFaction?: string
   diagnostics: Array<{
     code: 'unsafe-source-text' | 'unclassified-timing'
     severity: 'error'
@@ -20,10 +22,13 @@ export interface Wh40kAbilityTimingResult {
 }
 
 const ELIGIBILITY = /^([^.\n]{1,160}? only(?: \([^)\n]*\))?)\.\s*/i
+const ARMY_FACTION = /^if your army faction is ([^,]+),\s*/i
 const USAGE = /^\(?once per (battle round|battle|turn|phase)(?:, per (?:unit|army|player|model))?\)?[,:]?\s*/i
 const TIMED = /^(?:in|at|during) ([^,]+?)(?: \([^)]*\))?,/i
+// A named step outside any phase ("the Read Mission Objectives step") is a pre-battle step; steps
+// inside a phase ("the Battle-shock step of your Command phase") are parsed as phase windows.
 const PRE_BATTLE =
-  /^(?:in|at the start of|at the end of|during) the ((?:declare battle formations|deploy armies|redeploy units|determine first turn|muster armies) step)\b/i
+  /^(?:in|at the start of|at the end of|during|before the battle, in) the ((?:[a-z-]+ ){1,4}step)\b(?! of)/i
 const REACTION =
   /^(?:each time|every time|when|whenever|the first time|after|just after|one (?:unit|model) from your army with this ability can use it when)\b/i
 const PASSIVE =
@@ -60,6 +65,12 @@ export const parseWh40kAbilityTiming = (
   }
 
   let rest = text.replace(/[‘’`]/g, "'")
+  let armyFaction: string | undefined
+  const armyFactionMatch = rest.match(ARMY_FACTION)
+  if (armyFactionMatch) {
+    armyFaction = armyFactionMatch[1].trim()
+    rest = rest.slice(armyFactionMatch[0].length)
+  }
   let usage: Wh40kTiming['usage']
   const usageMatch = rest.match(USAGE)
   if (usageMatch) {
@@ -67,7 +78,12 @@ export const parseWh40kAbilityTiming = (
     rest = rest.slice(usageMatch[0].length)
   }
 
-  const base = { text, ...(eligibility ? { eligibility } : {}), ...(usage ? { usage } : {}) }
+  const base = {
+    text,
+    ...(eligibility ? { eligibility } : {}),
+    ...(armyFaction ? { armyFaction } : {}),
+    ...(usage ? { usage } : {}),
+  }
   const preBattle = rest.match(PRE_BATTLE)
   if (preBattle) {
     const step = preBattle[1].replace(/\b\w/g, letter => letter.toUpperCase()).replace(/ Step$/, ' step')

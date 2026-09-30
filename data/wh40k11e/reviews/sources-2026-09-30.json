@@ -94,6 +94,10 @@
     ],
     "officialDocuments": [
       {
+        "url": "https://assets.warhammer-community.com/eng_01-06_warhammer40k_new40k_core_rules-was6fbu1ix-hfewhmxyiy.pdf",
+        "checksum": "f6a2443a44627ac5f0ef08407d29aa5ec7e97339998f05bc35f3ae37bf276833"
+      },
+      {
         "url": "https://assets.warhammer-community.com/eng_30-09_wh40k_faction_pack_chaos_daemons-e67vyzvv3x-mownb49uc3.pdf",
         "checksum": "de3f7c0319fa96530dfa687a516668cf7e52dc9d5a87954c44c7e38842569075"
       },
@@ -285,6 +289,243 @@
       "expectedCount": 1,
       "action": "exclude-records",
       "reason": "'Example Wargear' is a virtual Space Marines datasheet with no source, models or abilities: an illustration of the wargear format, not a playable unit. It is excluded, as AoS Reminders excludes Wahapedia's illustrative example ability cards."
+    }
+  ],
+  "timingOverrides": [
+    {
+      "id": "core-deadly-demise",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008339%3A"],
+      "kind": "reaction",
+      "trigger": "Each time a model in this unit is destroyed",
+      "reason": "Core Rules 24.08: resolved each time a model in the unit is destroyed.",
+      "officialEvidence": [
+        {
+          "url": "https://assets.warhammer-community.com/eng_01-06_warhammer40k_new40k_core_rules-was6fbu1ix-hfewhmxyiy.pdf",
+          "page": 80,
+          "quote": "Each time a model in this unit is destroyed"
+        }
+      ]
+    },
+    {
+      "id": "core-deep-strike",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008343%3A"],
+      "kind": "reaction",
+      "trigger": "Each time this unit makes an ingress move",
+      "reason": "Core Rules 24.09: applies each time the unit makes an ingress move.",
+      "officialEvidence": [
+        {
+          "url": "https://assets.warhammer-community.com/eng_01-06_warhammer40k_new40k_core_rules-was6fbu1ix-hfewhmxyiy.pdf",
+          "page": 80,
+          "quote": "Each time this unit makes an ingress move"
+        }
+      ]
+    },
+    {
+      "id": "core-feel-no-pain",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008338%3A"],
+      "kind": "reaction",
+      "trigger": "Each time a model with this ability would lose a wound",
+      "reason": "Core Rules 24.12: rolled each time a model would lose a wound.",
+      "officialEvidence": [
+        {
+          "url": "https://assets.warhammer-community.com/eng_01-06_warhammer40k_new40k_core_rules-was6fbu1ix-hfewhmxyiy.pdf",
+          "page": 81,
+          "quote": "Each time a model with this ability would lose a wound, roll one D6"
+        }
+      ]
+    },
+    {
+      "id": "core-fights-first",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008340%3A"],
+      "kind": "passive",
+      "reason": "Core Rules 24.13: a standing status that orders Fight phase combats (12.04), not an action taken at a moment.",
+      "officialEvidence": [
+        {
+          "url": "https://assets.warhammer-community.com/eng_01-06_warhammer40k_new40k_core_rules-was6fbu1ix-hfewhmxyiy.pdf",
+          "page": 81,
+          "quote": "While every model in a unit has this ability, that unit is a Fights First unit."
+        }
+      ]
+    },
+    {
+      "id": "core-firing-deck",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008334%3A"],
+      "kind": "timed",
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "shooting",
+          "moment": "during",
+          "perspective": "your"
+        }
+      ],
+      "trigger": "each time this TRANSPORT is selected to shoot",
+      "reason": "Core Rules 24.14: used in your Shooting phase when the transport is selected to shoot.",
+      "officialEvidence": [
+        {
+          "url": "https://assets.warhammer-community.com/eng_01-06_warhammer40k_new40k_core_rules-was6fbu1ix-hfewhmxyiy.pdf",
+          "page": 81,
+          "quote": "In your Shooting phase, each time this TRANSPORT is selected to shoot"
+        }
+      ]
+    },
+    {
+      "id": "core-hover",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008342%3A"],
+      "kind": "reaction",
+      "trigger": "Each time this unit takes to the skies",
+      "reason": "Core Rules 24.17: applies each time the unit takes to the skies.",
+      "officialEvidence": [
+        {
+          "url": "https://assets.warhammer-community.com/eng_01-06_warhammer40k_new40k_core_rules-was6fbu1ix-hfewhmxyiy.pdf",
+          "page": 82,
+          "quote": "Each time this unit takes to the skies"
+        }
+      ]
+    },
+    {
+      "id": "core-infiltrators",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008345%3A"],
+      "kind": "timed",
+      "windows": [
+        {
+          "kind": "pre-battle",
+          "step": "Deployment"
+        }
+      ],
+      "reason": "Core Rules 24.20: used during deployment.",
+      "officialEvidence": [
+        {
+          "url": "https://assets.warhammer-community.com/eng_01-06_warhammer40k_new40k_core_rules-was6fbu1ix-hfewhmxyiy.pdf",
+          "page": 82,
+          "quote": "During deployment, if every model in a unit has this ability"
+        }
+      ]
+    },
+    {
+      "id": "core-leader-and-support",
+      "sourceRecordIds": [
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008346%3A",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000010857%3A"
+      ],
+      "kind": "timed",
+      "windows": [
+        {
+          "kind": "pre-battle",
+          "step": "Muster Armies step"
+        }
+      ],
+      "reason": "Core Rules 24.22 and 24.34 (printed together): leader and support units are attached before the battle in the Muster Armies step.",
+      "officialEvidence": [
+        {
+          "url": "https://assets.warhammer-community.com/eng_01-06_warhammer40k_new40k_core_rules-was6fbu1ix-hfewhmxyiy.pdf",
+          "page": 66,
+          "quote": "Before the battle, in the Muster Armies step, for each leader and support unit in your army"
+        }
+      ]
+    },
+    {
+      "id": "core-lone-operative",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008336%3A"],
+      "kind": "passive",
+      "reason": "Core Rules 24.24: a standing visibility restriction.",
+      "officialEvidence": [
+        {
+          "url": "https://assets.warhammer-community.com/eng_01-06_warhammer40k_new40k_core_rules-was6fbu1ix-hfewhmxyiy.pdf",
+          "page": 83,
+          "quote": "Unless part of an attached unit, this unit is not visible to enemy models"
+        }
+      ]
+    },
+    {
+      "id": "core-scouts",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008344%3A"],
+      "kind": "timed",
+      "windows": [
+        {
+          "kind": "pre-battle",
+          "step": "Resolve Pre-battle Abilities step"
+        }
+      ],
+      "reason": "Core Rules 24.31: used in the Resolve Pre-battle Abilities step.",
+      "officialEvidence": [
+        {
+          "url": "https://assets.warhammer-community.com/eng_01-06_warhammer40k_new40k_core_rules-was6fbu1ix-hfewhmxyiy.pdf",
+          "page": 84,
+          "quote": "Abilities step, if every model in a unit has this ability, you can do one of the following"
+        }
+      ]
+    },
+    {
+      "id": "core-stealth",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008337%3A"],
+      "kind": "passive",
+      "reason": "Core Rules 24.33: a standing benefit of cover against ranged attacks.",
+      "officialEvidence": [
+        {
+          "url": "https://assets.warhammer-community.com/eng_01-06_warhammer40k_new40k_core_rules-was6fbu1ix-hfewhmxyiy.pdf",
+          "page": 85,
+          "quote": "each time a ranged attack targets that unit, that unit has the benefit of cover against that attack"
+        }
+      ]
+    },
+    {
+      "id": "core-super-heavy-walker",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000010844%3A"],
+      "kind": "reaction",
+      "trigger": "Each time a unit with this ability makes a normal, advance or fall-back move",
+      "reason": "Core Rules 24.35: applies each time the unit makes a normal, advance or fall-back move.",
+      "officialEvidence": [
+        {
+          "url": "https://assets.warhammer-community.com/eng_01-06_warhammer40k_new40k_core_rules-was6fbu1ix-hfewhmxyiy.pdf",
+          "page": 85,
+          "quote": "Each time a unit with this ability makes a normal"
+        }
+      ]
+    },
+    {
+      "id": "core-damaged",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000011125%3A"],
+      "kind": "passive",
+      "reason": "Wahapedia prints Damaged as Core Rules 24.39, a standing modifier while a model’s remaining wounds are at or below a threshold. Neither the Core Rules nor the Universal Rules Updates candidate documents print 24.39, so this relies on the Wahapedia text until an official source is pinned."
+    }
+  ],
+  "ignoredRules": [
+    {
+      "id": "core-move-and-shoot-types",
+      "sourceRecordIds": [
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010810009",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010811002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010811003",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010811004",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010811005",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010812002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010812003",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010812004",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010812005",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010813002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010814002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010815002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010816002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010817002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010818002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010819002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010821002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010822002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010843002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010848002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010849002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010850002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010851002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010852002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010853002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010854002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010855002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000011123002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000011124002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000011128002"
+      ],
+      "reason": "Wahapedia files 30 Core Rules move, shoot and fight types (Normal Move, Advance Move, Charge Move, Pile-in Move, Normal Shooting, Assault Shooting and similar) in Stratagems.csv with type 'Movement Ability' or 'Shooting Ability'. They are how every unit acts, not stratagems or optional rules, so they are not reminders."
     }
   ]
 }

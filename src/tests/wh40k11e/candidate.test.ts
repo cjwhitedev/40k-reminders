@@ -106,10 +106,12 @@ describe('40K source candidate intake', () => {
     expect(result.manifest.artifacts).toHaveLength(4)
   })
 
-  it('acquires Wahapedia CSV exports as CSV and pages as HTML', async () => {
+  it('acquires Wahapedia CSV exports as CSV, the export spec as a spreadsheet, and pages as HTML', async () => {
     const options = parseWh40kCandidateArguments([
       '--wahapedia-url',
       'https://wahapedia.ru/wh40k11ed/Datasheets.csv',
+      '--wahapedia-url',
+      'https://wahapedia.ru/wh40k11ed/Export%20Data%20Specs.xlsx?v=20260817b',
       '--wahapedia-url',
       'https://wahapedia.ru/wh40k11ed/the-rules/core-rules/',
       '--pause-ms',
@@ -141,6 +143,10 @@ describe('40K source candidate intake', () => {
 
     expect(mediaTypes).toEqual({
       'https://wahapedia.ru/wh40k11ed/Datasheets.csv': ['text/csv'],
+      'https://wahapedia.ru/wh40k11ed/Export%20Data%20Specs.xlsx?v=20260817b': [
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/octet-stream',
+      ],
       'https://wahapedia.ru/wh40k11ed/the-rules/core-rules/': ['text/html'],
     })
   })

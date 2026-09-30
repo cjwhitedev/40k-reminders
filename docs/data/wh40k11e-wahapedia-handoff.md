@@ -150,3 +150,38 @@ yarn data:wh40k11e:candidate \
   --offline \
   --output .cache/wh40k11e/candidates/wahapedia-pages-replay
 ```
+
+## Follow-up: fetch the export specification
+
+The data export page doesn't list its CSV files directly. It links to a spreadsheet,
+`Export Data Specs.xlsx`, whose English sheet links every published export. The first handoff
+fetched 19 CSV files using guessed names; this follow-up fetches the spreadsheet so the command can
+confirm those 19 are exactly the published set. This is the same check AoS Reminders runs for its
+own exports.
+
+On the machine that can reach Wahapedia, in the same clone that ran steps 4 and 5:
+
+```bash
+git pull
+yarn install --frozen-lockfile
+yarn data:wh40k11e:candidate \
+  --wahapedia-url 'https://wahapedia.ru/wh40k11ed/Export%20Data%20Specs.xlsx?v=20260817b' \
+  --output .cache/wh40k11e/candidates/wahapedia-spec
+yarn data:wh40k11e:check-exports \
+  --spec-candidate .cache/wh40k11e/candidates/wahapedia-spec \
+  --exports-candidate .cache/wh40k11e/candidates/wahapedia-exports
+```
+
+If the fetch returns `HTTP 404`, the spreadsheet link has changed. Open the data export page,
+copy the link behind the word "here" in the "WHERE?" paragraph, and use that URL instead.
+
+The check ends with one of two results:
+
+- `Candidate CSV exports match the published specification.` Nothing more is needed.
+- A list of `missing from candidate` or `not in specification` URLs. Correct
+  `data/wh40k11e/wahapedia-export-urls.json` to match, then rerun step 5 with a new `--output`
+  directory and rerun the check against it.
+
+Either way, package and send the results as in steps 6 and 7, with `wahapedia-spec` added to the
+candidate names in the step 6 loop (and the new exports directory, if you reran step 5). Include
+the check's output in your chat message.

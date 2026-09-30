@@ -4,6 +4,24 @@ import type { AcquireArtifactRequest, AcquireArtifactResult } from '../../aos4/d
 export const WH40K_GAMES_WORKSHOP_ADAPTER_VERSION = 'wh40k-games-workshop-pdf/1'
 export const WH40K_WAHAPEDIA_ADAPTER_VERSION = 'wh40k-wahapedia-html/1'
 export const WH40K_WAHAPEDIA_EXPORT_ADAPTER_VERSION = 'wh40k-wahapedia-export/1'
+export const WH40K_WAHAPEDIA_SPEC_ADAPTER_VERSION = 'wh40k-wahapedia-spec/1'
+
+const wahapediaRequestShape = (url: string): { adapterVersion: string; allowedMediaTypes: string[] } => {
+  const pathname = new URL(url).pathname.toLowerCase()
+  if (pathname.endsWith('.csv')) {
+    return { adapterVersion: WH40K_WAHAPEDIA_EXPORT_ADAPTER_VERSION, allowedMediaTypes: ['text/csv'] }
+  }
+  if (pathname.endsWith('.xlsx')) {
+    return {
+      adapterVersion: WH40K_WAHAPEDIA_SPEC_ADAPTER_VERSION,
+      allowedMediaTypes: [
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/octet-stream',
+      ],
+    }
+  }
+  return { adapterVersion: WH40K_WAHAPEDIA_ADAPTER_VERSION, allowedMediaTypes: ['text/html'] }
+}
 export const WH40K_BSDATA_ADAPTER_VERSION = 'wh40k-bsdata-json/1'
 
 export interface Wh40kCandidateOptions {
@@ -230,21 +248,17 @@ const candidateRequests = (options: Wh40kCandidateOptions): CandidateRequest[] =
       maxRedirects: 5,
     },
   })),
-  ...options.wahapediaUrls.map(url => {
-    const isExport = new URL(url).pathname.toLowerCase().endsWith('.csv')
-    return {
-      source: 'wahapedia' as const,
+  ...options.wahapediaUrls.map(url => ({
+    source: 'wahapedia' as const,
+    url,
+    request: {
       url,
-      request: {
-        url,
-        adapterVersion: isExport ? WH40K_WAHAPEDIA_EXPORT_ADAPTER_VERSION : WH40K_WAHAPEDIA_ADAPTER_VERSION,
-        allowedMediaTypes: isExport ? ['text/csv'] : ['text/html'],
-        maxBytes: 32 * 1024 * 1024,
-        timeoutMs: 30_000,
-        maxRedirects: 5,
-      },
-    }
-  }),
+      ...wahapediaRequestShape(url),
+      maxBytes: 32 * 1024 * 1024,
+      timeoutMs: 30_000,
+      maxRedirects: 5,
+    },
+  })),
   ...options.bsdataPaths.map(path => {
     const url = pinnedBsDataUrl(options.bsdataRepository, options.bsdataRef, path)
     return {

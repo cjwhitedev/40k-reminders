@@ -4,6 +4,9 @@ import { parsePipeDelimited, type DelimitedRow } from '../../../aos4/data/wahape
 
 export const WH40K_WAHAPEDIA_PROVIDER = 'wahapedia-wh40k11e' as const
 
+export const compareCodeUnits = (left: string, right: string): number =>
+  left < right ? -1 : left > right ? 1 : 0
+
 export const WH40K_WAHAPEDIA_EXPORTS = {
   'Abilities.csv': {
     headers: ['id', 'name', 'legend', 'faction_id', 'description'],
@@ -354,9 +357,9 @@ export const decodeWh40kWahapediaExports = (
   }
   diagnostics.sort(
     (left, right) =>
-      left.file.localeCompare(right.file) ||
+      compareCodeUnits(left.file, right.file) ||
       (left.line ?? 0) - (right.line ?? 0) ||
-      left.code.localeCompare(right.code)
+      compareCodeUnits(left.code, right.code)
   )
   return {
     status: diagnostics.some(diagnostic => diagnostic.severity === 'error')

@@ -109,6 +109,7 @@ export interface Wh40kReviewedSources {
   }>
   timingOverrides: Map<SourceRecordId, Wh40kTimingOverride>
   ignoredSourceRecordIds: SourceRecordId[]
+  datasheetContexts: Map<SourceRecordId, Wh40kReviewContext>
   contexts: Record<Wh40kReviewContext, number>
 }
 
@@ -186,7 +187,7 @@ export const applyWh40kSourceReview = (input: {
   const coveredBy = new Map<string, string[]>()
   const result: Omit<
     Wh40kReviewedSources,
-    'status' | 'findings' | 'contexts' | 'timingOverrides' | 'ignoredSourceRecordIds'
+    'status' | 'findings' | 'contexts' | 'timingOverrides' | 'ignoredSourceRecordIds' | 'datasheetContexts'
   > = {
     dispositions: [],
     excludedSourceRecordIds: [],
@@ -259,11 +260,15 @@ export const applyWh40kSourceReview = (input: {
     excluded: 0,
   }
   const missingPolicies = new Set<string>()
+  const datasheetContexts = new Map<SourceRecordId, Wh40kReviewContext>()
   for (const sheet of linked.datasheets) {
     const classification = overrides.get(sheet.record.sourceRecordId) ?? sheet.classification
     const context = excluded.has(sheet.record.sourceRecordId) ? 'excluded' : policies.get(classification)
     if (!context) missingPolicies.add(classification)
-    else contexts[context] += 1
+    else {
+      contexts[context] += 1
+      datasheetContexts.set(sheet.record.sourceRecordId, context)
+    }
   }
   for (const classification of Array.from(missingPolicies)) {
     finding('missing-classification-policy', `No context policy covers ${classification} datasheets`)
@@ -313,6 +318,7 @@ export const applyWh40kSourceReview = (input: {
     ),
     timingOverrides,
     ignoredSourceRecordIds: sortIds(ignoredSourceRecordIds),
+    datasheetContexts,
     contexts,
   }
 }

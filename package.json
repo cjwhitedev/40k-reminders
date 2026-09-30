@@ -80,7 +80,8 @@
     "prepare": "husky",
     "start": "vite",
     "test": "cross-env TZ=UTC vitest",
-    "up": "yarn install && yarn upgrade-interactive --latest"
+    "up": "yarn install && yarn upgrade-interactive --latest",
+    "data:wh40k11e:rules": "vite-node --script src/wh40k11e/data/rulesCommand.ts"
   },
   "browserslist": {
     "production": [

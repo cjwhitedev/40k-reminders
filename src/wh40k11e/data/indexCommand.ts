@@ -1,37 +1,9 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { FileArtifactCache } from '../../aos4/data/cache'
-import { assertArtifactChecksum } from '../../aos4/data/artifact'
-import type { ArtifactManifest } from '../../aos4/data/manifest'
+import { indexBsDataCatalogues } from './bsdata/catalogues'
 import { WH40K_BSDATA_ADAPTER_VERSION } from './candidate'
-import { indexBsDataCatalogues, type BsDataCatalogueInput } from './bsdata/catalogues'
-
-type JsonRecord = Record<string, unknown>
-
-const isRecord = (value: unknown): value is JsonRecord =>
-  typeof value === 'object' && value !== null && !Array.isArray(value)
-
-const readJson = async (filePath: string): Promise<unknown> => JSON.parse(await readFile(filePath, 'utf8'))
-
-const readArtifactManifest = async (filePath: string): Promise<ArtifactManifest> => {
-  const parsed = await readJson(filePath)
-  if (!isRecord(parsed) || parsed.schemaVersion !== 1 || !Array.isArray(parsed.artifacts)) {
-    throw new Error(`Invalid artifact manifest: ${filePath}`)
-  }
-  for (const entry of parsed.artifacts) {
-    if (
-      !isRecord(entry) ||
-      typeof entry.requestUrl !== 'string' ||
-      typeof entry.adapterVersion !== 'string' ||
-      typeof entry.checksum !== 'string' ||
-      !/^[0-9a-f]{64}$/.test(entry.checksum)
-    ) {
-      throw new Error(`Invalid artifact manifest entry in ${filePath}`)
-    }
-  }
-  return parsed as unknown as ArtifactManifest
-}
+import { loadVerifiedCandidateArtifacts } from './candidateArtifacts'
 
 interface Arguments {
   candidateDirectory: string
@@ -68,45 +40,17 @@ export const parseWh40kIndexArguments = (values: string[]): Arguments => {
 const run = async (): Promise<void> => {
   const options = parseWh40kIndexArguments(process.argv.slice(2))
   const candidateDirectory = path.resolve(options.candidateDirectory)
-  const manifestPath = path.join(candidateDirectory, 'candidate-manifest.json')
-  const provenancePath = path.join(candidateDirectory, 'candidate-provenance.json')
-  const manifest = await readArtifactManifest(manifestPath)
-  const provenance = await readJson(provenancePath)
-  if (!isRecord(provenance) || provenance.schemaVersion !== 1 || !Array.isArray(provenance.artifacts)) {
-    throw new Error(`Invalid candidate provenance: ${provenancePath}`)
-  }
+  const { provenance, artifacts } = await loadVerifiedCandidateArtifacts(candidateDirectory, [
+    WH40K_BSDATA_ADAPTER_VERSION,
+  ])
+  if (!artifacts.length) throw new Error('Candidate contains no BSData JSON artifacts')
 
-  const bsdataArtifacts = provenance.artifacts.filter(
-    (artifact): artifact is JsonRecord => isRecord(artifact) && artifact.source === 'bsdata'
+  const index = indexBsDataCatalogues(
+    artifacts.map(artifact => {
+      if (!artifact.path) throw new Error(`BSData candidate artifact has no path: ${artifact.url}`)
+      return { path: artifact.path, checksum: artifact.checksum, bytes: artifact.bytes }
+    })
   )
-  if (!bsdataArtifacts.length) throw new Error('Candidate contains no BSData JSON artifacts')
-
-  const cache = new FileArtifactCache(path.join('.cache', 'wh40k11e', 'artifacts'))
-  const inputs: BsDataCatalogueInput[] = []
-  for (const artifact of bsdataArtifacts) {
-    if (
-      typeof artifact.path !== 'string' ||
-      typeof artifact.url !== 'string' ||
-      artifact.adapterVersion !== WH40K_BSDATA_ADAPTER_VERSION ||
-      typeof artifact.checksum !== 'string'
-    ) {
-      throw new Error('BSData candidate provenance is missing a path, URL, adapter, or checksum')
-    }
-    const entry = manifest.artifacts.find(candidate => candidate.requestUrl === artifact.url)
-    if (
-      !entry ||
-      entry.adapterVersion !== WH40K_BSDATA_ADAPTER_VERSION ||
-      entry.checksum !== artifact.checksum
-    ) {
-      throw new Error(`BSData provenance does not match candidate manifest for ${artifact.path}`)
-    }
-    const bytes = await cache.get(entry.checksum)
-    if (!bytes) throw new Error(`Artifact cache is missing ${entry.checksum} (${artifact.path})`)
-    assertArtifactChecksum(bytes, entry.checksum, 'cache-corrupt')
-    inputs.push({ path: artifact.path, checksum: entry.checksum, bytes })
-  }
-
-  const index = indexBsDataCatalogues(inputs)
   const report = {
     schemaVersion: 1,
     status: index.status,

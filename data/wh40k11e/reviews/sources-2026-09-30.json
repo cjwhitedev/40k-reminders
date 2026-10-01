@@ -488,9 +488,537 @@
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000011125%3A"],
       "kind": "passive",
       "reason": "Wahapedia prints Damaged as Core Rules 24.39, a standing modifier while a model’s remaining wounds are at or below a threshold. Neither the Core Rules nor the Universal Rules Updates candidate documents print 24.39, so this relies on the Wahapedia text until an official source is pinned."
+    },
+    {
+      "id": "wahapedia-standing-effects",
+      "sourceRecordIds": [
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011127%3AORK",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000000016%3A4",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000000021%3A4",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000000087%3A6",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002362%3A3",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000008415",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000008441",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000008810",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009036",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009070",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009083",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009756",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009764",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009978",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010501",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010675",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010691",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010697",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010790",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010867",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000011112",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000008821005",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000008921003",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000008968004",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000008976003",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009071004",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009130002",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009745003",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009903004",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009923004",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010694004",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010747002",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000011148004"
+      ],
+      "kind": "passive",
+      "reason": "33 rules whose Wahapedia text states a standing effect with no window of its own: weapon and unit abilities (Root-carved Weapons, Paired Krumpas), keyword-subject grants and eligibilities (Questing Tendrils, Yriel's Own, Interlocking Tactics), round-gated modifiers (Patient Hunter, Killing Blow 'During the first, second and third battle rounds'), and limits on other rules (Unstable Energies, Sacred Rites, Valour's Reward, Extremis Sanction). Brood Brothers and Wretched Thralls also permit units at muster, but each carries a standing in-game effect, so they stay always active."
+    },
+    {
+      "id": "voice-of-command",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008377%3AAM"],
+      "kind": "timed",
+      "windows": [
+        { "kind": "turn-phase", "phase": "command", "moment": "during", "perspective": "your" },
+        { "kind": "any-phase", "moments": ["end"], "perspective": "either" }
+      ],
+      "trigger": "OFFICER models issue Orders in your Command phase, and at the end of a phase in which they disembarked or were set up",
+      "reason": "Wahapedia text: 'OFFICER models can issue Orders in your Command phase and at the end of a phase in which they disembarked from a Transport or were set up on the battlefield.'"
+    },
+    {
+      "id": "for-the-greater-good",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008439%3ATAU"],
+      "kind": "timed",
+      "windows": [{ "kind": "turn-phase", "phase": "shooting", "moment": "start", "perspective": "your" }],
+      "reason": "Wahapedia text: 'at the start of your Shooting phase you can select units from your army with this ability to become Observer units.'"
+    },
+    {
+      "id": "bondsman",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008459%3AQI"],
+      "kind": "timed",
+      "windows": [{ "kind": "turn-phase", "phase": "command", "moment": "during", "perspective": "your" }],
+      "reason": "Wahapedia text: 'In your Command phase, one or more models from your army with a Bondsman ability can use that ability.'"
+    },
+    {
+      "id": "acts-of-faith",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008466%3AAS"],
+      "kind": "reaction",
+      "trigger": "Before making a dice roll for a model or unit from your army with this ability",
+      "reason": "Wahapedia text: an Act of Faith is performed 'Before making a dice roll for a model or unit from your army'; Miracle dice are gained at the start of each turn and each time an ADEPTA SORORITAS unit is destroyed."
+    },
+    {
+      "id": "cult-ambush",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008501%3AGC"],
+      "kind": "reaction",
+      "trigger": "Each time a unit from your army is destroyed",
+      "reason": "Wahapedia text: 'Each time a unit from your army is destroyed, if every model ... has this ability, you can spend the relevant number of Resurgence points'."
+    },
+    {
+      "id": "power-from-pain",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008507%3ADRU"],
+      "kind": "timed",
+      "windows": [{ "kind": "turn-phase", "phase": "command", "moment": "start", "perspective": "your" }],
+      "trigger": "Gain 1 Pain token",
+      "reason": "Wahapedia text: 'you gain Pain tokens as follows: 1 Pain token at the start of your Command phase.' Spending tokens is prompted by each unit's own Pain ability."
+    },
+    {
+      "id": "harbingers-of-dread",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008512%3AQT"],
+      "kind": "timed",
+      "windows": [
+        { "kind": "battle-round", "moment": "start", "round": 1 },
+        { "kind": "battle-round", "moment": "start", "round": 3 },
+        { "kind": "battle-round", "moment": "start", "round": 5 }
+      ],
+      "reason": "Wahapedia text: 'at the start of the first, third and fifth battle rounds, you can either select one of the other Dread abilities or randomly select two'."
+    },
+    {
+      "id": "agile-manoeuvres",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000009895%3AAE"],
+      "kind": "reaction",
+      "trigger": "When an eligible unit from your army is selected to move, is set up on the battlefield, or declares a charge",
+      "reason": "Wahapedia text: each Agile Manoeuvre has a TRIGGER such as 'When an eligible unit from your army is selected to make a Normal, Advance or Fall Back move'."
+    },
+    {
+      "id": "lithe-agility",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000000639%3A3"],
+      "kind": "timed",
+      "windows": [
+        { "kind": "turn-phase", "phase": "movement", "moment": "during", "perspective": "your" },
+        { "kind": "turn-phase", "phase": "charge", "moment": "during", "perspective": "your" }
+      ],
+      "trigger": "when this unit Advances, or before its Charge roll",
+      "reason": "Wahapedia text: 'In your Movement phase when you select this model’s unit to Advance, or in your Charge phase before you make a Charge roll'."
+    },
+    {
+      "id": "tally-of-pestilence",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000001129%3A5"],
+      "kind": "timed",
+      "windows": [{ "kind": "turn-phase", "phase": "command", "moment": "start", "perspective": "your" }],
+      "reason": "Wahapedia text: 'At the start of your Command phase, if this tally is 7 or more, you gain 1CP'."
+    },
+    {
+      "id": "strategic-mastery",
+      "sourceRecordIds": [
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000001447%3A5",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000001448%3A5",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000001449%3A4"
+      ],
+      "kind": "reaction",
+      "trigger": "When you target this model’s unit with a Stratagem",
+      "usage": { "limit": 1, "period": "battle-round" },
+      "reason": "Wahapedia text: 'Once per battle round, you can select one model from your army with this ability and target that model’s unit with a Stratagem ... reduce the CP cost'."
+    },
+    {
+      "id": "harbinger-of-despair",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002353%3A4"],
+      "kind": "timed",
+      "windows": [
+        { "kind": "turn-phase", "phase": "command", "moment": "start", "perspective": "your" },
+        { "kind": "turn-phase", "phase": "movement", "moment": "start", "perspective": "your" },
+        { "kind": "turn-phase", "phase": "shooting", "moment": "start", "perspective": "your" },
+        { "kind": "turn-phase", "phase": "charge", "moment": "start", "perspective": "your" },
+        { "kind": "turn-phase", "phase": "fight", "moment": "start", "perspective": "your" }
+      ],
+      "usage": { "limit": 1, "period": "turn" },
+      "reason": "Wahapedia text: 'Once per turn, at the start of your Command, Movement, Shooting, Charge or Fight phase'."
+    },
+    {
+      "id": "inescapable-death",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002355%3A4"],
+      "kind": "reaction",
+      "trigger": "When you use the Fire Overwatch Stratagem",
+      "usage": { "limit": 1, "period": "turn" },
+      "reason": "Wahapedia text: 'Once per turn, one unit from your army with this ability can be targeted with the Fire Overwatch Stratagem for 0CP'."
+    },
+    {
+      "id": "deadly-retinue",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002471%3A2"],
+      "kind": "timed",
+      "windows": [
+        { "kind": "turn-phase", "phase": "shooting", "moment": "start", "perspective": "your" },
+        { "kind": "turn-phase", "phase": "fight", "moment": "start", "perspective": "either" }
+      ],
+      "reason": "Wahapedia text: 'At the start of your Shooting phase or at the start of the Fight phase, you can spend 1 Pain token to Empower this unit.'"
+    },
+    {
+      "id": "inevitable-death",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002544%3A5"],
+      "kind": "reaction",
+      "trigger": "Just after another friendly AELDARI unit is destroyed in your opponent’s turn",
+      "usage": { "limit": 1, "period": "turn" },
+      "reason": "Wahapedia text: 'Once in each of your opponent’s turns, ... when another friendly AELDARI unit is destroyed, just after removing the last model'."
+    },
+    {
+      "id": "ancestral-fortune",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002593%3A3"],
+      "kind": "reaction",
+      "trigger": "After a Hit roll, Wound roll or saving throw is made for this model",
+      "usage": { "limit": 1, "period": "turn" },
+      "reason": "Wahapedia text: 'Once per turn, you can spend 1YP to change one Hit roll, one Wound roll or one saving throw made for this model to an unmodified 6.'"
+    },
+    {
+      "id": "tactical-genius",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002606%3A4"],
+      "kind": "reaction",
+      "trigger": "When you target a friendly Regiment unit within 12\" with a Stratagem",
+      "usage": { "limit": 1, "period": "battle-round" },
+      "reason": "Wahapedia text: 'Once per battle round, one friendly Regiment unit within 12\" of this model can be targeted with a Stratagem ... reduce the CP cost'."
+    },
+    {
+      "id": "inquisitorial-retinue",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000003828%3A5"],
+      "kind": "timed",
+      "windows": [{ "kind": "pre-battle", "step": "Declare Battle Formations step" }],
+      "reason": "Wahapedia text: 'At the start of the Declare Battle Formations step, this unit can join one INQUISITORIAL AGENTS unit'. Its army-building allowance needs no reminder."
+    },
+    {
+      "id": "duellists-hubris",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004083%3A6"],
+      "kind": "timed",
+      "windows": [{ "kind": "turn-phase", "phase": "fight", "moment": "start", "perspective": "either" }],
+      "reason": "Wahapedia text: 'At the start of the Fight phase; if this model is not leading a unit, until the end of the phase, it has the Fights First ability.'"
+    },
+    {
+      "id": "geomantic-hunters",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004145%3A3"],
+      "kind": "timed",
+      "windows": [{ "kind": "turn-phase", "phase": "shooting", "moment": "during", "perspective": "your" }],
+      "trigger": "when this unit is selected to shoot",
+      "usage": { "limit": 2, "period": "battle" },
+      "reason": "Wahapedia text: 'Up to twice per battle, in your Shooting phase, when this unit is selected to shoot, it can use this ability.'"
+    },
+    {
+      "id": "thulia-ghuld-icon-of-war",
+      "sourceRecordIds": [
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004210%3A6",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004210%3A7",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004210%3A8"
+      ],
+      "kind": "timed",
+      "windows": [{ "kind": "turn-phase", "phase": "command", "moment": "during", "perspective": "your" }],
+      "reason": "The datasheet's Rod of the War Forge reads 'In your Command phase, select one of the abilities in the Icon of War section'; these three are those abilities, each lasting 'until the start of your next Command phase'."
+    },
+    {
+      "id": "decisive-command",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004216%3A7"],
+      "kind": "timed",
+      "windows": [{ "kind": "turn-phase", "phase": "command", "moment": "during", "perspective": "your" }],
+      "reason": "Wahapedia text: 'if this is the first Order issued by a unit from your army this Command phase'. Orders are issued in your Command phase (Voice of Command)."
+    },
+    {
+      "id": "unparalleled-luck",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004244%3A7"],
+      "kind": "timed",
+      "windows": [{ "kind": "any-phase", "moments": ["start"], "perspective": "either" }],
+      "usage": { "limit": 1, "period": "battle" },
+      "reason": "Wahapedia text: 'At the start of a phase, you can use this ability.' The ability's name carries '(Once per battle, per army)'."
+    },
+    {
+      "id": "rad-bombardment",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000008384"],
+      "kind": "timed",
+      "windows": [
+        { "kind": "battle-round", "moment": "start", "round": 1 },
+        { "kind": "turn-phase", "phase": "command", "moment": "start", "perspective": "your" }
+      ],
+      "reason": "Wahapedia text: Bombardment 'At the start of the first battle round'; Fallout 'At the start of your Command phase during the second, third, fourth and fifth battle rounds'."
+    },
+    {
+      "id": "upon-wings-of-fire",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009189"],
+      "kind": "timed",
+      "windows": [{ "kind": "turn-step", "step": "end-of-turn", "perspective": "opponent" }],
+      "reason": "Wahapedia text: 'At the end of your opponent s turn, you can select a number of Adeptus Astartes Jump Pack units'."
+    },
+    {
+      "id": "fates-in-flux",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009809"],
+      "kind": "reaction",
+      "trigger": "Just after an Advance roll, Hit roll, Wound roll, Damage roll, saving throw or Hazardous test is made",
+      "reason": "Wahapedia text: 'You can spend one Flux token just after an Advance roll, Hit roll, Wound roll, Damage roll, saving throw or Hazardous test is made'."
+    },
+    {
+      "id": "blood-tainted",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009814"],
+      "kind": "timed",
+      "windows": [{ "kind": "any-phase", "moments": ["end"], "perspective": "either" }],
+      "reason": "Wahapedia text: 'At the end of a phase in which a Legiones Daemonica Khorne unit from your army destroyed an enemy unit'."
+    },
+    {
+      "id": "strength-from-death",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009918"],
+      "kind": "timed",
+      "windows": [
+        { "kind": "turn-phase", "phase": "shooting", "moment": "end", "perspective": "opponent" },
+        { "kind": "turn-phase", "phase": "fight", "moment": "start", "perspective": "either" }
+      ],
+      "reason": "Wahapedia text: Lethal Intent 'At the end of your opponent’s Shooting phase'; Lethal Reprisal 'At the start of the Fight phase'. Lethal Surge rides on the Fade Back Agile Manoeuvre."
+    },
+    {
+      "id": "numberless-horde",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010138"],
+      "kind": "timed",
+      "windows": [{ "kind": "turn-phase", "phase": "command", "moment": "during", "perspective": "your" }],
+      "reason": "Wahapedia text: 'In your Command phase in each of the following battle rounds ... add a new Poxwalkers unit'."
+    },
+    {
+      "id": "prescient-redeployment",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010363"],
+      "kind": "timed",
+      "windows": [{ "kind": "turn-phase", "phase": "movement", "moment": "start", "perspective": "your" }],
+      "reason": "Wahapedia text: 'From the second battle round onwards, at the start of your Movement phase'."
+    },
+    {
+      "id": "mastered-doctrines",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010632"],
+      "kind": "timed",
+      "windows": [{ "kind": "turn-phase", "phase": "command", "moment": "start", "perspective": "your" }],
+      "reason": "Wahapedia text: 'At the start of up to three of your Command phases, you can select one of the Combat Doctrines listed below.'"
+    },
+    {
+      "id": "ruthless-reinvestment",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010707"],
+      "kind": "timed",
+      "windows": [
+        { "kind": "battle", "moment": "start" },
+        { "kind": "turn-phase", "phase": "command", "moment": "end", "perspective": "your" }
+      ],
+      "reason": "Wahapedia text: 'At the start of the battle, your LEAGUES OF VOTANN units have the Hostile Acquisition ability. At the end of your Command phase, you can spend 3YP'."
+    },
+    {
+      "id": "radial-suffusion",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000008385002"],
+      "kind": "timed",
+      "windows": [{ "kind": "turn-phase", "phase": "command", "moment": "start", "perspective": "your" }],
+      "reason": "Wahapedia text: it applies 'when resolving the Fallout effect of the Rad-bombardment Detachment rule', which happens at the start of your Command phase."
+    },
+    {
+      "id": "mutagenic-regeneration",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009075004"],
+      "kind": "timed",
+      "windows": [{ "kind": "turn-phase", "phase": "command", "moment": "during", "perspective": "either" }],
+      "reason": "Wahapedia text: 'In each Command phase, one model in the bearer’s unit regains 1 lost wound.'"
+    },
+    {
+      "id": "amulet-of-auto-chastisement",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009126002"],
+      "kind": "timed",
+      "windows": [
+        { "kind": "turn-phase", "phase": "shooting", "moment": "start", "perspective": "opponent" }
+      ],
+      "reason": "Wahapedia text: 'At the start of your opponents Shooting phase, select one enemy VEHICLE unit'."
+    },
+    {
+      "id": "vengeful-onslaught",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009186005"],
+      "kind": "reaction",
+      "trigger": "When the bearer is destroyed",
+      "reason": "Wahapedia text (typo 'It the bearer'): 'It the bearer is destroyed, until the end of your next turn, each time a friendly DEATH COMPANY model makes an attack, add 1 to the Hit roll.'"
+    },
+    {
+      "id": "battle-shock-step-enhancements",
+      "sourceRecordIds": [
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009190003",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010891003"
+      ],
+      "kind": "timed",
+      "windows": [
+        { "kind": "turn-phase", "phase": "command", "moment": "during", "perspective": "opponent" }
+      ],
+      "trigger": "In the Battle-shock step",
+      "reason": "Wahapedia text: Visage of Death 'In the Battle-shock step of your opponents Command phase'; Mortality Shroud 'In your opponent’s Battle-shock step'. The Battle-shock step is in the Command phase (Core Rules 08.03)."
+    },
+    {
+      "id": "prescience",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009785003"],
+      "kind": "timed",
+      "windows": [
+        { "kind": "turn-phase", "phase": "movement", "moment": "during", "perspective": "opponent" }
+      ],
+      "trigger": "when an enemy unit ends a move within 8\" of this unit",
+      "usage": { "limit": 1, "period": "turn" },
+      "reason": "Wahapedia text: '(Once per turn per unit) In your opponent’s Movement phase, when an enemy unit ends a move within 8\" of this unit'."
+    },
+    {
+      "id": "abhuman-detail",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010637002"],
+      "kind": "timed",
+      "windows": [{ "kind": "pre-battle", "step": "Declare Battle Formations step" }],
+      "reason": "Wahapedia text: 'In the Declare Battle Formations step, the bearer can be attached to an Ogryn Squad or Bullgryn squad unit.'"
+    },
+    {
+      "id": "grimnars-mark",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010660002"],
+      "kind": "reaction",
+      "trigger": "When you use the Rapid Ingress or Heroic Intervention Stratagem, from the second battle round onwards",
+      "usage": { "limit": 1, "period": "battle-round" },
+      "reason": "Wahapedia text: 'Once per battle round, from the second battle round onwards, you can target the bearer’s unit with the Rapid Ingress or Heroic Intervention Stratagem for 0CP'."
+    },
+    {
+      "id": "reletavistic-tether",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010672005"],
+      "kind": "reaction",
+      "trigger": "When this unit makes an ingress/advance move using its Transdimensional Displacement ability",
+      "reason": "Wahapedia text: 'In your turn, when this unit makes an ingress/advance move using its Transdimensional Displacement ability'."
+    },
+    {
+      "id": "hagiomnifex",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010868002"],
+      "kind": "timed",
+      "windows": [{ "kind": "any-phase", "moments": ["start"], "perspective": "either" }],
+      "usage": { "limit": 1, "period": "turn" },
+      "reason": "Wahapedia text: '(Once per turn, per unit) At the start of a phase, you can use this ability.'"
+    },
+    {
+      "id": "weaver-of-sagas",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000011107003"],
+      "kind": "timed",
+      "windows": [{ "kind": "turn-phase", "phase": "movement", "moment": "during", "perspective": "your" }],
+      "trigger": "at the start or end of this unit’s move",
+      "usage": { "limit": 1, "period": "battle-round" },
+      "reason": "Wahapedia text: '(Once per battle-round, per army) In your Movement phase, at the start or end of this unit’s move'."
+    },
+    {
+      "id": "surly-as-a-squiggoth",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000011148002"],
+      "kind": "timed",
+      "windows": [{ "kind": "any-phase", "moments": ["end"], "perspective": "either" }],
+      "trigger": "if this model was destroyed this phase",
+      "usage": { "limit": 1, "period": "battle" },
+      "reason": "Wahapedia text: '(Once per battle, per army) At the end of a phase in which this model is destroyed, roll one D6'."
+    },
+    {
+      "id": "stratagems-after-targets-selected",
+      "sourceRecordIds": [
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008561002",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008961003",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009135005"
+      ],
+      "kind": "timed",
+      "windows": [
+        { "kind": "turn-phase", "phase": "shooting", "moment": "during", "perspective": "opponent" },
+        { "kind": "turn-phase", "phase": "fight", "moment": "during", "perspective": "either" }
+      ],
+      "trigger": "just after an enemy unit has selected its targets",
+      "reason": "Wahapedia WHEN with typos ('orthe', 'opponents'): 'Your opponent’s Shooting phase or the Fight phase, just after an enemy unit has selected its targets.' Read as the parser reads the untypoed form."
+    },
+    {
+      "id": "stratagems-walker-moves-or-charges",
+      "sourceRecordIds": [
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008878004",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000011088003"
+      ],
+      "kind": "timed",
+      "windows": [
+        { "kind": "turn-phase", "phase": "movement", "moment": "during", "perspective": "your" },
+        { "kind": "turn-phase", "phase": "charge", "moment": "during", "perspective": "your" }
+      ],
+      "trigger": "when your unit is selected to move or declares a charge",
+      "reason": "Wahapedia WHEN: 'Your Movement/Charge phase, when a friendly Orks Walker unit is selected to move or declares a charge' and 'Your Movement or your Charge phase, when a friendly DEATH COMPANY DREADNOUGHT unit is selected to make a normal/advance/charge move'."
+    },
+    {
+      "id": "siegecraft",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008977007"],
+      "kind": "timed",
+      "windows": [{ "kind": "turn-phase", "phase": "charge", "moment": "start", "perspective": "opponent" }],
+      "reason": "Wahapedia WHEN (typo 'opponents'): 'Start of your opponents Charge phase.'"
+    },
+    {
+      "id": "stun-grenades",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009131002"],
+      "kind": "timed",
+      "windows": [{ "kind": "any-phase", "moments": ["start"], "perspective": "either" }],
+      "trigger": "excluding the Command phase",
+      "reason": "Wahapedia WHEN: 'Start of any phase (excluding the Command phase).'"
+    },
+    {
+      "id": "dubious-restraint",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009796002"],
+      "kind": "timed",
+      "windows": [
+        { "kind": "turn-phase", "phase": "movement", "moment": "start", "perspective": "your" },
+        { "kind": "turn-phase", "phase": "movement", "moment": "end", "perspective": "your" }
+      ],
+      "reason": "Wahapedia WHEN: 'Start/end of your Movement phase.'"
+    },
+    {
+      "id": "scramble-field",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009870004"],
+      "kind": "timed",
+      "windows": [
+        { "kind": "turn-phase", "phase": "movement", "moment": "during", "perspective": "opponent" }
+      ],
+      "trigger": "Start of the Reinforcements step",
+      "reason": "Wahapedia WHEN: 'Start of your opponent’s Reinforcements step.' The Reinforcements step ends the Movement phase."
+    },
+    {
+      "id": "secure-positions",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010448002"],
+      "kind": "timed",
+      "windows": [{ "kind": "any-phase", "moments": ["end"], "perspective": "your" }],
+      "reason": "Wahapedia WHEN: 'End of any of your phases.'"
+    },
+    {
+      "id": "scriptural-prognosis",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010876002"],
+      "kind": "timed",
+      "windows": [
+        { "kind": "turn-phase", "phase": "shooting", "moment": "during", "perspective": "opponent" },
+        { "kind": "turn-phase", "phase": "fight", "moment": "during", "perspective": "either" }
+      ],
+      "trigger": "when an enemy unit targets a friendly TECH-PRIEST unit within range of an objective",
+      "reason": "Wahapedia WHEN: 'In your opponent’s Shooting phase or the Fight phase, when an enemy unit targets a friendly TECH-PRIEST unit that is within range of an objective.'"
     }
   ],
   "ignoredRules": [
+    {
+      "id": "army-building-rules",
+      "sourceRecordIds": [
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008360%3ACSM",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008452%3AAoI",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008452%3ASM",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008535%3ATL",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008768%3ASM",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008808%3ASM",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000009853%3ASM",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000009974%3ADRU",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002509%3A3",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002767%3A4",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000003829%3A5",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010465",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010622",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010628",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010659"
+      ],
+      "reason": "15 rules that only decide what an army may include or which keywords units carry at muster (Cult of the Dark Gods, Assigned Agents, Titanicus Traitoris, The Ravenwing, The Deathwing, Deathwatch, Corsairs and Travelling Players, retinue allowances, chapter Restrictions). Nothing to remind during a game."
+    },
+    {
+      "id": "rule-framing-text",
+      "sourceRecordIds": [
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000010257%3ASM",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011129%3AORK",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002459%3A5",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002462%3A6",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010875003"
+      ],
+      "reason": "Records with no playable rule of their own: the Sagas introduction ('Each Detachment rule in this book includes a Saga'), the Orks Special Move Types definitions that other rules invoke (like the excluded core move types), two FORTIFICATION assembly notes ('Both parts ... treated as a single model'), and the TL-4Ø9 enhancement, whose Wahapedia text is empty."
+    },
     {
       "id": "core-move-and-shoot-types",
       "sourceRecordIds": [

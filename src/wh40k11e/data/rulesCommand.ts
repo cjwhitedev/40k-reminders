@@ -53,6 +53,16 @@ const run = async (): Promise<void> => {
     `  unresolved (all modes): ${unresolved.length} ${JSON.stringify(countBy(unresolved, item => item.kind))}`
   )
   console.log(`40K rules: ${resolved}`)
+
+  const ungated = matched.filter(rule => rule.timingKind === 'unclassified')
+  if (ungated.length) {
+    for (const rule of ungated)
+      console.error(`  unresolved matched-play timing: ${rule.sourceRecordId} ${rule.name}`)
+    console.error(
+      `${ungated.length} matched-play rule(s) need a reviewed timing; add timingOverrides or ignoredRules`
+    )
+    process.exitCode = 1
+  }
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

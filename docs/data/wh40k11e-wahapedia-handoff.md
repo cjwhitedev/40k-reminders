@@ -186,25 +186,18 @@ Either way, package and send the results as in steps 6 and 7, with `wahapedia-sp
 candidate names in the step 6 loop (and the new exports directory, if you reran step 5). Include
 the check's output in your chat message.
 
-## Status: rule timing (2026-09-30)
+## Status: rule timing (2026-10-01)
 
-`yarn data:wh40k11e:rules` classifies every matched-play rule's timing. Of 6,070 matched-play
-rules, 5,943 take their timing from printed text, 14 from reviewed core-ability overrides, and
-113 (1.9%) remain unresolved. Unresolved rules still reach the player, under the "Timing needs
-review" group.
+`yarn data:wh40k11e:rules` gives every matched-play rule a timing, and exits non-zero if any
+matched-play rule is left without one. Of 6,050 matched-play rules, 5,943 take their timing from
+printed text and 107 from reviewed `timingOverrides` in
+`data/wh40k11e/reviews/sources-2026-09-30.json`. The 17 unresolved rules that remain belong to
+other game modes.
 
-The review file excludes 66 records: core move and shoot types, previous-edition, Boarding
-Actions, Challenger and unscoped New Orders stratagem copies, and 8 Designer's Notes.
+The review excludes 86 records through `ignoredRules`: core move and shoot types; stratagem copies
+from the previous edition, Boarding Actions, Challenger and unscoped New Orders; 8 Designer's Notes;
+15 army-building rules; and 5 records with no playable rule of their own.
 
-The remaining 113 break down as 19 army rules, 28 datasheet abilities, 35 detachment rules, 35
-enhancements and 13 stratagems. They need rule-by-rule `timingOverrides` or `ignoredRules`
-decisions:
-
-- stratagem WHEN typos (for example "orthe", "Movement/Charge")
-- multi-part army rules (Acts of Faith, For the Greater Good, Code Chivalric, Voice of Command)
-- army-building permissions ("You can include DAMNED units…", "If your Army Faction is not AGENTS
-  OF THE IMPERIUM…"), which are likely `ignoredRules`
-- battlefield-area and token rules (Power Matrix, Flow of Magic, Fates in Flux)
-
-Official evidence is pinned only for the Core Rules and four faction packs, so most overrides
-would rest on Wahapedia text.
+Apart from the 14 core-ability overrides, every override rests on Wahapedia text, because official
+evidence is pinned only for the Core Rules and four faction packs. Each override quotes the
+Wahapedia text it relies on. Revisit them when more official documents are pinned.

@@ -145,9 +145,10 @@ describe('AoS 4 home presentation', () => {
     expect(container.textContent).toContain('Save Army')
     expect(container.textContent).toContain('My Armies')
     expect(container.textContent).toContain('Share Army')
-    expect(container.textContent).toContain('Subscribe')
+    // The shared navbar now serves 40K Reminders, which sends accounts to AoS Reminders.
+    expect(container.textContent).toContain('AoS Reminders')
     expect(container.textContent).toContain('FAQ')
-    expect(container.textContent).toContain('Log in')
+    expect(container.textContent).not.toContain('Log in')
   })
 
   it('opens the free import without authentication or a subscription', async () => {
@@ -307,7 +308,7 @@ describe('AoS 4 home presentation', () => {
 
   it('lets link contents supply the accessible name instead of an analytics slug', () => {
     const release = Array.from(container.querySelectorAll('a')).find(link =>
-      link.textContent?.includes('Release Notes')
+      link.textContent?.includes('Source on GitHub')
     )
     expect(release).not.toBeUndefined()
     // WCAG 2.5.3: this announced itself as "GithubLatestRelease" while reading "…Release Notes".
@@ -315,7 +316,7 @@ describe('AoS 4 home presentation', () => {
 
     // The contact links keep their text at every width, so they name themselves too.
     const contacts = Array.from(container.querySelectorAll('footer a')).map(link => link.textContent?.trim())
-    expect(contacts).toEqual(expect.arrayContaining(['Github', 'Email', 'Discord']))
+    expect(contacts).toEqual(expect.arrayContaining(['Report an issue', 'Support the original']))
   })
 
   it('tiles collapsed builder cards two-up on mobile rather than sizing them to their titles', async () => {

@@ -1,10 +1,12 @@
 import Reminders from 'components/info/reminders'
 import { REMINDERS_ANCHOR_ID } from 'components/info/remindersAnchor'
+import { UpdateAvailable } from 'components/info/updateAvailable'
 import { SelectionCards } from 'components/input/army_builder'
 import Toolbar from 'components/input/toolbar/toolbar'
 import Footer from 'components/page/footer'
 import { Header } from 'components/page/homeHeader'
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
+import { AOS_REMINDERS_AUTHOR_URL, AOS_REMINDERS_URL, WH40K_AUTHOR_URL } from 'utils/env'
 import { WH40K_CATALOG } from '../../wh40k11e/generated/catalog'
 import { loadWh40kArmyDocument, saveWh40kArmyDocument } from '../../wh40k11e/runtime/armyStorage'
 import {
@@ -19,6 +21,29 @@ const ClearArmyModal = lazy(() => import('components/modals/generic/generic_dest
 
 const noop = () => undefined
 const noSources = () => Promise.resolve([])
+
+const outbound = { className: 'text-white', target: '_blank', rel: 'noopener noreferrer' } as const
+
+const Byline = () => (
+  <div className="mt-3 mb-1 d-none d-sm-block text-white">
+    <p className="mb-0">
+      By cjwhitedev -{' '}
+      <a {...outbound} href={WH40K_AUTHOR_URL}>
+        github.com/cjwhitedev
+      </a>
+    </p>
+    <p className="mb-0 small">
+      Built on{' '}
+      <a {...outbound} href={AOS_REMINDERS_URL}>
+        AoS Reminders
+      </a>{' '}
+      by{' '}
+      <a {...outbound} href={AOS_REMINDERS_AUTHOR_URL}>
+        Davis E. Ford
+      </a>
+    </p>
+  </div>
+)
 
 const loadDocument = (): Wh40kArmyDocument => {
   try {
@@ -134,8 +159,11 @@ const Wh40kHome = () => {
         onToggleGameMode={() => setIsGameMode(current => !current)}
         onToggleSeasonalRules={noop}
         seasonalRulesChecked={null}
-        title="Warhammer 40,000 Reminders"
+        title="40K Reminders"
+        byline={<Byline />}
       />
+
+      <UpdateAvailable />
 
       {!isGameMode && <SelectionCards groups={builder.groups} onSetGroupSelections={setSelections} />}
 

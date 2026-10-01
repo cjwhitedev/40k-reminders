@@ -1,7 +1,7 @@
 {
-    "name": "AoS Reminders",
-    "short_name": "AoS Reminders",
-    "description": "Never forget your Warhammer: Age of Sigmar abilities again! Generate helpful in-game reminders tailored to your AoS army.",
+    "name": "40K Reminders",
+    "short_name": "40K Reminders",
+    "description": "Never forget your Warhammer 40,000 rules again! Generate helpful in-game reminders tailored to your 40K army.",
     "id": "/",
     "start_url": "/",
     "scope": "/",

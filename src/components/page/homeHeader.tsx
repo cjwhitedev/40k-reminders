@@ -5,6 +5,7 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { FaInfoCircle } from 'react-icons/fa'
 import Switch from 'react-switch'
 import Select, { type Theme as SelectTheme } from 'react-select'
+import type { ReactNode } from 'react'
 import type { CanonicalId } from '../../aos4/domain'
 
 interface HeaderProps<FactionId extends string> {
@@ -48,6 +49,8 @@ interface HeaderProps<FactionId extends string> {
    */
   seasonalRulesChecked: boolean | null
   title?: string
+  /** Replaces the AoS Reminders author line under the title. */
+  byline?: ReactNode
 }
 
 const NO_ARMY_OF_RENOWN = { label: 'None', value: null }
@@ -66,6 +69,7 @@ export const Header = <FactionId extends string = CanonicalId<'faction'>>({
   onToggleSeasonalRules,
   seasonalRulesChecked,
   title = 'Age of Sigmar Reminders',
+  byline,
 }: HeaderProps<FactionId>) => {
   const { theme } = useTheme()
   const isMobile = useIsMobile()
@@ -111,18 +115,20 @@ export const Header = <FactionId extends string = CanonicalId<'faction'>>({
       <div className={mastheadClass}>
         <div className="container">
           <h1 className="text-white">{title}</h1>
-          <p className="mt-3 mb-1 d-none d-sm-block text-white">
-            By Davis E. Ford -{' '}
-            <a
-              className="text-white"
-              href="//daviseford.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Davis E. Ford website"
-            >
-              daviseford.com
-            </a>
-          </p>
+          {byline ?? (
+            <p className="mt-3 mb-1 d-none d-sm-block text-white">
+              By Davis E. Ford -{' '}
+              <a
+                className="text-white"
+                href="//daviseford.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Davis E. Ford website"
+              >
+                daviseford.com
+              </a>
+            </p>
+          )}
 
           <div className="d-flex align-items-center justify-content-center text-white">
             <div className="d-inline-flex flex-row">

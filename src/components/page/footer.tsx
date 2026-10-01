@@ -1,8 +1,9 @@
 import { LinkNewTab } from 'components/helpers/link'
-import { DonateComponent } from 'components/info/donate'
+import { SupportOriginal } from 'components/info/donate'
 import OfflineComponent from 'components/info/offline'
 import Contact from 'components/page/contact'
 import { useTheme } from 'context/useTheme'
+import { WH40K_GITHUB_URL } from 'utils/env'
 import pkgJson from '../../../package.json'
 
 /*
@@ -12,7 +13,7 @@ import pkgJson from '../../../package.json'
  */
 const Footer = () => (
   <footer className="container d-print-none">
-    <DonateComponent />
+    <SupportOriginal />
     <OfflineComponent />
     <Disclaimer />
     <div className="row text-center pt-2">
@@ -50,8 +51,8 @@ const ReleaseNotes = () => {
   return (
     <div className={`row text-center ${theme.bgColor} pt-1 pb-2`}>
       <div className="col">
-        <LinkNewTab href="https://github.com/daviseford/aos-reminders/releases/latest">
-          <small className={theme.text}>AoS Reminders v{pkgJson.version} - Release Notes</small>
+        <LinkNewTab href={WH40K_GITHUB_URL}>
+          <small className={theme.text}>40K Reminders v{pkgJson.version} - Source on GitHub</small>
         </LinkNewTab>
       </div>
     </div>

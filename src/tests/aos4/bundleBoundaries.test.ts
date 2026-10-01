@@ -104,8 +104,8 @@ describe('initial bundle boundaries', () => {
     const [main, router] = await Promise.all([source('src/main.tsx'), source('src/bootstrap/router.tsx')])
 
     // The lazy route table lives in the router singleton so the Auth0 callback and analytics can
-    // share one data router; the catalog must stay behind those lazy boundaries.
-    expect(router).toMatch(/const Home = lazy\(\(\) => import\('components\/routes\/Home'\)\)/)
+    // share one data router; the 40K catalog must stay behind its home screen's lazy boundary.
+    expect(router).toMatch(/const Wh40kHome = lazy\(\(\) => import\('components\/routes\/Wh40kHome'\)\)/)
 
     // Both indexes, not just their order: `indexOf` answers -1 for an import that is gone, and -1 is
     // less than everything, so the ordering test alone passes loudest when the thing it orders has

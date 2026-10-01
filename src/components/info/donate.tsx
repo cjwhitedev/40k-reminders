@@ -1,18 +1,12 @@
 import { useAppStatus } from 'context/useAppStatus'
 import { useTheme } from 'context/useTheme'
-import { IconContext } from 'react-icons'
-import { FaCcPaypal } from 'react-icons/fa'
 import { logClick } from 'utils/analytics'
+import { AOS_REMINDERS_AUTHOR_URL, AOS_REMINDERS_URL } from 'utils/env'
 
-export const DonateComponent = () => {
+/** Where the donation card was: this site is built on AoS Reminders, so support goes to its author. */
+export const SupportOriginal = () => {
   const { isOffline } = useAppStatus()
   const { theme } = useTheme()
-
-  const handlePaypalClick = (event: React.MouseEvent) => {
-    event.preventDefault()
-    logClick('DonatePayPal')
-    window.open('//paypal.me/daviseford')
-  }
 
   if (isOffline) return null
 
@@ -20,27 +14,30 @@ export const DonateComponent = () => {
     <div className={`container ${theme.bgColor} pt-4`}>
       <div className="row justify-content-center">
         <div
-          className={`col-10 col-sm-8 col-md-6 col-lg-4 col-xl-4 card ${theme.bgColor} ${theme.text} py-3`}
+          className={`col-10 col-sm-8 col-md-6 col-lg-4 col-xl-4 card ${theme.bgColor} ${theme.text} py-3 text-center`}
         >
-          <div className="row d-flex justify-content-center d-print-none">
-            {/* px-0 w-auto flex-shrink-1: opt out of Bootstrap 5's `.row > *` gutters — see navbar_wrapper. */}
-            <div
-              className="btn-group btn-group-lg px-0 w-auto flex-shrink-1"
-              role="group"
-              aria-label="Donate"
-            >
-              <div className="btn-group me-2" role="group" aria-label="Donate options">
-                <IconContext.Provider value={{ size: '2.2em' }}>
-                  <FaCcPaypal onClick={handlePaypalClick} className="mx-2" style={{ cursor: 'pointer' }} />
-                </IconContext.Provider>
-              </div>
-            </div>
-          </div>
-          <small className="text-center mt-3">
-            Creating this took a lot of time and effort.
-            <br />
-            If you&apos;d like to thank me, buy me a beer!
+          <small>
+            40K Reminders is built on{' '}
+            <a href={AOS_REMINDERS_URL} target="_blank" rel="noopener noreferrer">
+              AoS Reminders
+            </a>{' '}
+            by{' '}
+            <a href={AOS_REMINDERS_AUTHOR_URL} target="_blank" rel="noopener noreferrer">
+              Davis E. Ford
+            </a>
+            . Years of his work made this page possible.
           </small>
+          <div className="mt-3 d-print-none">
+            <a
+              className="btn btn-outline-primary btn-sm TapTarget"
+              href={`${AOS_REMINDERS_URL}/subscribe`}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => logClick('SupportOriginal')}
+            >
+              Support the original
+            </a>
+          </div>
         </div>
       </div>
     </div>

@@ -254,87 +254,58 @@ describe('generated service worker', () => {
 
     const extras = read(extrasImports[0])
     const catalogUrl = extras.match(/CATALOG_URL = "([^"]+)"/)?.[1]
-    const sourcesUrl = extras.match(/SOURCES_URL = "([^"]+)"/)?.[1]
 
-    // The negative lookahead is load-bearing: both chunks share the `aos4-catalog-data` prefix, so
-    // without it `aos4-catalog-data-sources-<hash>.js` matches too and two swapped URLs pass.
+    // The negative lookahead keeps a `-sources-` chunk, which shares the prefix, from passing as the catalog.
     expect(catalogUrl).toMatch(/^\/assets\/aos4-catalog-data-(?!sources-)[^/]+\.js$/)
     expect(exists(catalogUrl!.replace(/^\//, ''))).toBe(true)
-    expect(sourcesUrl).toBeTruthy()
-    expect(catalogUrl).not.toBe(sourcesUrl)
+    // 40K reminders cite no source records yet, so the citations chunk is absent rather than empty.
+    expect(extras).toContain('const SOURCES_URL = null')
     expect(extras).toContain('caches.delete') // the CRA-era `images` cache
   })
 
-  it('emits the catalog as three content-hashed chunks under one prefix', () => {
+  it('emits the 40K catalog as one content-hashed chunk that is never precached', () => {
     /*
-     * The source records ship separately so a session that never opens a source menu never parses
-     * them, and the 40K catalog ships on its own for the /40k screen. All names share the
-     * `aos4-catalog-data` prefix on purpose — that is what keeps the precache glob, the runtime-cache
-     * route, and the filter above matching every chunk with no change.
+     * The name keeps the `aos4-catalog-data` prefix on purpose: the precache glob, the runtime-cache
+     * route, and the filter above all match on it.
      */
     const chunks = fs
       .readdirSync(path.join(distDir, 'assets'))
       .filter(file => file.startsWith('aos4-catalog-data') && file.endsWith('.js'))
-      .sort()
 
-    expect(chunks).toHaveLength(3)
-    expect(chunks[0]).toMatch(/^aos4-catalog-data-(?!sources-|wh40k-)[^.]+\.js$/)
-    expect(chunks[1]).toMatch(/^aos4-catalog-data-sources-[^.]+\.js$/)
-    expect(chunks[2]).toMatch(/^aos4-catalog-data-wh40k-[^.]+\.js$/)
+    expect(chunks).toHaveLength(1)
+    expect(chunks[0]).toMatch(/^aos4-catalog-data-(?!sources-)[^.]+\.js$/)
     expect(catalogEntries(precached)).toEqual([])
   })
 
-  it('warms both chunks on install, aborting the update only for the catalog', () => {
+  it('warms the catalog on install, aborting the update if it fails', () => {
     expect(extrasImports).toHaveLength(1)
     const extras = read(extrasImports[0])
-
-    const sourcesUrl = extras.match(/SOURCES_URL = "([^"]+)"/)?.[1]
-    expect(sourcesUrl).toMatch(/^\/assets\/aos4-catalog-data-sources-.+\.js$/)
-    expect(exists(sourcesUrl!.replace(/^\//, ''))).toBe(true)
 
     // The catalog keeps the abort-on-failure contract: a failed warm must reject install rather than
     // activate a build that cannot load army data offline.
     expect(extras).toMatch(/waitUntil\(warmChunk\(CATALOG_URL\)\)/)
 
-    /*
-     * The source records warm under install's waitUntil too, but caught. The waitUntil is what
-     * stops the browser terminating the worker mid-fetch — a fire-and-forget warm in activate had
-     * no lifetime extension, so a completed update did not guarantee citations offline and the
-     * swallowed failure never retried for that build. The catch is what keeps best-effort data from
-     * aborting an update the catalog warm survived. Install, not activate: activation holds fetch
-     * events until waitUntil settles, so a 7 MB fetch there would strand the post-activation reload
-     * on a blank screen, while install runs with the previous worker still serving the page.
-     */
+    // A citations chunk, when one exists, warms best-effort so it can never abort an update.
     expect(extras).toMatch(
       /if \(SOURCES_URL\) event\.waitUntil\(warmChunk\(SOURCES_URL\)\.catch\(\(\) => \{\}\)\)/
     )
 
-    // All four held tasks are seen by the scan, so the filters below cannot pass vacuously.
+    // All three held tasks are seen by the scan, so the filter below cannot pass vacuously.
     const heldWork = waitUntilArguments(extras)
-    expect(heldWork).toHaveLength(4)
-    const sourcesHeld = heldWork.filter(argument => argument.includes('SOURCES_URL'))
-    expect(sourcesHeld).toHaveLength(1)
-    expect(sourcesHeld[0]).toContain('.catch')
-    // The 40K catalog warms best-effort too: a failed 40K warm must not abort an AoS update.
-    const wh40kUrl = extras.match(/WH40K_URL = "([^"]+)"/)?.[1]
-    expect(wh40kUrl).toMatch(/^\/assets\/aos4-catalog-data-wh40k-.+\.js$/)
-    expect(exists(wh40kUrl!.replace(/^\//, ''))).toBe(true)
-    const wh40kHeld = heldWork.filter(argument => argument.includes('WH40K_URL'))
-    expect(wh40kHeld).toHaveLength(1)
-    expect(wh40kHeld[0]).toContain('.catch')
+    expect(heldWork).toHaveLength(3)
     // The uncaught catalog warm is the only held task allowed to reject its waitUntil.
     expect(
       heldWork.filter(argument => argument.includes('warmChunk') && !argument.includes('.catch'))
     ).toEqual(['warmChunk(CATALOG_URL)'])
   })
 
-  it('prunes to the current build across both chunks', () => {
+  it('prunes to the current build across every catalog chunk', () => {
     const extras = read(extrasImports[0])
 
-    // One cache holds both entries, so the prune is a membership test. Single-URL equality would
+    // One cache holds every entry, so the prune is a membership test. Single-URL equality would
     // delete whichever chunk it was not written against on every activation.
     expect(extras).toContain('CURRENT_URLS.includes')
-    expect(extras).toMatch(/CURRENT_URLS = \[CATALOG_URL, SOURCES_URL, WH40K_URL\]/)
+    expect(extras).toMatch(/CURRENT_URLS = \[CATALOG_URL, SOURCES_URL\]\.filter\(Boolean\)/)
   })
 
   it('bounds the catalog warm on browsers without AbortSignal.timeout', () => {

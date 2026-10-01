@@ -1,16 +1,11 @@
 import { LoadingBody } from 'components/helpers/suspenseFallbacks'
-import { protectedRoute } from 'components/page/privateRoute'
 import type { ComponentType, ReactNode } from 'react'
 import { lazy, Suspense } from 'react'
-import { createBrowserRouter } from 'react-router'
+import { createBrowserRouter, Navigate } from 'react-router'
 import { ROUTES } from 'utils/env'
 
 const Faq = lazy(() => import('components/routes/Faq'))
-const Home = lazy(() => import('components/routes/Home'))
-const Join = lazy(() => import('components/routes/Join'))
-const Profile = lazy(() => import('components/routes/Profile'))
-const Redeem = lazy(() => import('components/routes/Redeem'))
-const Subscribe = lazy(() => import('components/routes/Subscribe'))
+const ForwardToAosReminders = lazy(() => import('components/routes/ForwardToAosReminders'))
 const Wh40kHome = lazy(() => import('components/routes/Wh40kHome'))
 
 /*
@@ -29,11 +24,12 @@ const lazyScreen = (Screen: ComponentType): ReactNode => (
  * stable data-router APIs instead of the retired v5 custom-history object.
  */
 export const router = createBrowserRouter([
-  { path: ROUTES.HOME, element: lazyScreen(Home) },
+  { path: ROUTES.HOME, element: lazyScreen(Wh40kHome) },
   { path: ROUTES.FAQ, element: lazyScreen(Faq) },
-  { path: ROUTES.JOIN, element: lazyScreen(Join) },
-  { path: ROUTES.REDEEM, element: lazyScreen(Redeem) },
-  { path: ROUTES.SUBSCRIBE, element: lazyScreen(Subscribe) },
-  { path: ROUTES.PROFILE, element: lazyScreen(protectedRoute(Profile)) },
-  { path: ROUTES.WH40K, element: lazyScreen(Wh40kHome) },
+  // Accounts and subscriptions belong to AoS Reminders; those links keep working by forwarding there.
+  { path: ROUTES.JOIN, element: lazyScreen(ForwardToAosReminders) },
+  { path: ROUTES.REDEEM, element: lazyScreen(ForwardToAosReminders) },
+  { path: ROUTES.SUBSCRIBE, element: lazyScreen(ForwardToAosReminders) },
+  { path: ROUTES.PROFILE, element: lazyScreen(ForwardToAosReminders) },
+  { path: ROUTES.WH40K, element: <Navigate to={ROUTES.HOME} replace /> },
 ])

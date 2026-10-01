@@ -64,7 +64,7 @@ const LoadingLines = () => {
 
   return (
     <div className="text-center">
-      <h3 className={theme.text}>AoS Reminders</h3>
+      <h3 className={theme.text}>40K Reminders</h3>
       <p className={`lead ${theme.textMuted}`}>Loading...</p>
     </div>
   )

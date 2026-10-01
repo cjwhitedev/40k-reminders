@@ -73,7 +73,7 @@ describe('update-available banner', () => {
     expect(banner()).not.toBeNull()
     expect(reloadButton()).toBeDefined()
     expect(dismissButton()).not.toBeNull()
-    expect(container.textContent).toContain('A new version of AoS Reminders is available.')
+    expect(container.textContent).toContain('A new version of 40K Reminders is available.')
   })
 
   it('applies the waiting update exactly once on a fast double-tap', () => {
@@ -200,7 +200,7 @@ describe('update-available banner', () => {
 
     announceNewContent()
 
-    expect(container.textContent).toContain('A new version of AoS Reminders is available.')
+    expect(container.textContent).toContain('A new version of 40K Reminders is available.')
     expect(container.textContent).not.toContain('slot occupant')
   })
 

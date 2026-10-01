@@ -335,7 +335,7 @@ describe('the Home shell while the catalog-bound half is still loading', () => {
     const splash = container.querySelector('.LoadingSplash')
     expect(splash).not.toBeNull()
     expect(splash!.getAttribute('aria-hidden')).toBe('true')
-    expect(splash!.textContent).toContain('AoS Reminders')
+    expect(splash!.textContent).toContain('40K Reminders')
     expect(splash!.textContent).toContain('Loading...')
 
     // The chrome is already painted underneath; the overlay is what stands between it and the

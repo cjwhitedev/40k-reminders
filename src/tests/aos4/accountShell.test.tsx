@@ -22,7 +22,7 @@ vi.mock('@auth0/auth0-react', () => ({
   useAuth0: () => auth,
 }))
 
-describe('established account shell', () => {
+describe('40K Reminders navigation', () => {
   let container: HTMLDivElement
 
   beforeEach(() => {
@@ -51,7 +51,6 @@ describe('established account shell', () => {
       unmountComponentAtNode(container)
     })
     container.remove()
-    vi.useRealTimers()
     vi.restoreAllMocks()
     window.history.pushState({}, '', '/')
   })
@@ -73,105 +72,35 @@ describe('established account shell', () => {
     })
   }
 
-  it('opens the production Auth0 popup flow from the familiar signed-out navigation', () => {
-    vi.useFakeTimers()
-    const popup = { closed: true } as Window
-    vi.spyOn(window, 'open').mockReturnValue(popup)
-    renderNavbar()
+  it('offers the FAQ and AoS Reminders instead of account navigation, whatever Auth0 reports', () => {
+    for (const isAuthenticated of [false, true]) {
+      auth.isAuthenticated = isAuthenticated
+      renderNavbar()
 
-    const loginButton = Array.from(container.querySelectorAll('button')).find(
-      button => button.textContent === 'Log in'
-    )
-    expect(container.textContent).toContain('Subscribe')
-    expect(container.textContent).toContain('FAQ')
-    expect(loginButton).toBeDefined()
+      expect(container.textContent).toContain('FAQ')
+      for (const accountLink of ['Log in', 'Log out', 'Subscribe', 'Profile']) {
+        expect(container.textContent).not.toContain(accountLink)
+      }
+      const original = Array.from(container.querySelectorAll('a')).find(
+        link => link.textContent === 'AoS Reminders'
+      )
+      expect(original?.getAttribute('href')).toBe('https://aosreminders.com')
+      expect(original?.getAttribute('target')).toBe('_blank')
+      expect(original?.getAttribute('rel')).toBe('noopener noreferrer')
+      expect(auth.loginWithPopup).not.toHaveBeenCalled()
 
-    act(() => {
-      loginButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-    })
-
-    expect(window.open).toHaveBeenCalledWith(
-      undefined,
-      'auth0:authorize:popup',
-      expect.stringContaining('width=400')
-    )
-    expect(auth.loginWithPopup).toHaveBeenCalledWith(
-      { authorizationParams: { redirect_uri: window.location.origin } },
-      { popup }
-    )
-
-    act(() => {
-      vi.runOnlyPendingTimers()
-    })
+      act(() => {
+        unmountComponentAtNode(container)
+      })
+    }
   })
 
-  it('falls back to the Auth0-managed popup when the browser blocks the pre-opened window', () => {
-    vi.useFakeTimers()
-    vi.spyOn(window, 'open').mockReturnValue(null)
+  it('links home from every other page', () => {
+    window.history.pushState({}, '', '/faq')
     renderNavbar()
 
-    const loginButton = Array.from(container.querySelectorAll('button')).find(
-      button => button.textContent === 'Log in'
-    )
-    act(() => {
-      loginButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-    })
-
-    expect(auth.loginWithPopup).toHaveBeenCalledWith({
-      authorizationParams: { redirect_uri: window.location.origin },
-    })
-    expect(vi.getTimerCount()).toBe(0)
-  })
-
-  it('asks Auth0 for the origin callback even when Log in is clicked on a routed page (#2006)', () => {
-    // The Auth0 application allows the bare origin (plus a few named routes) as a callback URL.
-    // Sending the page URL instead meant Log in on /faq opened a popup that stopped on Auth0's
-    // "Callback URL mismatch" page before the login form ever appeared. The popup flow only uses
-    // redirect_uri to target the postMessage back to the opener, so the origin is all it needs —
-    // the same value the Auth0Provider in main.tsx is configured with.
-    vi.useFakeTimers()
-    const popup = { closed: true } as Window
-    vi.spyOn(window, 'open').mockReturnValue(popup)
-    window.history.pushState({}, '', '/faq?ref=test#account')
-    renderNavbar()
-
-    const loginButton = Array.from(container.querySelectorAll('button')).find(
-      button => button.textContent === 'Log in'
-    )
-    act(() => {
-      loginButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-    })
-
-    expect(window.location.pathname).toBe('/faq')
-    expect(auth.loginWithPopup).toHaveBeenCalledWith(
-      { authorizationParams: { redirect_uri: window.location.origin } },
-      { popup }
-    )
-    expect(auth.loginWithPopup.mock.calls[0][0].authorizationParams.redirect_uri).not.toContain('/faq')
-
-    act(() => {
-      vi.runOnlyPendingTimers()
-    })
-  })
-
-  it('restores Profile and Log out when Auth0 reports an authenticated user', () => {
-    auth.isAuthenticated = true
-    renderNavbar()
-
-    expect(container.textContent).toContain('Profile')
-    expect(container.textContent).toContain('Log out')
-
-    const logoutButton = Array.from(container.querySelectorAll('button')).find(
-      button => button.textContent === 'Log out'
-    )
-    act(() => {
-      logoutButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-    })
-
-    expect(auth.logout).toHaveBeenCalledWith({
-      clientId: config.clientId,
-      logoutParams: { returnTo: window.location.origin },
-    })
+    expect(container.textContent).toContain('Home')
+    expect(container.textContent).not.toContain('FAQ')
   })
 
   it('reaches the tenant through the first-party custom domain', () => {

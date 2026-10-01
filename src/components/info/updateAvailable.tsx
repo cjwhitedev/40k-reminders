@@ -93,7 +93,7 @@ export const UpdateAvailable = ({ fallback = null, onApply = applyWaitingUpdate 
       persistClose={false}
       variant="info"
     >
-      <span>A new version of AoS Reminders is available.</span>
+      <span>A new version of 40K Reminders is available.</span>
       {/*
         Outline, not filled. DESIGN.md reserves `btn-primary` for the control that commits money or
         an account; reloading onto a new build is reversible.

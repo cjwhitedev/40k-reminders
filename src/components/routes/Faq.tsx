@@ -4,8 +4,7 @@ import Contact from 'components/page/contact'
 import Footer from 'components/page/footer'
 import { useTheme } from 'context/useTheme'
 import { lazy, Suspense, useEffect } from 'react'
-import { Link } from 'react-router'
-import { GITHUB_URL, ROUTES } from 'utils/env'
+import { AOS_REMINDERS_AUTHOR_URL, AOS_REMINDERS_URL, WH40K_AUTHOR_URL, WH40K_GITHUB_URL } from 'utils/env'
 
 const Navbar = lazy(() => import('components/page/navbar'))
 
@@ -20,25 +19,10 @@ const Navbar = lazy(() => import('components/page/navbar'))
  */
 const columnClass = 'col-12 col-md-11 col-lg-8 col-xl-7 col-xxl-5'
 
-/*
- * width/height are the size the screenshot is drawn at, kept on the asset's true ratio and always
- * below its capture size so nothing is upscaled. .img-fluid supplies max-width: 100% and
- * height: auto, so the pair reserves the correct box before the image loads and shrinks
- * proportionally on a narrow screen. Both were previously declared 200x250 whatever they were,
- * which reserved 180px the wide one never used and rendered it at 200x70 - unreadable.
- */
-interface IFaqImage {
-  alt: string
-  height: number
-  src: string
-  width: number
-}
-
 interface IFaqEntry {
   answer: React.ReactNode
   /** Anchor target, so a question can be linked to directly. */
   id: string
-  image?: IFaqImage
   question: string
 }
 
@@ -49,21 +33,27 @@ interface IFaqSection {
 }
 
 const GithubIssuesLink = () => (
-  <LinkNewTab className="FaqLink" href={`${GITHUB_URL}/issues`}>
-    open an issue on Github
+  <LinkNewTab className="FaqLink" href={`${WH40K_GITHUB_URL}/issues`}>
+    open an issue on GitHub
   </LinkNewTab>
 )
 
 const WahapediaLink = () => (
-  <LinkNewTab className="FaqLink" href="//wahapedia.ru/aos4/the-rules/">
+  <LinkNewTab className="FaqLink" href="//wahapedia.ru/wh40k11ed/the-rules/">
     Wahapedia
   </LinkNewTab>
 )
 
-const ProfileLink = ({ children }: React.PropsWithChildren<object>) => (
-  <Link className="FaqLink" to={ROUTES.PROFILE}>
+const BsDataLink = () => (
+  <LinkNewTab className="FaqLink" href="//github.com/BSData/wh40k-11e">
+    BSData
+  </LinkNewTab>
+)
+
+const AosRemindersLink = ({ children = 'AoS Reminders' }: React.PropsWithChildren<object>) => (
+  <LinkNewTab className="FaqLink" href={AOS_REMINDERS_URL}>
     {children}
-  </Link>
+  </LinkNewTab>
 )
 
 /*
@@ -77,24 +67,13 @@ const FaqSections: IFaqSection[] = [
     entries: [
       {
         id: 'what-is-this',
-        question: 'What does AoS Reminders actually do?',
+        question: 'What does 40K Reminders actually do?',
         answer: (
           <>
-            You give it the army you are bringing. It works out every ability that army grants you and lists
-            those abilities under the window they fire in - deployment, each of the seven turn phases, the
-            start and end of a battle round, and reactions to your opponent. It is not a rules search. It is
-            your list, in turn order.
-          </>
-        ),
-      },
-      {
-        id: 'import-a-roster',
-        question: 'Do I have to build my list here?',
-        answer: (
-          <>
-            No. <strong>Import Army</strong> takes the roster you already made: text exported from the
-            official Warhammer Age of Sigmar app, Listbot 4.0, or Sigdex, and New Recruit .ros, .rosz, or
-            .json files. You can paste the text or drop the file in.
+            You give it the army you are bringing: faction, detachment, enhancements, and units. It works out
+            every rule that army gives you and lists each one under the moment it comes up - before the
+            battle, the start and end of a battle round, each phase of the turn, reactions to your opponent,
+            and the rules that are always active. It is not a rules search. It is your list, in turn order.
           </>
         ),
       },
@@ -105,8 +84,8 @@ const FaqSections: IFaqSection[] = [
           <>
             Edit is for the desk: you get the faction picker, the army builder, and the toolbar, and rules you
             have hidden are still listed. Play is for the table: the builder and the toolbar disappear, hidden
-            rules drop out completely, and what is left is what fires in this game. The switch sits at the top
-            of the home page.
+            rules drop out completely, and what is left is what comes up in this game. The switch sits at the
+            top of the home page.
           </>
         ),
       },
@@ -122,6 +101,16 @@ const FaqSections: IFaqSection[] = [
           </>
         ),
       },
+      {
+        id: 'import-a-roster',
+        question: 'Can I import a list I already made?',
+        answer: (
+          <>
+            Not yet. For now, pick your faction, detachment, enhancements, and units in the builder. Your army
+            is kept in this browser, so you only build it once.
+          </>
+        ),
+      },
     ],
   },
   {
@@ -129,14 +118,12 @@ const FaqSections: IFaqSection[] = [
     title: 'At the table',
     entries: [
       {
-        id: 'print-and-pdf',
+        id: 'print',
         question: 'Can I take this to the table on paper?',
         answer: (
           <>
-            Yes, and it costs nothing. <strong>Download PDF</strong> in the toolbar builds the sheet in your
-            browser - <strong>Standard</strong> for larger type in a single column, <strong>Compact</strong>{' '}
-            for two columns and fewer pages - on A4 or US Letter. Your notes come with it, and anything you
-            hid stays hidden.
+            Use your browser&apos;s <strong>Print</strong>. The builder and the buttons are left off the page,
+            and anything you hid stays hidden. A PDF download like the one AoS Reminders has is planned.
           </>
         ),
       },
@@ -145,9 +132,9 @@ const FaqSections: IFaqSection[] = [
         question: 'Does it work without Wifi?',
         answer: (
           <>
-            Partly, and I would not count on it. Your current army is kept in this browser, so a connection
-            that drops mid-game does not take your reminders with it. But there is no offline cache yet
-            (coming soon). I advise printing the PDF.
+            Your army is kept in this browser, and once the site has loaded its rules are kept for offline
+            use, so a connection that drops mid-game should not take your reminders with it. If the venue wifi
+            is unreliable, open the site once before the game while you still have signal.
           </>
         ),
       },
@@ -162,9 +149,8 @@ const FaqSections: IFaqSection[] = [
         question: 'Which rules does this cover?',
         answer: (
           <>
-            Age of Sigmar fourth edition, defaulting to the current General&apos;s Handbook 2026-27 season.
-            Third edition is gone: armies you saved under the old third-edition site are not carried across,
-            and are cleared out when the app loads.
+            Warhammer 40,000 eleventh edition, matched play. Boarding Actions detachments are not offered.
+            Legends units are listed under their own <strong>Legends</strong> heading in the unit picker.
           </>
         ),
       },
@@ -173,9 +159,10 @@ const FaqSections: IFaqSection[] = [
         question: 'Where do the rules come from?',
         answer: (
           <>
-            Games Workshop publications are the authority. <WahapediaLink /> is used to find and cross-check
-            coverage. Every reminder carries its source in the ⋯ menu, and anything drawn from a Games
-            Workshop publication is badged <strong>Official</strong> and links to the document it came from.
+            Games Workshop publications are the authority. Most of the rules text currently comes from{' '}
+            <WahapediaLink />, cross-checked against <BsDataLink />, and it is corrected against official
+            Games Workshop documents as they are added. Where the sources disagree, the official document
+            wins.
           </>
         ),
       },
@@ -185,12 +172,12 @@ const FaqSections: IFaqSection[] = [
         answer: (
           <>
             <p>
-              Please tell me. Corrections go into the rules data and are re-verified against the sources, so
-              the fix reaches everyone rather than only your army. Naming the faction and the warscroll or
-              ability makes it much faster to track down.
+              Please tell me. Corrections go into the rules data and are re-checked against the sources, so
+              the fix reaches everyone rather than only your army. Naming the faction, the detachment or unit,
+              and the rule makes it much faster to track down.
             </p>
             <p className="mb-2">
-              The best route is to <GithubIssuesLink />. Discord and email work too.
+              The best route is to <GithubIssuesLink />.
             </p>
             <Contact size="small" />
           </>
@@ -201,97 +188,53 @@ const FaqSections: IFaqSection[] = [
         question: 'Is this an official Games Workshop app?',
         answer: (
           <>
-            No. AoS Reminders is unofficial and fan-made, is in no way endorsed or sanctioned by Games
-            Workshop, and takes no credit for their content. I build and run it on my own time.
+            No. 40K Reminders is unofficial and fan-made, is in no way endorsed or sanctioned by Games
+            Workshop, and takes no credit for their content.
           </>
         ),
       },
     ],
   },
   {
-    id: 'account',
-    title: 'Account and subscription',
+    id: 'about',
+    title: 'About',
     entries: [
       {
-        id: 'what-subscription-includes',
-        question: 'What does a subscription get me?',
+        id: 'who-made-this',
+        question: 'Who made this?',
         answer: (
           <>
-            <strong>My Armies</strong> keeps your armies on your account so they follow you between devices -
-            save, load, rename, update, and delete. <strong>Share Army</strong> creates a link a friend can
-            open to take their own copy of the list. And dark theme. Everything else - the builder, importing,
-            reminders, notes, hiding, reordering, and the PDF - is free, and stays free. See{' '}
-            <Link className="FaqLink" to={ROUTES.SUBSCRIBE}>
-              the plans
-            </Link>
-            .
+            40K Reminders is put together by{' '}
+            <LinkNewTab className="FaqLink" href={WH40K_AUTHOR_URL}>
+              cjwhitedev
+            </LinkNewTab>{' '}
+            on top of <AosRemindersLink />, the Age of Sigmar app{' '}
+            <LinkNewTab className="FaqLink" href={AOS_REMINDERS_AUTHOR_URL}>
+              Davis E. Ford
+            </LinkNewTab>{' '}
+            has built and run for years. The army builder, the reminder cards, and much of the code under them
+            are his work, retooled here for Warhammer 40,000.
           </>
         ),
       },
       {
-        id: 'dark-theme',
-        question: 'How do I turn on dark theme?',
+        id: 'age-of-sigmar',
+        question: 'I play Age of Sigmar. Where do I go?',
         answer: (
           <>
-            Subscribe, then switch <strong>Visual Theme</strong> on your <ProfileLink>Profile</ProfileLink>.
-            It is stored against your account, so it follows you to your other devices.
+            To the original: <AosRemindersLink>aosreminders.com</AosRemindersLink>. It covers Age of Sigmar
+            fourth edition, and it is where roster import, PDF export, and saved armies started.
           </>
         ),
       },
       {
-        id: 'cannot-log-in',
-        question: "I can't recover my password!",
+        id: 'accounts',
+        question: 'Can I save armies to an account, share them, or subscribe?',
         answer: (
           <>
-            If you signed up with Google, there is no AoS Reminders password to recover - use{' '}
-            <strong>Continue with Google</strong> on the log in screen rather than the email and password
-            fields.
-          </>
-        ),
-        // Captured at 382x500.
-        image: {
-          alt: 'The AoS Reminders log in screen, with the "Continue with Google" button below the email and password fields.',
-          height: 360,
-          src: '/img/faq_continue_with_google.png',
-          width: 275,
-        },
-      },
-      {
-        id: 'unsubscribe',
-        question: 'How do I unsubscribe?',
-        answer: (
-          <>
-            Log in, open your <ProfileLink>Profile</ProfileLink>, and click{' '}
-            <strong>Cancel Subscription</strong>. You keep every subscription feature until the end of the
-            period you have already paid for.
-          </>
-        ),
-        // Captured at 800x280.
-        image: {
-          alt: 'The Profile page, with the "Cancel Subscription" button beneath the subscription details.',
-          height: 140,
-          src: '/img/faq_unsubscribe.png',
-          width: 400,
-        },
-      },
-      {
-        id: 'card-details',
-        question: 'Do you store my card details?',
-        answer: (
-          <>
-            No. There is no card field anywhere on this site. Payment happens on Stripe&apos;s own hosted
-            checkout or through PayPal&apos;s button, and they manage the subscription from there - including
-            cancelling it.
-          </>
-        ),
-      },
-      {
-        id: 'gift',
-        question: 'Can I give a subscription to someone else?',
-        answer: (
-          <>
-            Yes. <strong>Gift a Subscription</strong> on your <ProfileLink>Profile</ProfileLink> charges you
-            once - it is not a recurring subscription - and gives you a one-time-use link to send on.
+            Not on this site. Accounts, saved armies, sharing, and subscriptions belong to{' '}
+            <AosRemindersLink />, and the account links here forward you there. If this page helps your games,
+            supporting AoS Reminders supports the work it is built on.
           </>
         ),
       },
@@ -304,7 +247,7 @@ const Faq = () => {
 
   useEffect(() => {
     /*
-     * Questions carry anchors now, so /faq#unsubscribe has to survive arrival. Scrolling to the top
+     * Questions carry anchors now, so /faq#who-made-this has to survive arrival. Scrolling to the top
      * unconditionally would land the reader back at the masthead every time.
      */
     const { hash } = window.location
@@ -392,22 +335,8 @@ const FaqEntry = ({ entry }: { entry: IFaqEntry }) => {
         {entry.question}
       </h3>
       <div className="mb-0">{entry.answer}</div>
-      {entry.image && <FaqFigure image={entry.image} />}
     </div>
   )
 }
-
-const FaqFigure = ({ image }: { image: IFaqImage }) => (
-  <figure className="figure d-block mt-3 mb-0">
-    <img
-      alt={image.alt}
-      className="figure-img img-fluid bg-white border rounded mb-0"
-      height={image.height}
-      loading="lazy"
-      src={image.src}
-      width={image.width}
-    />
-  </figure>
-)
 
 export default Faq

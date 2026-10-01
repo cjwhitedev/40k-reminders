@@ -8,6 +8,13 @@ export const PAYPAL_CLIENT_ID = isProd
 
 export const GITHUB_URL = '//github.com/daviseford/aos-reminders'
 
+/** Davis E. Ford's AoS Reminders, which this site is built on; AoS players and account holders go there. */
+export const AOS_REMINDERS_URL = 'https://aosreminders.com'
+export const AOS_REMINDERS_AUTHOR_URL = 'https://daviseford.com'
+
+export const WH40K_GITHUB_URL = 'https://github.com/cjwhitedev/40k-reminders'
+export const WH40K_AUTHOR_URL = 'https://github.com/cjwhitedev'
+
 export const ROUTES = {
   FAQ: '/faq',
   HOME: '/',

@@ -1,43 +1,16 @@
-import { useAuth0 } from '@auth0/auth0-react'
-import { LoadingHeader, OfflineHeader } from 'components/helpers/suspenseFallbacks'
-import GenericButton from 'components/input/generic_button'
+import { OfflineHeader } from 'components/helpers/suspenseFallbacks'
 import NavbarWrapper from 'components/page/navbar_wrapper'
 import { useAppStatus } from 'context/useAppStatus'
-import { useSubscription } from 'context/useSubscription'
-import { max } from 'lodash'
 import { Link } from 'react-router'
 import { navbarStyles } from 'theme/helperClasses'
 import { logClick } from 'utils/analytics'
-import { ROUTES } from 'utils/env'
-import useLogin from 'utils/hooks/useLogin'
-import useWindowSize from 'utils/hooks/useWindowSize'
-import { SubscriptionPlans } from 'utils/plans'
-import config from '../../auth_config.json'
+import { AOS_REMINDERS_URL, ROUTES } from 'utils/env'
 
 const Navbar = () => {
   const { isOffline } = useAppStatus()
-  const { isAuthenticated, logout } = useAuth0()
-  const { login, isLoggingIn } = useLogin({ origin: 'Navbar' })
-  const { isActive, subscriptionLoading } = useSubscription()
-  const { isTinyMobile } = useWindowSize()
   const { pathname } = window.location
-  const loginBtnText = !isAuthenticated ? 'Log in' : 'Log out'
-
-  const handleLoginBtn = () => {
-    if (isAuthenticated) {
-      logClick('Navbar-Logout')
-      localStorage.removeItem('theme')
-      return logout({ clientId: config.clientId, logoutParams: { returnTo: window.location.origin } })
-    }
-    return login()
-  }
 
   if (isOffline) return <OfflineHeader />
-  if (isLoggingIn || subscriptionLoading) return <LoadingHeader />
-
-  const discount = SubscriptionPlans.some(plan => plan.sale)
-    ? max(SubscriptionPlans.map(plan => plan.discount_pct || 0))
-    : 0
 
   return (
     <NavbarWrapper>
@@ -46,31 +19,21 @@ const Navbar = () => {
           Home
         </Link>
       )}
-      {isAuthenticated && pathname !== ROUTES.PROFILE && (
-        <Link to={ROUTES.PROFILE} className={navbarStyles.link} onClick={() => logClick('Navbar-Profile')}>
-          Profile
-        </Link>
-      )}
-      {!isActive && pathname !== ROUTES.SUBSCRIBE && (
-        <Link
-          to={ROUTES.SUBSCRIBE}
-          className={navbarStyles.link}
-          onClick={() => logClick('Navbar-Subscribe')}
-        >
-          Subscribe
-          {!!discount && !isTinyMobile && (
-            <span className="ms-1 badge rounded-pill bg-danger">{discount}% off!</span>
-          )}
-        </Link>
-      )}
       {pathname !== ROUTES.FAQ && (
         <Link to={ROUTES.FAQ} className={navbarStyles.link} onClick={() => logClick('Navbar-Faq')}>
           FAQ
         </Link>
       )}
-      <GenericButton className={navbarStyles.btn} onClick={handleLoginBtn}>
-        {loginBtnText}
-      </GenericButton>
+      {/* Age of Sigmar players belong on the original site this one is built from. */}
+      <a
+        className={navbarStyles.btn}
+        href={AOS_REMINDERS_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => logClick('Navbar-AosReminders')}
+      >
+        AoS Reminders
+      </a>
     </NavbarWrapper>
   )
 }

@@ -1,10 +1,8 @@
-import { useAuth0 } from '@auth0/auth0-react'
 import { useAppStatus } from 'context/useAppStatus'
 import { useTheme } from 'context/useTheme'
 import { FiWifiOff } from 'react-icons/fi'
 
 const OfflineComponent = () => {
-  const { isAuthenticated } = useAuth0()
   const { isOnline } = useAppStatus()
   const { theme } = useTheme()
 
@@ -21,16 +19,7 @@ const OfflineComponent = () => {
             You are in <strong>Offline</strong> mode.
             <FiWifiOff className="ms-2" />
           </p>
-          <p>Your capabilites are limited in this mode.</p>
-          You cannot save a new army.
-          {isAuthenticated && (
-            <>
-              <br />
-              You cannot update or delete armies.
-              <br />
-              You cannot access your profile.
-            </>
-          )}
+          <p className="mb-0">Your army and reminders still work; links to other sites will not.</p>
         </div>
       </div>
     </div>

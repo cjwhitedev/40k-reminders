@@ -575,7 +575,7 @@ echo '{}'
    * than returning early, which reported green on a checkout that had never measured anything. CI
    * builds before it tests (see .github/workflows/deploy.yml), so it always runs there.
    */
-  it('keeps that default below both real catalog chunks', ({ skip }) => {
+  it('keeps that default below every real catalog chunk', ({ skip }) => {
     const distAssetsDirectory = join(repoRoot, 'dist', 'assets')
     skip(!existsSync(distAssetsDirectory), 'dist/assets is missing; run `yarn build` to measure the chunks')
 
@@ -583,7 +583,7 @@ echo '{}'
       .filter(file => file.startsWith('aos4-catalog-data') && file.endsWith('.js'))
       .map(file => statSync(join(distAssetsDirectory, file)).size)
 
-    expect(catalogChunkSizes.length).toBeGreaterThanOrEqual(2)
+    expect(catalogChunkSizes.length).toBeGreaterThanOrEqual(1)
     expect(Number(precompressThresholdDefault())).toBeLessThan(Math.min(...catalogChunkSizes))
   })
 

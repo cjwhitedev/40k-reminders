@@ -1,6 +1,5 @@
 import Reminders from 'components/info/reminders'
 import { REMINDERS_ANCHOR_ID } from 'components/info/remindersAnchor'
-import { UpdateAvailable } from 'components/info/updateAvailable'
 import { SelectionCards } from 'components/input/army_builder'
 import Toolbar from 'components/input/toolbar/toolbar'
 import Footer from 'components/page/footer'
@@ -196,8 +195,6 @@ const Wh40kHome = () => {
         title="40K Reminders"
         byline={<Byline />}
       />
-
-      <UpdateAvailable />
 
       <PrintHeader armyName={document.name} groups={builder.groups} />
 

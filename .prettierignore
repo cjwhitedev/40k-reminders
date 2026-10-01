@@ -26,6 +26,7 @@ src/tests/fixtures/
 # `JSON.stringify(value, null, 2)`. Prettier collapses short arrays and objects that form always
 # expands, so formatting these would rewrite every generated product.
 src/aos4/generated/
+src/wh40k11e/generated/*.json
 
 # The whole data pipeline tree is checksum-bound, products and reviewed inputs alike:
 # data/aos4/certifications/*/manifest.json records a SHA-256 for the accepted manifest, corpus

@@ -32,6 +32,8 @@ const LAYERS: Record<string, string[]> = {
     path.join(wh40kRoot, 'reminders'),
     aos4Domain,
   ],
+  // The browser loads this layer, so it must not reach the Node-only source pipeline.
+  generated: [path.join(wh40kRoot, 'domain'), path.join(wh40kRoot, 'generated'), aos4Domain],
 }
 
 describe('40K architecture boundaries', () => {

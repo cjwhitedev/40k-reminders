@@ -91,7 +91,9 @@ const run = async (): Promise<void> => {
       const cost = reminder.cost
         ? ` (${reminder.cost.value}${reminder.cost.kind === 'command-points' ? 'CP' : 'pts'})`
         : ''
-      const usage = reminder.usage ? ` {once per ${reminder.usage.period}}` : ''
+      const usage = reminder.usage
+        ? ` {${reminder.usage.limit === 1 ? 'once' : `${reminder.usage.limit}x`} per ${reminder.usage.period}}`
+        : ''
       console.log(`  - ${reminder.name}${cost}${usage}${who} <${reminder.kind}>`)
     }
   }

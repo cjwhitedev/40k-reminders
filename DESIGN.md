@@ -1,6 +1,6 @@
 ---
-name: AoS Reminders
-description: Phase-ordered Age of Sigmar reminders, built to be read at the table and printed on paper.
+name: 40K Reminders
+description: Phase-ordered Warhammer 40,000 reminders, built to be read at the table. Visual language inherited from AoS Reminders.
 colors:
   deep-harbour-teal: "#063647"
   midnight-slate: "#182633"

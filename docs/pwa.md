@@ -1,6 +1,10 @@
 # PWA install and offline support
 
-AoS Reminders is installable and works offline after one online visit. This
+> Inherited from AoS Reminders. 40K Reminders is hosted on GitHub Pages under `/40k-reminders/`, has
+> one catalog chunk (no separate source-records chunk), and has no accounts, so the sections about
+> S3/CloudFront headers, Auth0, and the army or subscription APIs no longer apply.
+
+40K Reminders is installable and works offline after one online visit. This
 page covers how that is put together and, more importantly, what has to be
 checked by hand.
 

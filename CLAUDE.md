@@ -4,9 +4,8 @@ See [AGENTS.md](./AGENTS.md) for the repository instructions. They apply in full
 
 Topic-specific notes:
 
-- [docs/auth.md](./docs/auth.md) — the Auth0 contract: custom domain, callback layers, social-provider registration, password recovery, and the read-only probe
-- [docs/printing.md](./docs/printing.md) — how the print and PDF export path works
-- [docs/pwa.md](./docs/pwa.md) — how the service worker, install, and offline behaviour fit together
-- [docs/deployment.md](./docs/deployment.md) — the S3/CloudFront header contract, asset retention, and worker rollback
-- [docs/data/aos4-rules-radar-alarm.md](./docs/data/aos4-rules-radar-alarm.md) — what to do when a Rules Radar alarm arrives
-- [docs/payments-local-testing.md](./docs/payments-local-testing.md) — running checkout locally against a deployed non-production subscription API
+- [CONTRIBUTING.md](./CONTRIBUTING.md) - running the site, refreshing rules data, fixing a rule, and
+  releasing
+- [docs/data/wh40k11e-wahapedia-handoff.md](./docs/data/wh40k11e-wahapedia-handoff.md) - fetching
+  Wahapedia from another network when the main machine is blocked
+- [docs/pwa.md](./docs/pwa.md) - how the service worker, install, and offline behaviour fit together

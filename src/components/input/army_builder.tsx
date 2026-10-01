@@ -14,17 +14,27 @@ interface ArmyBuilderProps {
   onSetGroupSelections: (groupIds: CanonicalId[], selectedIds: CanonicalId[]) => void
 }
 
-interface Option {
+/** What a selection card needs from an option; each game's builder view model supplies at least this. */
+export interface SelectionCardOption<Id extends string = string> {
+  id: Id
+  name: string
+  selected: boolean
+  available: boolean
+  overlay?: 'legends' | 'historical'
+  seasonal?: boolean
+}
+
+interface Option<Id extends string> {
   label: string
-  value: CanonicalId
+  value: Id
   disabled: boolean
 }
 
-interface SelectionGroup {
+export interface SelectionGroup<Id extends string = string> {
   key: string
   title: string
   mobileTitle?: string
-  options: BuilderOption[]
+  options: SelectionCardOption<Id>[]
 }
 
 const titles: Record<string, { title: string; mobileTitle?: string; order: number }> = {
@@ -51,7 +61,7 @@ const titleCase = (value: string) =>
 
 const groupKey = (option: BuilderOption) => option.groupType ?? option.kind
 
-const groupSelections = (options: BuilderOption[]): SelectionGroup[] => {
+const groupSelections = (options: BuilderOption[]): SelectionGroup<CanonicalId>[] => {
   const grouped = options.reduce((result, option) => {
     const key = groupKey(option)
     result.set(key, [...(result.get(key) ?? []), option])
@@ -73,19 +83,19 @@ const groupSelections = (options: BuilderOption[]): SelectionGroup[] => {
   )
 }
 
-const SelectionCard = ({
+const SelectionCard = <Id extends string>({
   group,
   initiallyExpanded,
   onSetGroupSelections,
 }: {
-  group: SelectionGroup
+  group: SelectionGroup<Id>
   initiallyExpanded: boolean
-  onSetGroupSelections: ArmyBuilderProps['onSetGroupSelections']
+  onSetGroupSelections: (groupIds: Id[], selectedIds: Id[]) => void
 }) => {
   const { theme } = useTheme()
   const isMobile = useIsMobile()
   const [isExpanded, setIsExpanded] = useState(initiallyExpanded)
-  const toOption = (option: BuilderOption): Option => ({
+  const toOption = (option: SelectionCardOption<Id>): Option<Id> => ({
     label: option.name,
     value: option.id,
     disabled: !option.available && !option.selected,
@@ -98,7 +108,12 @@ const SelectionCard = ({
   const seasonalOptions = group.options.filter(option => !option.overlay && option.seasonal).map(toOption)
   const legendsOptions = group.options.filter(option => option.overlay === 'legends').map(toOption)
   const historicalOptions = group.options.filter(option => option.overlay === 'historical').map(toOption)
-  const options: Option[] = [...currentOptions, ...seasonalOptions, ...legendsOptions, ...historicalOptions]
+  const options: Option<Id>[] = [
+    ...currentOptions,
+    ...seasonalOptions,
+    ...legendsOptions,
+    ...historicalOptions,
+  ]
   const groupedOptions = [
     ...currentOptions,
     ...(seasonalOptions.length
@@ -137,7 +152,7 @@ const SelectionCard = ({
           title={`${title}${selectionCount && !isExpanded ? ` (${selectionCount})` : ''}`}
         />
         <div className={bodyClass} id={bodyId}>
-          <Select<Option, true>
+          <Select<Option<Id>, true>
             aria-label={group.title}
             value={selectedValues}
             options={groupedOptions}
@@ -145,7 +160,7 @@ const SelectionCard = ({
             isClearable
             closeMenuOnSelect={false}
             isOptionDisabled={option => option.disabled}
-            onChange={(values: MultiValue<Option>) =>
+            onChange={(values: MultiValue<Option<Id>>) =>
               onSetGroupSelections(
                 group.options.map(option => option.id),
                 values.map(option => option.value)
@@ -166,24 +181,15 @@ const SelectionCard = ({
   )
 }
 
-const ArmyBuilder = ({ builder, onSetGroupSelections }: ArmyBuilderProps) => {
+/** The builder's row of selection cards, the first one expanded. */
+export const SelectionCards = <Id extends string>({
+  groups,
+  onSetGroupSelections,
+}: {
+  groups: SelectionGroup<Id>[]
+  onSetGroupSelections: (groupIds: Id[], selectedIds: Id[]) => void
+}) => {
   const isMobile = useIsMobile()
-  const groups = useMemo(
-    () =>
-      groupSelections(
-        // Armies of Renown are the masthead's top-level choice, not a builder card; showing the
-        // root here as well would duplicate the control. Their granted abilities do surface,
-        // as selected chips inside the standard category cards.
-        builder.options.filter(
-          option =>
-            (option.kind === 'warscroll' ||
-              option.kind === 'content-group' ||
-              (option.kind === 'ability' && Boolean(option.groupType))) &&
-            option.groupType !== 'army-of-renown'
-        )
-      ),
-    [builder.options]
-  )
   const rowClass = `row d-print-none pb-1 ${isMobile ? 'mx-1' : 'pt-2 w-75'}`
 
   return (
@@ -200,6 +206,27 @@ const ArmyBuilder = ({ builder, onSetGroupSelections }: ArmyBuilderProps) => {
       </div>
     </div>
   )
+}
+
+const ArmyBuilder = ({ builder, onSetGroupSelections }: ArmyBuilderProps) => {
+  const groups = useMemo(
+    () =>
+      groupSelections(
+        // Armies of Renown are the masthead's top-level choice, not a builder card; showing the
+        // root here as well would duplicate the control. Their granted abilities do surface,
+        // as selected chips inside the standard category cards.
+        builder.options.filter(
+          option =>
+            (option.kind === 'warscroll' ||
+              option.kind === 'content-group' ||
+              (option.kind === 'ability' && Boolean(option.groupType))) &&
+            option.groupType !== 'army-of-renown'
+        )
+      ),
+    [builder.options]
+  )
+
+  return <SelectionCards groups={groups} onSetGroupSelections={onSetGroupSelections} />
 }
 
 export default ArmyBuilder

@@ -7,7 +7,7 @@ import Switch from 'react-switch'
 import Select, { type Theme as SelectTheme } from 'react-select'
 import type { CanonicalId } from '../../aos4/domain'
 
-interface HeaderProps {
+interface HeaderProps<FactionId extends string> {
   armiesOfRenown: Array<{
     label: string
     value: CanonicalId
@@ -27,14 +27,14 @@ interface HeaderProps {
    * the name and stops offering a choice that would quietly evaporate.
    */
   catalogUnavailable?: boolean
-  factionId: CanonicalId<'faction'>
+  factionId: FactionId
   factions: Array<{
     label: string
-    value: CanonicalId<'faction'>
+    value: FactionId
   }>
   isGameMode: boolean
   onArmyOfRenownChange: (armyOfRenownId: CanonicalId | null) => void
-  onFactionChange: (factionId: CanonicalId<'faction'>) => void
+  onFactionChange: (factionId: FactionId) => void
   onToggleGameMode: () => void
   onToggleSeasonalRules: () => void
   /**
@@ -47,11 +47,12 @@ interface HeaderProps {
    * row's precedent — masthead controls that do not apply are absent, not disabled.
    */
   seasonalRulesChecked: boolean | null
+  title?: string
 }
 
 const NO_ARMY_OF_RENOWN = { label: 'None', value: null }
 
-export const Header = ({
+export const Header = <FactionId extends string = CanonicalId<'faction'>>({
   armiesOfRenown,
   armyName,
   armyOfRenownId,
@@ -64,7 +65,8 @@ export const Header = ({
   onToggleGameMode,
   onToggleSeasonalRules,
   seasonalRulesChecked,
-}: HeaderProps) => {
+  title = 'Age of Sigmar Reminders',
+}: HeaderProps<FactionId>) => {
   const { theme } = useTheme()
   const isMobile = useIsMobile()
   const option = factions.find(faction => faction.value === factionId) ?? null
@@ -108,7 +110,7 @@ export const Header = ({
 
       <div className={mastheadClass}>
         <div className="container">
-          <h1 className="text-white">Age of Sigmar Reminders</h1>
+          <h1 className="text-white">{title}</h1>
           <p className="mt-3 mb-1 d-none d-sm-block text-white">
             By Davis E. Ford -{' '}
             <a

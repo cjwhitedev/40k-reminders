@@ -34,6 +34,16 @@ const LAYERS: Record<string, string[]> = {
   ],
   // The browser loads this layer, so it must not reach the Node-only source pipeline.
   generated: [path.join(wh40kRoot, 'domain'), path.join(wh40kRoot, 'generated'), aos4Domain],
+  state: [path.join(wh40kRoot, 'domain'), path.join(wh40kRoot, 'state'), aos4Domain],
+  runtime: [path.join(wh40kRoot, 'domain'), path.join(wh40kRoot, 'state'), path.join(wh40kRoot, 'runtime')],
+  view: [
+    path.join(wh40kRoot, 'domain'),
+    path.join(wh40kRoot, 'select'),
+    path.join(wh40kRoot, 'reminders'),
+    path.join(wh40kRoot, 'state'),
+    path.join(wh40kRoot, 'view'),
+    aos4Domain,
+  ],
 }
 
 describe('40K architecture boundaries', () => {

@@ -11,6 +11,7 @@ const Join = lazy(() => import('components/routes/Join'))
 const Profile = lazy(() => import('components/routes/Profile'))
 const Redeem = lazy(() => import('components/routes/Redeem'))
 const Subscribe = lazy(() => import('components/routes/Subscribe'))
+const Wh40kHome = lazy(() => import('components/routes/Wh40kHome'))
 
 /*
  * React Router v5 wrapped the whole <Switch> in one <Suspense>; a data router renders each route
@@ -34,4 +35,5 @@ export const router = createBrowserRouter([
   { path: ROUTES.REDEEM, element: lazyScreen(Redeem) },
   { path: ROUTES.SUBSCRIBE, element: lazyScreen(Subscribe) },
   { path: ROUTES.PROFILE, element: lazyScreen(protectedRoute(Profile)) },
+  { path: ROUTES.WH40K, element: lazyScreen(Wh40kHome) },
 ])

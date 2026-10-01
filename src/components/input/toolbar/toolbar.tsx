@@ -20,13 +20,14 @@ interface ToolbarProps {
   cloudArmyHasChanges?: boolean
   hiddenCount: number
   onClearArmy: () => void
-  onDownloadPdf: () => void
-  onImportArmy: () => void
-  onOpenSavedArmies: () => void
-  onSaveArmy: () => void
-  onShareArmy: () => void
+  // The optional actions render only when handled; a game without that feature omits the button.
+  onDownloadPdf?: () => void
+  onImportArmy?: () => void
+  onOpenSavedArmies?: () => void
+  onSaveArmy?: () => void
+  onShareArmy?: () => void
   onShowAll: () => void
-  onUpdateArmy: () => void
+  onUpdateArmy?: () => void
   subscriberActionDisabled?: boolean
   updateArmyStatus: 'idle' | 'updating' | 'updated'
 }
@@ -102,21 +103,25 @@ const Toolbar = ({
             Clear Army
           </ToolbarButton>
         </div>
-        <div className={buttonWrapperClass}>
-          <ToolbarButton onClick={onDownloadPdf}>
-            <MdFileDownload className="me-2" />
-            Download PDF
-          </ToolbarButton>
-        </div>
-        <div className={buttonWrapperClass}>
-          <ToolbarButton onClick={onImportArmy}>
-            <MdFileUpload className="me-2" />
-            Import Army
-          </ToolbarButton>
-        </div>
-        {cloudArmyLinked ? (
+        {onDownloadPdf && (
+          <div className={buttonWrapperClass}>
+            <ToolbarButton onClick={onDownloadPdf}>
+              <MdFileDownload className="me-2" />
+              Download PDF
+            </ToolbarButton>
+          </div>
+        )}
+        {onImportArmy && (
+          <div className={buttonWrapperClass}>
+            <ToolbarButton onClick={onImportArmy}>
+              <MdFileUpload className="me-2" />
+              Import Army
+            </ToolbarButton>
+          </div>
+        )}
+        {!onSaveArmy ? null : cloudArmyLinked ? (
           <>
-            {showUpdateArmy && (
+            {showUpdateArmy && onUpdateArmy && (
               /*
                * A wider floor than its siblings, because this is the one cell whose label changes.
                * "Updating…" and "Updated" are both narrower than "Update Army", so a content-sized
@@ -147,18 +152,22 @@ const Toolbar = ({
             </ToolbarButton>
           </div>
         )}
-        <div className={buttonWrapperClass}>
-          <ToolbarButton disabled={subscriberActionDisabled} onClick={onOpenSavedArmies}>
-            <MdCloud className="me-2" />
-            My Armies
-          </ToolbarButton>
-        </div>
-        <div className={buttonWrapperClass}>
-          <ToolbarButton disabled={subscriberActionDisabled} onClick={onShareArmy}>
-            <MdShare className="me-2" />
-            Share Army
-          </ToolbarButton>
-        </div>
+        {onOpenSavedArmies && (
+          <div className={buttonWrapperClass}>
+            <ToolbarButton disabled={subscriberActionDisabled} onClick={onOpenSavedArmies}>
+              <MdCloud className="me-2" />
+              My Armies
+            </ToolbarButton>
+          </div>
+        )}
+        {onShareArmy && (
+          <div className={buttonWrapperClass}>
+            <ToolbarButton disabled={subscriberActionDisabled} onClick={onShareArmy}>
+              <MdShare className="me-2" />
+              Share Army
+            </ToolbarButton>
+          </div>
+        )}
         {/* Absent, not disabled, until a reminder is hidden: a control with nothing to act on is noise. */}
         {hiddenCount > 0 && (
           <div className={buttonWrapperClass}>

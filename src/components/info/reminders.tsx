@@ -1,4 +1,3 @@
-import type { Aos4ReminderViewModel } from '../../aos4/view'
 import { CollapsibleCardHeader } from 'components/helpers/collapsibleCardHeader'
 import { REMINDERS_ANCHOR_ID } from 'components/info/remindersAnchor'
 import { useIsMobile } from 'utils/hooks/useIsMobile'
@@ -24,26 +23,43 @@ export interface ReminderSourceLink {
   official: boolean
 }
 
-interface RemindersProps {
+/** What a reminder card renders; each game's view model supplies at least this. */
+export interface ReminderCardModel {
+  id: string
+  name: string
+  windowKey: string
+  windowLabel: string
+  tags: Array<{ label: string; tone: string; description: string }>
+  hidden: boolean
+  note?: string
+  reactionTrigger?: string
+  declare?: string
+  effect: string
+  /** Labelled paragraphs that replace the Trigger/Declare/Effect lines when present. */
+  sections?: Array<{ label?: string; text: string }>
+  sourceRecordIndexes: readonly number[]
+}
+
+interface RemindersProps<R extends ReminderCardModel> {
   /**
    * Resolves a reminder's citations. Asynchronous because the source records live in their own
    * chunk, fetched the first time a player opens a source menu rather than when an army renders.
    */
-  getSources: (reminder: Aos4ReminderViewModel) => Promise<ReminderSourceLink[]>
+  getSources: (reminder: R) => Promise<ReminderSourceLink[]>
   isGameMode: boolean
-  onHide: (reminder: Aos4ReminderViewModel) => void
-  onNote: (reminder: Aos4ReminderViewModel, note: string) => void
-  onReorder: (reminders: Aos4ReminderViewModel[]) => void
-  reminders: Aos4ReminderViewModel[]
+  onHide: (reminder: R) => void
+  onNote: (reminder: R, note: string) => void
+  onReorder: (reminders: R[]) => void
+  reminders: R[]
 }
 
-interface ReminderGroup {
+interface ReminderGroup<R extends ReminderCardModel> {
   key: string
   label: string
-  reminders: Aos4ReminderViewModel[]
+  reminders: R[]
 }
 
-const groupReminders = (reminders: Aos4ReminderViewModel[]): ReminderGroup[] =>
+const groupReminders = <R extends ReminderCardModel>(reminders: R[]): ReminderGroup<R>[] =>
   Array.from(
     reminders.reduce((groups, reminder) => {
       const current = groups.get(reminder.windowKey) ?? {
@@ -54,7 +70,7 @@ const groupReminders = (reminders: Aos4ReminderViewModel[]): ReminderGroup[] =>
       current.reminders.push(reminder)
       groups.set(reminder.windowKey, current)
       return groups
-    }, new Map<string, ReminderGroup>())
+    }, new Map<string, ReminderGroup<R>>())
   ).map(([, group]) => group)
 
 const RuleText = ({ label, text, muted = false }: { label?: string; text: string; muted?: boolean }) => {
@@ -75,7 +91,7 @@ const RuleText = ({ label, text, muted = false }: { label?: string; text: string
  * mouse hover, `aria-label` covers assistive tech, and tapping toggles the expansion inline because
  * a touch device never fires hover.
  */
-export const ReminderTags = ({ tags }: { tags: Aos4ReminderViewModel['tags'] }) => {
+export const ReminderTags = ({ tags }: { tags: ReminderCardModel['tags'] }) => {
   const { theme } = useTheme()
   const [explained, setExplained] = useState<string | null>(null)
 
@@ -185,7 +201,7 @@ const ReminderSources = ({ state }: { state: SourceState }) => {
   )
 }
 
-const ReminderEntry = ({
+const ReminderEntry = <R extends ReminderCardModel>({
   getSources,
   isGameMode,
   onHide,
@@ -193,12 +209,12 @@ const ReminderEntry = ({
   provided,
   reminder,
 }: {
-  getSources: RemindersProps['getSources']
+  getSources: RemindersProps<R>['getSources']
   isGameMode: boolean
-  onHide: RemindersProps['onHide']
-  onNote: RemindersProps['onNote']
+  onHide: RemindersProps<R>['onHide']
+  onNote: RemindersProps<R>['onNote']
   provided: Parameters<React.ComponentProps<typeof Draggable>['children']>[0]
-  reminder: Aos4ReminderViewModel
+  reminder: R
 }) => {
   const { theme } = useTheme()
   const isMobile = useIsMobile()
@@ -302,9 +318,21 @@ const ReminderEntry = ({
 
       {!reminder.hidden && (
         <>
-          {reminder.reactionTrigger && <RuleText label="Trigger" text={reminder.reactionTrigger} />}
-          {reminder.declare && <RuleText label="Declare" text={reminder.declare} />}
-          <RuleText label="Effect" text={reminder.effect} />
+          {reminder.sections ? (
+            reminder.sections.map((section, index) => (
+              <RuleText
+                key={index}
+                {...(section.label ? { label: section.label } : {})}
+                text={section.text}
+              />
+            ))
+          ) : (
+            <>
+              {reminder.reactionTrigger && <RuleText label="Trigger" text={reminder.reactionTrigger} />}
+              {reminder.declare && <RuleText label="Declare" text={reminder.declare} />}
+              <RuleText label="Effect" text={reminder.effect} />
+            </>
+          )}
           {editingNote && !isGameMode && (
             <textarea
               className={`NoteInput form-control ${theme.bgColor} ${theme.text} d-print-none`}
@@ -325,14 +353,14 @@ const ReminderEntry = ({
   )
 }
 
-const ReminderCard = ({
+const ReminderCard = <R extends ReminderCardModel>({
   getSources,
   group,
   isGameMode,
   onHide,
   onNote,
   onReorder,
-}: Omit<RemindersProps, 'reminders'> & { group: ReminderGroup }) => {
+}: Omit<RemindersProps<R>, 'reminders'> & { group: ReminderGroup<R> }) => {
   const { theme } = useTheme()
   const isMobile = useIsMobile()
   const [isExpanded, setIsExpanded] = useState(!isMobile)
@@ -405,7 +433,7 @@ const ReminderCard = ({
   )
 }
 
-const Reminders = (props: RemindersProps) => {
+const Reminders = <R extends ReminderCardModel>(props: RemindersProps<R>) => {
   const visibleForMode = props.isGameMode
     ? props.reminders.filter(reminder => !reminder.hidden)
     : props.reminders

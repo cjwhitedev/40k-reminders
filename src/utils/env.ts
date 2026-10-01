@@ -15,4 +15,5 @@ export const ROUTES = {
   PROFILE: '/profile',
   REDEEM: '/redeem',
   SUBSCRIBE: '/subscribe',
+  WH40K: '/40k',
 } as const

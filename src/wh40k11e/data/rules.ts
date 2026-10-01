@@ -89,7 +89,6 @@ export const buildWh40kRules = (
 
   const prose = (html: string, eligibilityLine = false) => {
     const parsed = parseWh40kAbilityTiming(html, { eligibilityLine })
-    const condition = parsed.eligibility ?? parsed.armyFaction
     return {
       parsed: {
         kind: parsed.kind,
@@ -97,7 +96,10 @@ export const buildWh40kRules = (
         ...(parsed.diagnostics[0] ? { reason: parsed.diagnostics[0].message } : {}),
       },
       text: parsed.text,
-      ...(condition ? { condition } : {}),
+      gates: {
+        ...(parsed.eligibility ? { condition: parsed.eligibility } : {}),
+        ...(parsed.armyFaction ? { armyFaction: parsed.armyFaction } : {}),
+      },
     }
   }
 
@@ -164,7 +166,7 @@ export const buildWh40kRules = (
       )
       continue
     }
-    const { parsed, text, condition } = prose(values.description)
+    const { parsed, text, gates } = prose(values.description)
     add(
       record,
       {
@@ -172,7 +174,7 @@ export const buildWh40kRules = (
         name: values.name,
         text,
         scope: { kind: 'faction', factionId: values.faction_id },
-        ...(condition ? { condition } : {}),
+        ...gates,
       },
       parsed
     )
@@ -181,7 +183,7 @@ export const buildWh40kRules = (
   for (const record of records['Detachment_abilities.csv']) {
     if (excluded.has(record.sourceRecordId)) continue
     const values = record.values
-    const { parsed, text, condition } = prose(values.description)
+    const { parsed, text, gates } = prose(values.description)
     add(
       record,
       {
@@ -189,7 +191,7 @@ export const buildWh40kRules = (
         name: values.name,
         text,
         scope: { kind: 'detachment', factionId: values.faction_id, detachmentId: values.detachment_id },
-        ...(condition ? { condition } : {}),
+        ...gates,
       },
       parsed,
       detachmentMode(values.detachment_id)
@@ -199,7 +201,7 @@ export const buildWh40kRules = (
   for (const record of records['Enhancements.csv']) {
     if (excluded.has(record.sourceRecordId)) continue
     const values = record.values
-    const { parsed, text, condition } = prose(values.description, true)
+    const { parsed, text, gates } = prose(values.description, true)
     const cost = numberOrUndefined(values.cost)
     add(
       record,
@@ -209,7 +211,7 @@ export const buildWh40kRules = (
         text,
         scope: { kind: 'detachment', factionId: values.faction_id, detachmentId: values.detachment_id },
         ...(cost !== undefined ? { cost: { kind: 'points', value: cost } } : {}),
-        ...(condition ? { condition } : {}),
+        ...gates,
       },
       parsed,
       detachmentMode(values.detachment_id)
@@ -227,7 +229,7 @@ export const buildWh40kRules = (
       if (excluded.has(record.sourceRecordId)) continue
       // Shared core and faction abilities are rules of their own; the datasheet only references them.
       if (shared) continue
-      const { parsed, text, condition } = prose(record.values.description)
+      const { parsed, text, gates } = prose(record.values.description)
       add(
         record,
         {
@@ -236,7 +238,7 @@ export const buildWh40kRules = (
           text,
           scope: { kind: 'datasheet', datasheetId },
           ...(record.values.parameter ? { parameter: record.values.parameter } : {}),
-          ...(condition ? { condition } : {}),
+          ...gates,
         },
         parsed
       )
@@ -285,7 +287,11 @@ export const buildWh40kCatalog = (
   }))
   return {
     factions: records['Factions.csv']
-      .map(record => ({ id: record.values.id, name: record.values.name }))
+      .map(record => ({
+        id: record.values.id,
+        name: record.values.name,
+        armyFactionKeywords: reviewed.armyFactionKeywords.get(record.values.id) ?? [],
+      }))
       .sort((left, right) => compareCodeUnits(left.id, right.id)),
     detachments: detachments.sort((left, right) => compareCodeUnits(left.id, right.id)),
     datasheets: datasheets.sort((left, right) => compareCodeUnits(left.sourceRecordId, right.sourceRecordId)),

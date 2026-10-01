@@ -28,6 +28,10 @@ export const validateWh40kCatalog = (catalog: Wh40kCatalog): string[] => {
     catalog.rules.map(item => item.sourceRecordId)
   )
 
+  for (const faction of catalog.factions) {
+    if (!faction.armyFactionKeywords.length)
+      problems.push(`faction ${faction.id} has no Army Faction keywords`)
+  }
   for (const detachment of catalog.detachments) {
     if (!factions.has(detachment.factionId))
       problems.push(`detachment ${detachment.id} names unknown faction ${detachment.factionId}`)

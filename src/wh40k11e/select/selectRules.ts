@@ -46,6 +46,10 @@ export interface Wh40kSelectionResult {
 
 const compare = (left: string, right: string): number => (left < right ? -1 : left > right ? 1 : 0)
 
+/** Wahapedia prints Army Faction keywords in mixed case and with either apostrophe. */
+export const normalizeArmyFactionKeyword = (keyword: string): string =>
+  keyword.replace(/[‘’]/g, "'").replace(/\s+/g, ' ').trim().toUpperCase()
+
 /**
  * Resolve an army to the matched-play rules that apply to it: core stratagems, army-wide faction
  * rules, the detachment's rules and stratagems, chosen enhancements, and each unit's own and shared
@@ -60,14 +64,23 @@ export const selectWh40kRules = (
     diagnostics.push({ code, severity, message })
   const selected = new Map<SourceRecordId, Wh40kSelectedRule>()
   const rules = new Map(catalog.rules.map(rule => [rule.sourceRecordId, rule]))
+  const faction = catalog.factions.find(item => item.id === selection.factionId)
+  const armyFaction = new Set((faction?.armyFactionKeywords ?? []).map(normalizeArmyFactionKeyword))
+  const meetsArmyFaction = (gate: string): boolean => {
+    const negated = /^not\s+/i.exec(gate)
+    const keyword = normalizeArmyFactionKeyword(negated ? gate.slice(negated[0].length) : gate)
+    return armyFaction.has(keyword) !== Boolean(negated)
+  }
   const select = (rule: Wh40kRule | undefined, cause: Wh40kSelectionCause) => {
     if (!rule || rule.gameMode !== 'matched-play') return
+    // Wahapedia files other armies' rules under a faction too; the printed gate decides who uses them.
+    if (rule.armyFaction && !meetsArmyFaction(rule.armyFaction)) return
     const entry = selected.get(rule.sourceRecordId) ?? { rule, causes: [] }
     entry.causes.push(cause)
     selected.set(rule.sourceRecordId, entry)
   }
 
-  if (!catalog.factions.some(faction => faction.id === selection.factionId)) {
+  if (!faction) {
     diagnose('unknown-faction', 'error', `Unknown faction ${selection.factionId}`)
   }
 

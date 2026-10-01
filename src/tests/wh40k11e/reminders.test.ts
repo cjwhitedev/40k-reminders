@@ -29,7 +29,7 @@ const phase = (
 })
 
 const catalog: Wh40kCatalog = {
-  factions: [{ id: 'SM', name: 'Space Marines' }],
+  factions: [{ id: 'SM', name: 'Space Marines', armyFactionKeywords: ['ADEPTUS ASTARTES'] }],
   detachments: [
     { id: 'D1', name: 'Gladius', factionId: 'SM', gameMode: 'matched-play' },
     { id: 'D2', name: 'Boarding Strike', factionId: 'SM', gameMode: 'boarding-actions' },
@@ -66,8 +66,21 @@ const catalog: Wh40kCatalog = {
       kind: 'army-rule',
       name: 'Oath of Moment',
       scope: { kind: 'faction', factionId: 'SM' },
+      armyFaction: 'Adeptus Astartes',
       timingKind: 'timed',
       timing: { windows: [{ ...phase('command'), moment: 'start' }], raw: 'start of your Command phase' },
+    }),
+    rule('dark-pacts', {
+      kind: 'army-rule',
+      name: 'Dark Pacts',
+      scope: { kind: 'faction', factionId: 'SM' },
+      armyFaction: 'HERETIC ASTARTES',
+    }),
+    rule('allied-retinue', {
+      kind: 'army-rule',
+      name: 'Allied Retinue',
+      scope: { kind: 'faction', factionId: 'SM' },
+      armyFaction: 'not AGENTS OF THE IMPERIUM',
     }),
     rule('chapters', { kind: 'army-rule', name: 'Chapters', scope: { kind: 'faction', factionId: 'SM' } }),
     rule('fnp', {
@@ -132,6 +145,7 @@ describe('selectWh40kRules', () => {
 
     expect(result.diagnostics).toEqual([])
     expect(names).toEqual([
+      'Allied Retinue',
       'Armour of Contempt',
       'Artificer Armour',
       'Chapters',
@@ -147,6 +161,16 @@ describe('selectWh40kRules', () => {
     expect(result.selected.find(entry => entry.rule.name === 'Feel No Pain')?.causes).toEqual([
       { kind: 'datasheet', datasheetId: id('captain'), parameter: '5+' },
     ])
+  })
+
+  it("skips another army's rule filed under this faction when its printed Army Faction gate does not match", () => {
+    const names = selectWh40kRules(catalog, { factionId: 'SM', datasheetIds: [id('captain')] }).selected.map(
+      entry => entry.rule.name
+    )
+    // Gates compare case-insensitively: the mixed-case 'Adeptus Astartes' gate still matches.
+    expect(names).toContain('Oath of Moment')
+    expect(names).not.toContain('Dark Pacts')
+    expect(names).toContain('Allied Retinue')
   })
 
   it('rejects Legends units without the opt-in, Boarding Actions detachments, and foreign enhancements', () => {

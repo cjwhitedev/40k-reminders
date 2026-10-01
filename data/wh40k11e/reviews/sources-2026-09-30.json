@@ -1121,5 +1121,128 @@
       ],
       "reason": "8 Designer's Notes filed as abilities: clarifications, token-tracking advice and points commentary that explain another rule rather than grant one, so they are not reminders."
     }
+  ],
+  "armyFactionKeywords": [
+    {
+      "factionId": "AC",
+      "keywords": ["ADEPTUS CUSTODES"],
+      "reason": "Faction keyword on all 31 current datasheets."
+    },
+    {
+      "factionId": "AE",
+      "keywords": ["AELDARI", "ASURYANI"],
+      "reason": "79 of 99 current datasheets carry ASURYANI (most others YNNARI or HARLEQUINS), and the faction's own army rules gate on both 'If your Army Faction is AELDARI' (Strands of Fate) and 'Asuryani' (Battle Focus). Both are accepted so neither of its own rules is dropped."
+    },
+    {
+      "factionId": "AM",
+      "keywords": ["ASTRA MILITARUM"],
+      "reason": "Faction keyword on all 135 current datasheets."
+    },
+    {
+      "factionId": "AS",
+      "keywords": ["ADEPTA SORORITAS"],
+      "reason": "Faction keyword on all 38 current datasheets."
+    },
+    {
+      "factionId": "AdM",
+      "keywords": ["ADEPTUS MECHANICUS"],
+      "reason": "Faction keyword on all 38 current datasheets."
+    },
+    {
+      "factionId": "AoI",
+      "keywords": ["AGENTS OF THE IMPERIUM"],
+      "reason": "Faction keyword on all 46 current datasheets."
+    },
+    {
+      "factionId": "CD",
+      "keywords": ["LEGIONES DAEMONICA"],
+      "reason": "Faction keyword on all 101 current datasheets. The 38 that also carry HERETIC ASTARTES are shared with Chaos Space Marines armies, so the Dark Pacts copy filed here ('If your Army Faction is HERETIC ASTARTES') does not apply to a Chaos Daemons army."
+    },
+    {
+      "factionId": "CSM",
+      "keywords": ["HERETIC ASTARTES"],
+      "reason": "Faction keyword on all 111 current datasheets. Wahapedia also files Oath of Moment (ADEPTUS ASTARTES), Nurgle's Gift (DEATH GUARD), Cabal of Sorcerers (Thousand Sons), Blessings of Khorne (WORLD EATERS) and Thrill Seekers (Emperor's Children) under this faction; their printed gates exclude them."
+    },
+    {
+      "factionId": "DG",
+      "keywords": ["DEATH GUARD"],
+      "reason": "Faction keyword on 61 of 71 current datasheets (the rest are PLAGUE LEGIONS daemons). The Oath of Moment and Dark Pacts copies filed here are gated to ADEPTUS ASTARTES and HERETIC ASTARTES."
+    },
+    {
+      "factionId": "DRU",
+      "keywords": ["DRUKHARI"],
+      "reason": "Faction keyword on all 46 current datasheets. The Battle Focus copy filed here is gated to Asuryani armies."
+    },
+    {
+      "factionId": "EC",
+      "keywords": ["EMPEROR'S CHILDREN"],
+      "reason": "Faction keyword on 18 of 23 current datasheets (the rest are LEGIONS OF EXCESS daemons)."
+    },
+    {
+      "factionId": "GC",
+      "keywords": ["GENESTEALER CULTS"],
+      "reason": "Faction keyword on all 139 current datasheets. Synapse and Shadow in the Warp are filed here too but gated to TYRANIDS armies."
+    },
+    {
+      "factionId": "GK",
+      "keywords": ["GREY KNIGHTS"],
+      "reason": "Faction keyword on all 31 current datasheets."
+    },
+    {
+      "factionId": "LoV",
+      "keywords": ["LEAGUES OF VOTANN"],
+      "reason": "Faction keyword on all 22 current datasheets."
+    },
+    {
+      "factionId": "NEC",
+      "keywords": ["NECRONS"],
+      "reason": "Faction keyword on all 64 current datasheets."
+    },
+    { "factionId": "ORK", "keywords": ["ORKS"], "reason": "Faction keyword on all 67 current datasheets." },
+    {
+      "factionId": "QI",
+      "keywords": ["IMPERIAL KNIGHTS"],
+      "reason": "Faction keyword on all 28 current datasheets."
+    },
+    {
+      "factionId": "QT",
+      "keywords": ["CHAOS KNIGHTS"],
+      "reason": "Faction keyword on all 37 current datasheets. The Dark Pacts copy filed here is gated to HERETIC ASTARTES armies."
+    },
+    {
+      "factionId": "SM",
+      "keywords": ["ADEPTUS ASTARTES"],
+      "reason": "Faction keyword on all 292 current datasheets."
+    },
+    {
+      "factionId": "TAU",
+      "keywords": ["T'AU EMPIRE"],
+      "reason": "Faction keyword on all 62 current datasheets."
+    },
+    {
+      "factionId": "TL",
+      "keywords": ["ADEPTUS TITANICUS"],
+      "reason": "Faction keyword on all 4 current datasheets."
+    },
+    {
+      "factionId": "TS",
+      "keywords": ["THOUSAND SONS"],
+      "reason": "Faction keyword on 54 of 60 current datasheets (the rest are SCINTILLATING LEGIONS daemons)."
+    },
+    {
+      "factionId": "TYR",
+      "keywords": ["TYRANIDS"],
+      "reason": "Faction keyword on all 57 current datasheets."
+    },
+    {
+      "factionId": "UA",
+      "keywords": ["UNBOUND ADVERSARIES"],
+      "reason": "Has no current datasheets; its own name is used so no other army's gated rule applies to it."
+    },
+    {
+      "factionId": "WE",
+      "keywords": ["WORLD EATERS"],
+      "reason": "Faction keyword on 53 of 58 current datasheets (the rest are BLOOD LEGIONS daemons)."
+    }
   ]
 }

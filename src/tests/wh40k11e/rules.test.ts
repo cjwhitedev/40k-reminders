@@ -167,10 +167,11 @@ describe('buildWh40kRules', () => {
   it('reads army-faction conditions, enhancement eligibility and cost, and reviewed core timing', () => {
     expect(byName('Oath of Moment')).toMatchObject({
       kind: 'army-rule',
-      condition: 'ADEPTUS ASTARTES',
+      armyFaction: 'ADEPTUS ASTARTES',
       timingKind: 'timed',
       timingSource: 'printed',
     })
+    expect(byName('Oath of Moment').condition).toBeUndefined()
     expect(byName('Artificer Armour')).toMatchObject({
       kind: 'enhancement',
       condition: 'Adeptus Astartes model only',

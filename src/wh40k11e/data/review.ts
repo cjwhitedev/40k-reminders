@@ -58,6 +58,13 @@ export interface Wh40kIgnoredRules {
   reason: string
 }
 
+/** The Army Faction keywords a faction's army declares, which "If your Army Faction is X" rules test. */
+export interface Wh40kArmyFactionKeywords {
+  factionId: string
+  keywords: string[]
+  reason: string
+}
+
 export interface Wh40kSourceReview {
   schemaVersion: 1
   revision: string
@@ -75,6 +82,7 @@ export interface Wh40kSourceReview {
   linkDispositions: Wh40kLinkDisposition[]
   timingOverrides?: Wh40kTimingOverride[]
   ignoredRules?: Wh40kIgnoredRules[]
+  armyFactionKeywords?: Wh40kArmyFactionKeywords[]
 }
 
 export type Wh40kReviewFindingCode =
@@ -90,6 +98,7 @@ export type Wh40kReviewFindingCode =
   | 'evidence-not-found'
   | 'unknown-record'
   | 'duplicate-rule-decision'
+  | 'invalid-army-faction-keywords'
   | 'invalid-timing-override'
 
 export interface Wh40kReviewFinding {
@@ -110,6 +119,7 @@ export interface Wh40kReviewedSources {
   timingOverrides: Map<SourceRecordId, Wh40kTimingOverride>
   ignoredSourceRecordIds: SourceRecordId[]
   datasheetContexts: Map<SourceRecordId, Wh40kReviewContext>
+  armyFactionKeywords: Map<string, string[]>
   contexts: Record<Wh40kReviewContext, number>
 }
 
@@ -187,7 +197,13 @@ export const applyWh40kSourceReview = (input: {
   const coveredBy = new Map<string, string[]>()
   const result: Omit<
     Wh40kReviewedSources,
-    'status' | 'findings' | 'contexts' | 'timingOverrides' | 'ignoredSourceRecordIds' | 'datasheetContexts'
+    | 'status'
+    | 'findings'
+    | 'contexts'
+    | 'timingOverrides'
+    | 'ignoredSourceRecordIds'
+    | 'datasheetContexts'
+    | 'armyFactionKeywords'
   > = {
     dispositions: [],
     excludedSourceRecordIds: [],
@@ -303,6 +319,24 @@ export const applyWh40kSourceReview = (input: {
     ignoredSourceRecordIds.push(...ignored.sourceRecordIds)
   }
 
+  // Every faction needs an explicit decision, or its "If your Army Faction is X" rules cannot be gated.
+  const factionIds = new Set((decoded.records['Factions.csv'] ?? []).map(record => record.values.id))
+  const armyFactionKeywords = new Map<string, string[]>()
+  for (const entry of review.armyFactionKeywords ?? []) {
+    if (!factionIds.has(entry.factionId))
+      finding(
+        'invalid-army-faction-keywords',
+        `Army Faction keywords name unknown faction ${entry.factionId}`
+      )
+    if (armyFactionKeywords.has(entry.factionId))
+      finding('invalid-army-faction-keywords', `Army Faction keywords repeat faction ${entry.factionId}`)
+    armyFactionKeywords.set(entry.factionId, entry.keywords)
+  }
+  for (const factionId of Array.from(factionIds).sort(compareCodeUnits)) {
+    if (!armyFactionKeywords.has(factionId))
+      finding('invalid-army-faction-keywords', `No Army Faction keywords are reviewed for ${factionId}`)
+  }
+
   const sortIds = (ids: SourceRecordId[]) => Array.from(new Set(ids)).sort(compareCodeUnits)
   findings.sort(
     (left, right) => compareCodeUnits(left.code, right.code) || compareCodeUnits(left.message, right.message)
@@ -319,6 +353,7 @@ export const applyWh40kSourceReview = (input: {
     timingOverrides,
     ignoredSourceRecordIds: sortIds(ignoredSourceRecordIds),
     datasheetContexts,
+    armyFactionKeywords,
     contexts,
   }
 }

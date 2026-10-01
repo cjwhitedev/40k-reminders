@@ -36,8 +36,10 @@ export interface Wh40kRule {
   timingSource: 'printed' | 'reviewed' | 'unresolved'
   /** A core ability's printed parameter, e.g. "5+" for Feel No Pain 5+. */
   parameter?: string
-  /** Enhancement eligibility or army-faction condition the rule is printed with. */
+  /** Enhancement eligibility the rule is printed with, e.g. "Warlord model only". */
   condition?: string
+  /** The printed "If your Army Faction is X" gate; the rule applies only to an army declaring X. */
+  armyFaction?: string
 }
 
 export type Wh40kDatasheetContext = 'current' | 'legends'
@@ -61,6 +63,8 @@ export interface Wh40kDetachment {
 export interface Wh40kFaction {
   id: string
   name: string
+  /** Reviewed Army Faction keywords this faction's army declares. */
+  armyFactionKeywords: string[]
 }
 
 /** Everything army selection and reminder projection need, independent of any source format. */

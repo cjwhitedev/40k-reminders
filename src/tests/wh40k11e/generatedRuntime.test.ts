@@ -19,7 +19,7 @@ const rule = (overrides: Partial<Wh40kRule>): Wh40kRule => ({
 })
 
 const catalog = (rules: Wh40kRule[]): Wh40kCatalog => ({
-  factions: [{ id: 'AC', name: 'Adeptus Custodes' }],
+  factions: [{ id: 'AC', name: 'Adeptus Custodes', armyFactionKeywords: ['ADEPTUS CUSTODES'] }],
   detachments: [],
   datasheets: [],
   rules,
@@ -92,5 +92,25 @@ describe('checked-in 40K runtime', () => {
     expect(reminders.length).toBeGreaterThan(10)
     expect(reminders.filter(item => item.lane === 'unresolved')).toEqual([])
     expect(reminders.map(item => item.name)).toContain('Praesidium Shield')
+  })
+
+  it('gives a Chaos Space Marines army only the army rules its Army Faction meets', () => {
+    const chosen = WH40K_CATALOG.datasheets.find(item => item.factionId === 'CSM' && item.name === 'Chosen')!
+    const names = selectWh40kRules(WH40K_CATALOG, {
+      factionId: 'CSM',
+      datasheetIds: [chosen.sourceRecordId],
+    })
+      .selected.filter(item => item.rule.kind === 'army-rule')
+      .map(item => item.rule.name)
+    expect(names).toContain('Dark Pacts')
+    for (const foreign of [
+      'Oath of Moment',
+      'Nurgle’s Gift (Aura)',
+      'Cabal of Sorcerers',
+      'Blessings of Khorne',
+      'Thrill Seekers',
+    ]) {
+      expect(names).not.toContain(foreign)
+    }
   })
 })

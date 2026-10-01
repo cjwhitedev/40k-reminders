@@ -1,18 +1,8 @@
-import type { CanonicalId } from '../../aos4/domain'
-import type { createAos4BuilderViewModel } from '../../aos4/view'
 import { CollapsibleCardHeader } from 'components/helpers/collapsibleCardHeader'
 import { useIsMobile } from 'utils/hooks/useIsMobile'
 import { useTheme } from 'context/useTheme'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import Select, { type MultiValue } from 'react-select'
-
-type BuilderViewModel = ReturnType<typeof createAos4BuilderViewModel>
-type BuilderOption = BuilderViewModel['options'][number]
-
-interface ArmyBuilderProps {
-  builder: BuilderViewModel
-  onSetGroupSelections: (groupIds: CanonicalId[], selectedIds: CanonicalId[]) => void
-}
 
 /** What a selection card needs from an option; each game's builder view model supplies at least this. */
 export interface SelectionCardOption<Id extends string = string> {
@@ -35,52 +25,6 @@ export interface SelectionGroup<Id extends string = string> {
   title: string
   mobileTitle?: string
   options: SelectionCardOption<Id>[]
-}
-
-const titles: Record<string, { title: string; mobileTitle?: string; order: number }> = {
-  warscroll: { title: 'Units', order: 0 },
-  'battle-formation': { title: 'Battle Formations', mobileTitle: 'Formations', order: 1 },
-  'heroic-trait': { title: 'Heroic Traits', order: 2 },
-  'artefact-of-power': { title: 'Artefacts of Power', mobileTitle: 'Artefacts', order: 3 },
-  'spell-lore': { title: 'Spell Lores', order: 4 },
-  'prayer-lore': { title: 'Prayer Lores', order: 5 },
-  'manifestation-lore': { title: 'Manifestation Lores', mobileTitle: 'Manif. Lores', order: 6 },
-  manifestation: { title: 'Manifestations', order: 7 },
-  'regiment-of-renown': {
-    title: 'Regiment Of Renown',
-    mobileTitle: 'Regiments',
-    order: Number.MAX_SAFE_INTEGER,
-  },
-}
-
-const titleCase = (value: string) =>
-  value
-    .split('-')
-    .map(part => `${part.slice(0, 1).toUpperCase()}${part.slice(1)}`)
-    .join(' ')
-
-const groupKey = (option: BuilderOption) => option.groupType ?? option.kind
-
-const groupSelections = (options: BuilderOption[]): SelectionGroup<CanonicalId>[] => {
-  const grouped = options.reduce((result, option) => {
-    const key = groupKey(option)
-    result.set(key, [...(result.get(key) ?? []), option])
-    return result
-  }, new Map<string, BuilderOption[]>())
-
-  return Array.from(grouped, ([key, groupOptions]) => {
-    const configured = titles[key]
-    return {
-      key,
-      title: configured?.title ?? titleCase(key),
-      ...(configured?.mobileTitle ? { mobileTitle: configured.mobileTitle } : {}),
-      options: groupOptions,
-    }
-  }).sort(
-    (left, right) =>
-      (titles[left.key]?.order ?? Number.MAX_SAFE_INTEGER) -
-        (titles[right.key]?.order ?? Number.MAX_SAFE_INTEGER) || left.title.localeCompare(right.title)
-  )
 }
 
 const SelectionCard = <Id extends string>({
@@ -207,26 +151,3 @@ export const SelectionCards = <Id extends string>({
     </div>
   )
 }
-
-const ArmyBuilder = ({ builder, onSetGroupSelections }: ArmyBuilderProps) => {
-  const groups = useMemo(
-    () =>
-      groupSelections(
-        // Armies of Renown are the masthead's top-level choice, not a builder card; showing the
-        // root here as well would duplicate the control. Their granted abilities do surface,
-        // as selected chips inside the standard category cards.
-        builder.options.filter(
-          option =>
-            (option.kind === 'warscroll' ||
-              option.kind === 'content-group' ||
-              (option.kind === 'ability' && Boolean(option.groupType))) &&
-            option.groupType !== 'army-of-renown'
-        )
-      ),
-    [builder.options]
-  )
-
-  return <SelectionCards groups={groups} onSetGroupSelections={onSetGroupSelections} />
-}
-
-export default ArmyBuilder

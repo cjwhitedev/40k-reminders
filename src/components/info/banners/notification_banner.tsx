@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { centerContentClass } from 'theme/helperClasses'
 import { TBootstrapTypes } from 'types/theme'
-import { logBannerClose, logBannerView } from 'utils/analytics'
 
-const storageKey = (name: string) => `aos-reminders:aos4:banner:${name}`
+const storageKey = (name: string) => `wh40k-reminders:banner:${name}`
 
 const isDismissed = (name: string): boolean => {
   try {
@@ -25,7 +24,6 @@ const rememberDismissal = (name: string) => {
 interface IBannerProps {
   /** Overrides the close button's accessible name. Set it when more than one banner can be on screen. */
   closeLabel?: string
-  enableLog?: boolean
   name: string
   /** Notified after the banner closes, for callers that own their own re-display policy. */
   onClose?: () => void
@@ -40,7 +38,6 @@ interface IBannerProps {
 export const NotificationBanner = ({
   children,
   closeLabel = 'Close notification',
-  enableLog = false,
   name,
   onClose,
   persistClose = true,
@@ -48,14 +45,9 @@ export const NotificationBanner = ({
 }: React.PropsWithChildren<IBannerProps>) => {
   const [isOn, setIsOn] = useState(() => !(persistClose && isDismissed(name)))
 
-  useEffect(() => {
-    if (enableLog && isOn) logBannerView(name)
-  }, [enableLog, isOn, name])
-
   const handleClose = () => {
     setIsOn(false)
     if (persistClose) rememberDismissal(name)
-    if (enableLog) logBannerClose(name)
     onClose?.()
   }
 

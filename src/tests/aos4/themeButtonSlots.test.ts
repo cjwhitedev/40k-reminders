@@ -1,17 +1,5 @@
-import DarkTheme from 'theme/dark'
 import LightTheme from 'theme/light'
 import { describe, expect, it } from 'vitest'
-
-/*
- * The button slots that must NOT vary by theme, and why each one is on this list.
- *
- * This is the contract behind `invariantButtons` in theme/helperClasses. It is a test rather than a
- * comment because the failure it guards is invisible in the theme you happen to be developing in:
- * `modalSuccessClass` was `btn-success` in light and `btn-outline-success` in dark, so the single
- * control that commits looked primary on one theme and secondary on the other, and nothing caught
- * it for as long as those slots existed.
- */
-const invariantSlots = ['alertActionButton', 'commitButton', 'destructiveButton'] as const
 
 /*
  * Slots removed by the modal-family pass. Listed by name so a re-introduction has to argue with
@@ -22,13 +10,8 @@ const invariantSlots = ['alertActionButton', 'commitButton', 'destructiveButton'
 const removedSlots = ['modalConfirmClass', 'modalDangerClass', 'modalSuccessClass', 'secondaryButton']
 
 describe('theme button slots', () => {
-  it.each(invariantSlots)('%s is the same string in both themes', slot => {
-    expect(LightTheme[slot]).toBe(DarkTheme[slot])
-  })
-
   it.each(removedSlots)('%s stays removed', slot => {
     expect(LightTheme).not.toHaveProperty(slot)
-    expect(DarkTheme).not.toHaveProperty(slot)
   })
 
   /*

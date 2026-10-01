@@ -2,7 +2,6 @@
 
 import { Header } from 'components/page/homeHeader'
 import { AppStatusProvider } from 'context/useAppStatus'
-import { SubscriptionProvider } from 'context/useSubscription'
 import { ThemeProvider } from 'context/useTheme'
 import { act } from 'react'
 import { MemoryRouter } from 'react-router'
@@ -20,18 +19,8 @@ import type { CanonicalId } from '../../aos4/domain'
  * rendering and the faction selector's disabled-when-failed state.
  */
 
-// See tests/support/homeTestMocks.ts for why these are `await import()`ed inside the factory rather
+// See tests/support/homeTestMocks.ts for why this is `await import()`ed inside the factory rather
 // than imported and passed to `vi.mock` directly.
-vi.mock('@auth0/auth0-react', async () => {
-  const { auth0DisabledMockValue } = await import('tests/support/homeTestMocks')
-  return { useAuth0: auth0DisabledMockValue }
-})
-
-vi.mock('../../api/subscriptionApi', async () => {
-  const { subscriptionApiNotFoundMockValue } = await import('tests/support/homeTestMocks')
-  return { SubscriptionApi: subscriptionApiNotFoundMockValue() }
-})
-
 vi.mock('virtual:pwa-register', async () => {
   const { pwaRegisterMockValue } = await import('tests/support/homeTestMocks')
   return pwaRegisterMockValue()
@@ -49,26 +38,24 @@ describe('the masthead selects', () => {
     await act(async () => {
       render(
         <AppStatusProvider>
-          <SubscriptionProvider>
-            <ThemeProvider>
-              <MemoryRouter>
-                <Header
-                  armiesOfRenown={[]}
-                  armyName="Test Army"
-                  armyOfRenownId={null}
-                  factionId={FACTION_ID}
-                  factions={[{ label: 'Test Faction', value: FACTION_ID }]}
-                  isGameMode={false}
-                  onArmyOfRenownChange={vi.fn()}
-                  onFactionChange={vi.fn()}
-                  onToggleGameMode={vi.fn()}
-                  onToggleSeasonalRules={vi.fn()}
-                  seasonalRulesChecked={null}
-                  {...props}
-                />
-              </MemoryRouter>
-            </ThemeProvider>
-          </SubscriptionProvider>
+          <ThemeProvider>
+            <MemoryRouter>
+              <Header
+                armiesOfRenown={[]}
+                armyName="Test Army"
+                armyOfRenownId={null}
+                factionId={FACTION_ID}
+                factions={[{ label: 'Test Faction', value: FACTION_ID }]}
+                isGameMode={false}
+                onArmyOfRenownChange={vi.fn()}
+                onFactionChange={vi.fn()}
+                onToggleGameMode={vi.fn()}
+                onToggleSeasonalRules={vi.fn()}
+                seasonalRulesChecked={null}
+                {...props}
+              />
+            </MemoryRouter>
+          </ThemeProvider>
         </AppStatusProvider>,
         container
       )

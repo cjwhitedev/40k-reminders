@@ -1,6 +1,5 @@
 import { useAppStatus } from 'context/useAppStatus'
 import { useTheme } from 'context/useTheme'
-import { logClick } from 'utils/analytics'
 import { AOS_REMINDERS_AUTHOR_URL, AOS_REMINDERS_URL } from 'utils/env'
 
 /** Where the donation card was: this site is built on AoS Reminders, so support goes to its author. */
@@ -33,7 +32,6 @@ export const SupportOriginal = () => {
               href={`${AOS_REMINDERS_URL}/subscribe`}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => logClick('SupportOriginal')}
             >
               Support the original
             </a>

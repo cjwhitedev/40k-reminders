@@ -1,6 +1,5 @@
 import type { IconType } from 'react-icons'
 import { centerContentClass } from 'theme/helperClasses'
-import { logClick } from 'utils/analytics'
 
 interface LinkProps {
   /*
@@ -11,7 +10,6 @@ interface LinkProps {
   ariaLabel?: string
   className?: string
   href: string
-  onClick?: (...args: unknown[]) => void
 }
 
 export const LinkNewTab = ({ href, children, ariaLabel, ...props }: React.PropsWithChildren<LinkProps>) => (
@@ -40,7 +38,7 @@ interface LinkButtonProps {
  * abbreviating.
  */
 export const LinkButton = ({ Icon, href, btnClass, text }: LinkButtonProps) => (
-  <LinkNewTab href={href} className={`${btnClass} mb-1`} onClick={() => logClick(`Contact-${text}`)}>
+  <LinkNewTab href={href} className={`${btnClass} mb-1`}>
     <div className={centerContentClass}>
       <Icon className="me-2" />
       {text}

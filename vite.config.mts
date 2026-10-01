@@ -9,6 +9,11 @@ import { configDefaults } from 'vitest/config'
 // resolve extensionless specifiers. See the resolve aliases below for the other half of that move.
 import { SERVICE_WORKER_ACTIVATION_MESSAGE } from './src/bootstrap/serviceWorkerProtocol.ts'
 
+// GitHub Pages serves a project site from /<repo>/; the deploy workflow sets VITE_BASE_PATH to that.
+const BASE_PATH = `/${(process.env.VITE_BASE_PATH ?? '').replace(/^\/+|\/+$/g, '')}/`.replace(/^\/\/$/, '/')
+// Social cards need an absolute image URL, so the deploy sets the public site URL too.
+process.env.VITE_SITE_URL ??= BASE_PATH
+
 /*
  * The generated corpus ships as two built chunks — roughly 6.4 MiB of catalog and 7.1 MiB of source
  * records — against Workbox's 2 MiB precache ceiling, and the plugin throws rather than warns above
@@ -149,7 +154,7 @@ const emitServiceWorkerExtras = (): Plugin => ({
   generateBundle(_options, bundle) {
     const chunkUrl = (name: string) => {
       const chunk = Object.values(bundle).find(output => output.type === 'chunk' && output.name === name)
-      return chunk ? `/${chunk.fileName}` : null
+      return chunk ? `${BASE_PATH}${chunk.fileName}` : null
     }
     const catalogUrl = chunkUrl(CATALOG_CHUNK_NAME)
     const sourcesUrl = chunkUrl(CATALOG_SOURCES_CHUNK_NAME)
@@ -260,6 +265,7 @@ self.addEventListener('activate', event => {
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: BASE_PATH,
   /*
    * Emit imported JSON as JSON.parse("...") instead of a JS object literal. Engines parse JSON
    * several times faster than JS source at scale, and the corpus chunk is ~12 MB — on a phone the

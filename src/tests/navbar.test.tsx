@@ -23,15 +23,14 @@ describe('40K Reminders navigation', () => {
       unmountComponentAtNode(container)
     })
     container.remove()
-    window.history.pushState({}, '', '/')
   })
 
-  const renderNavbar = () => {
+  const renderNavbar = (path = '/') => {
     act(() => {
       render(
         <AppStatusProvider>
           <ThemeProvider>
-            <MemoryRouter>
+            <MemoryRouter initialEntries={[path]}>
               <Navbar />
             </MemoryRouter>
           </ThemeProvider>
@@ -57,8 +56,7 @@ describe('40K Reminders navigation', () => {
   })
 
   it('links home from every other page', () => {
-    window.history.pushState({}, '', '/faq')
-    renderNavbar()
+    renderNavbar('/faq')
 
     expect(container.textContent).toContain('Home')
     expect(container.textContent).not.toContain('FAQ')

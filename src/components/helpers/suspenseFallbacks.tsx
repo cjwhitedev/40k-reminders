@@ -3,7 +3,7 @@ import GenericButton from 'components/input/generic_button'
 import NavbarWrapper from 'components/page/navbar_wrapper'
 import { useTheme } from 'context/useTheme'
 import { FiWifiOff } from 'react-icons/fi'
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import { navbarStyles } from 'theme/helperClasses'
 import { ROUTES } from 'utils/env'
 
@@ -33,18 +33,21 @@ export const LoadingHeader = () => {
   )
 }
 
-export const OfflineHeader = () => (
-  <NavbarWrapper>
-    {window.location.pathname !== ROUTES.HOME && (
-      <Link to={ROUTES.HOME} className={navbarStyles.link}>
-        Home
-      </Link>
-    )}
-    <GenericButton className={navbarStyles.btn} disabled type="button">
-      <FiWifiOff className="me-2" /> Offline
-    </GenericButton>
-  </NavbarWrapper>
-)
+export const OfflineHeader = () => {
+  const { pathname } = useLocation()
+  return (
+    <NavbarWrapper>
+      {pathname !== ROUTES.HOME && (
+        <Link to={ROUTES.HOME} className={navbarStyles.link}>
+          Home
+        </Link>
+      )}
+      <GenericButton className={navbarStyles.btn} disabled type="button">
+        <FiWifiOff className="me-2" /> Offline
+      </GenericButton>
+    </NavbarWrapper>
+  )
+}
 
 /*
  * The one loading screen: the product name and "Loading..." on the theme background. Both loading

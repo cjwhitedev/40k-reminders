@@ -1,0 +1,62 @@
+name: Deploy to GitHub Pages
+
+# Publishes the static site to https://<owner>.github.io/<repo>/. Pages must be set to deploy from
+# "GitHub Actions" in the repository settings. Lint, tests, and the build run first; nothing ships
+# if any of them fail.
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      - run: yarn install --frozen-lockfile
+
+      - run: yarn lint
+
+      # Build before test: src/tests/pwaBuild.test.ts reads the generated service worker in dist/.
+      - run: yarn build
+
+      - run: yarn test --run
+
+      # The tests check a root-path build; the published site lives under /<repo>/.
+      - name: Build for GitHub Pages
+        run: yarn build
+        env:
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+          VITE_SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+
+      # Pages has no SPA rewrite; serving the app for unknown paths lets /faq and friends deep-link.
+      - run: cp dist/index.html dist/404.html
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

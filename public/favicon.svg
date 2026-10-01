@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <clipPath id="tile"><rect width="512" height="512" rx="96"/></clipPath>
+  <g clip-path="url(#tile)">
+    <rect width="512" height="512" fill="#063647"/>
+    <rect width="512" height="72" fill="#1C7595"/>
+  </g>
+  <text x="256" y="346" text-anchor="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="800" font-size="228" letter-spacing="-4" fill="#FFFFFF">40K</text>
+</svg>

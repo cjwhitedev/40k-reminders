@@ -1,29 +1,29 @@
 {
-    "name": "40K Reminders",
-    "short_name": "40K Reminders",
-    "description": "Never forget your Warhammer 40,000 rules again! Generate helpful in-game reminders tailored to your 40K army.",
-    "id": "/",
-    "start_url": "/",
-    "scope": "/",
-    "icons": [
-        {
-            "src": "/android-chrome-192x192.png?v=vMQB3wPOMa",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "/android-chrome-512x512.png?v=vMQB3wPOMa",
-            "sizes": "512x512",
-            "type": "image/png"
-        },
-        {
-            "src": "/maskable-icon-512x512.png?v=vMQB3wPOMa",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "maskable"
-        }
-    ],
-    "theme_color": "#063647",
-    "background_color": "#ffffff",
-    "display": "standalone"
+  "name": "40K Reminders",
+  "short_name": "40K Reminders",
+  "description": "Never forget your Warhammer 40,000 rules again! Generate helpful in-game reminders tailored to your 40K army.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "icons": [
+    {
+      "src": "android-chrome-192x192.png?v=40k1",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "android-chrome-512x512.png?v=40k1",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "maskable-icon-512x512.png?v=40k1",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#063647",
+  "background_color": "#ffffff",
+  "display": "standalone"
 }

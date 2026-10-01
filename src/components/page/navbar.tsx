@@ -1,13 +1,13 @@
 import { OfflineHeader } from 'components/helpers/suspenseFallbacks'
 import NavbarWrapper from 'components/page/navbar_wrapper'
 import { useAppStatus } from 'context/useAppStatus'
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import { navbarStyles } from 'theme/helperClasses'
 import { AOS_REMINDERS_URL, ROUTES } from 'utils/env'
 
 const Navbar = () => {
   const { isOffline } = useAppStatus()
-  const { pathname } = window.location
+  const { pathname } = useLocation()
 
   if (isOffline) return <OfflineHeader />
 

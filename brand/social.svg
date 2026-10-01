@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#063647"/>
+  <rect x="0" y="0" width="1200" height="14" fill="#1C7595"/>
+  <g transform="translate(96 155) scale(0.62)">
+    <rect width="512" height="512" rx="104" fill="#0A4A61"/>
+    <rect x="72" y="88" width="368" height="44" rx="22" fill="#1C7595"/>
+    <text x="256" y="322" text-anchor="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="800" font-size="196" letter-spacing="-6" fill="#FFFFFF">40K</text>
+    <rect x="72" y="372" width="260" height="30" rx="15" fill="#E9ECEF"/>
+    <rect x="72" y="420" width="184" height="30" rx="15" fill="#E9ECEF" fill-opacity="0.55"/>
+  </g>
+  <text x="470" y="290" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="800" font-size="84" fill="#FFFFFF">40K Reminders</text>
+  <text x="472" y="356" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="34" fill="#E9ECEF">Your Warhammer 40,000 army's rules,</text>
+  <text x="472" y="400" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="34" fill="#E9ECEF">in the order they come up.</text>
+  <text x="472" y="470" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="26" fill="#9FC3D1">Built on AoS Reminders by Davis E. Ford</text>
+</svg>

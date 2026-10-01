@@ -298,15 +298,8 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           const normalizedId = id.replace(/\\/g, '/')
-          // The 40K runtime is the catalog the served app reads; the AoS corpus is no longer routed.
           if (normalizedId.endsWith('/src/wh40k11e/generated/runtime.json')) {
             return CATALOG_CHUNK_NAME
-          }
-          if (normalizedId.endsWith('/src/aos4/generated/corpus/runtime.core.json')) {
-            return CATALOG_CHUNK_NAME
-          }
-          if (normalizedId.endsWith('/src/aos4/generated/corpus/runtime.sources.json')) {
-            return CATALOG_SOURCES_CHUNK_NAME
           }
         },
       },

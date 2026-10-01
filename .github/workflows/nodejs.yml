@@ -2,7 +2,7 @@ name: Lint, Test, and Build
 
 on:
   push:
-    branches: [master]
+    branches: [master, 40k-11e-port]
   pull_request:
     branches: [master]
 
@@ -36,6 +36,3 @@ jobs:
 
       - name: Test with vitest
         run: yarn test --run
-
-      - name: Validate AoS 4 beta data readiness
-        run: yarn data:aos4:verify:beta

@@ -1,133 +1,108 @@
-# AoS Reminders
+# 40K Reminders
 
-AoS Reminders turns an Age of Sigmar army configuration into phase-ordered reminders.
+Never forget your Warhammer 40,000 rules again. 40K Reminders turns your army into a list of every
+rule it gives you, grouped by the moment it comes up in the game.
 
-## Version 6 and Age of Sigmar fourth edition
+**Live site:** <https://cjwhitedev.github.io/40k-reminders/>
 
-Version 6.0.0 is the clean cutover to Age of Sigmar fourth edition. The release was assembled in
-[PR #1717](https://github.com/daviseford/aos-reminders/pull/1717) and merged to `master` on
-2026-07-31; `master` is the primary development and production branch, and every push to it
-deploys the site.
+> **This project was built with AI.**
+>
+> **Most of the 40K-specific code, data tooling, and this README were written by GitHub Copilot, an
+> AI coding assistant, running in agent mode in VS Code on the Claude Opus 5.5 model.** A human (me,
+> the repo owner) directed the work, made the product and rules decisions, and reviewed the results
+> in the browser. The original AoS Reminders code it is built on was written by Davis E. Ford and
+> the AoS Reminders contributors.
+>
+> A note from Copilot: rule timings were classified from source text by code I wrote, plus about two
+> hundred hand-reviewed decisions recorded in `data/wh40k11e/reviews/`. I can make mistakes. Treat
+> the reminders as an aid, check anything that matters against your codex, and open an issue if a
+> rule looks wrong.
 
-The release provides:
+## Built on AoS Reminders
 
-- an AoS 4 canonical domain model for timing, abilities, weapons, warscrolls, battle profiles,
-  relationships, rules contexts, and provenance
-- safe Games Workshop and Wahapedia acquisition adapters
-- deterministic reconciliation, identity, audit, and runtime-generation tools
-- an accepted, source-traceable corpus covering 27 playable armies plus the universal Endless
-  Spells source container: 1,286 warscrolls, 1,002 battle profiles, 4,898 abilities, 2,260 weapons,
-  and 1,409 content groups
-- explicit current-standard, General's Handbook 2026-27 (`Scourge of Aqshy`), Spearhead, Legends,
-  and historical rules contexts so parallel or retired records cannot leak into the current
-  builder
-- an official battle-profile ledger that dispositions all 1,350 extracted GW facts and keeps 12
-  profile-only gaps visible without inventing missing warscroll rules
-- a responsive AoS 4 builder/reminder screen with notes, hiding, focus mode, printing/PDF export,
-  and local persistence
-- official-app, Listbot, and New Recruit `.ros`/`.rosz`/`.json` roster imports
-- Auth0-native cloud armies and opaque sharing
-- Bootstrap 5.3, React 19, maintained drag-and-drop, production-only GA4, and a quiet rules-source
-  radar, with package modernization continuing
+This project is a fork of [AoS Reminders](https://github.com/daviseford/aos-reminders) by
+[Davis E. Ford](https://daviseford.com), the Age of Sigmar reminders app at
+[aosreminders.com](https://aosreminders.com). The army builder, the reminder cards, notes, hiding,
+drag-to-reorder, the offline support, and much of the source-handling code underneath come from
+years of his work. This fork retools them for Warhammer 40,000.
 
-| Area | Status |
-| --- | --- |
-| AoS 4 data and domain | Complete and machine-verified |
-| Capabilities | Printing, importing, cloud armies, and sharing delivered |
-| Package modernization | Underway |
+If you play Age of Sigmar, use the original. If this site helps your games, consider
+[supporting AoS Reminders](https://aosreminders.com/subscribe).
 
-The beta gate binds the accepted `aos4-corpus-2026-09-29c` revision to a complete automated
-review of 85,386 results across 42,693 source/generated pairs, with zero live findings and zero
-`cannot-verify` outcomes. Run `yarn data:aos4:verify:beta` to verify the committed evidence without
-network or cache access. Future reports and source updates reopen only the affected data through the
-candidate pipeline.
+40K Reminders deliberately does not offer anything AoS Reminders charges for: there are no
+accounts, saved armies, share links, or dark theme here. Account links on this site forward to
+aosreminders.com.
 
-Package modernization continues while the accepted data contracts remain stable.
+## What it does
+
+1. Pick your faction, detachment, enhancements, and units.
+2. Every rule your army has is listed under the moment it applies: before the battle, the start and
+   end of a battle round, each phase of the turn, reactions to your opponent, and rules that are
+   always active.
+3. Switch to **Play** at the table. Hide the rules you already know, add notes, and drag reminders
+   into your own order. Your army is saved in your browser.
+
+It covers Warhammer 40,000 eleventh edition matched play. Boarding Actions detachments are not
+offered. Legends units are listed under their own heading.
 
 ## Sources
 
-Games Workshop publications are authoritative. Wahapedia's AoS 4 exports and bounded current
-faction pages provide the coherent secondary dataset used for discovery and coverage.
+Games Workshop publications are the authority. Most rules text comes from Wahapedia's eleventh
+edition data export, cross-checked against the BSData catalogues and corrected against official
+Games Workshop documents as they are added. Where sources disagree, the official document wins.
 
-- [Official Age of Sigmar downloads](https://www.warhammer-community.com/en-gb/downloads/warhammer-age-of-sigmar/)
-- [Wahapedia AoS 4 data export](https://wahapedia.ru/aos4/the-rules/data-export/)
+- [Official Warhammer 40,000 downloads](https://www.warhammer-community.com/en-gb/downloads/warhammer-40000/)
+- [Wahapedia 40K data export](https://wahapedia.ru/wh40k11ed/the-rules/data-export/) - rules data
+  Powered by Wahapedia
+- [BSData wh40k-11e](https://github.com/BSData/wh40k-11e)
 
-Accepted data retains immutable artifact and record checksums, source locators, dates, rules
-contexts, and transformation evidence. The runtime does not fetch source data.
+The site ships a checked-in rules file (`src/wh40k11e/generated/runtime.json`) and never fetches
+rules data at runtime. Raw source files are not committed.
 
 ## Development
 
-Use Node `v22.23.2` and Yarn Classic.
+Use Node `22.23.2` (see `.nvmrc`) and Yarn Classic.
 
 ```bash
+nvm use
 yarn install --frozen-lockfile
 yarn start
 ```
 
-Vite serves the application at `http://localhost:5173` by default.
+Vite serves the app at `http://localhost:5173`.
 
-Verification:
+Checks, in the order CI runs them (build before test, because the PWA tests read `dist/`):
 
 ```bash
 yarn lint
 yarn tsc --noEmit
-yarn test --run
 yarn build
+yarn test --run
 ```
 
-Full candidate acquisition is a deliberate network operation:
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to update the rules data, fix a rule, and release.
 
-```bash
-yarn data:aos4:candidate --output <new-directory>
-```
+## Deployment
 
-Candidate output is never accepted automatically. See [AoS 4 data maintenance](docs/data/aos4-maintenance.md)
-for acquisition, offline replay, review, override, identity, and generation policy.
+Pushing to `master` runs [.github/workflows/pages.yml](.github/workflows/pages.yml), which lints,
+tests, builds the site for `/<repo>/`, and publishes it to GitHub Pages. It can also be run by hand
+from the Actions tab. In the repository settings, Pages must be set to deploy from **GitHub
+Actions**.
 
-Verify the accepted snapshot and every generated checksum from the local artifact cache:
+## Project layout
 
-```bash
-yarn data:aos4:generate
-yarn data:aos4:verify:beta
-```
+- `src/wh40k11e/` - the 40K rules pipeline, army selection, reminder projection, and view models
+- `src/wh40k11e/generated/runtime.json` - the rules file the site loads (generated, never hand-edited)
+- `data/wh40k11e/` - source URL lists, the faction map, and the reviewed source decisions
+- `src/aos4/` - source acquisition, text normalization, and shared types inherited from AoS Reminders
+- `src/components/` - the React interface
+- `brand/` - SVG sources for the icons and social preview image
 
-## Architecture
+## License and credits
 
-The AoS 4 implementation lives under `src/aos4/`:
+MIT, see [LICENSE](LICENSE). The original copyright notice for AoS Reminders is kept as the license
+requires.
 
-- `domain/` — canonical contracts and validation
-- `normalize/` — safe text and timing normalization
-- `data/` — source acquisition and provider adapters
-- `reconcile/` — fact linking, precedence, conflicts, and overrides
-- `select/` — stable-ID relationship resolution
-- `reminders/` — stable reminder projection and ordering
-- `state/` and `runtime/` — versioned army documents and browser persistence
-- `view/` — pure builder/reminder presentation models
-- `generate/` and `generated/` — deterministic accepted outputs
-
-Read [AGENTS.md](AGENTS.md) for current scope and constraints.
-
-## Companion repositories
-
-- [REST API](https://github.com/daviseford/aos-reminders-rest-api)
-- [Subscription API](https://github.com/daviseford/aos-reminders-subscription-api)
-- [Subscription admin console](https://github.com/daviseford/aos-reminders-admin)
-
-These companion repositories are private.
-
-## Pull requests and deployment
-
-Normal pull requests target `master` unless a new integration branch is explicitly established.
-Every push to `master` builds and deploys the production site to S3/CloudFront, so merging or
-pushing it requires explicit project-owner authorization.
-
-See [the release runbook](docs/release.md) for production gates and post-deploy validation, and
-[AGENTS.md](AGENTS.md) for the contribution workflow and repository constraints.
-
-## Community
-
-- [Discord](https://discord.gg/2nt9Fxp)
-- [GitHub issues](https://github.com/daviseford/aos-reminders/issues)
-
-AoS Reminders is an unofficial fan-made project and is not endorsed or sanctioned by Games
-Workshop.
+40K Reminders is unofficial and fan-made. It is not endorsed or sanctioned by Games Workshop and
+takes no credit for their content. Warhammer 40,000 and all associated names are trademarks of Games
+Workshop Ltd.

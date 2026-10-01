@@ -39,6 +39,8 @@ export const Disclaimer = () => {
           Disclaimer: This tool is in no way endorsed or sanctioned by Games Workshop - it is unofficial and
           fan-made.
           <br />I take absolutely no credit for any of the Games Workshop content displayed above.
+          <br />
+          Rules data <LinkNewTab href="https://wahapedia.ru/wh40k11ed/">Powered by Wahapedia</LinkNewTab>.
         </small>
       </div>
     </div>

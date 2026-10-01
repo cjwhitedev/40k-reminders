@@ -14,7 +14,11 @@ import {
   setWh40kReminderPreference,
   type Wh40kArmyDocument,
 } from '../../wh40k11e/state/armyDocument'
-import { createWh40kBuilderViewModel, type Wh40kBuilderGroupKey } from '../../wh40k11e/view/builder'
+import {
+  createWh40kBuilderViewModel,
+  type Wh40kBuilderGroup,
+  type Wh40kBuilderGroupKey,
+} from '../../wh40k11e/view/builder'
 import { createWh40kReminderViewModels, type Wh40kReminderViewModel } from '../../wh40k11e/view/reminders'
 
 const ClearArmyModal = lazy(() => import('components/modals/generic/generic_destructive_modal'))
@@ -44,6 +48,30 @@ const Byline = () => (
     </p>
   </div>
 )
+
+/** Names the army at the top of a printed sheet; hidden on screen by print.scss. */
+const PrintHeader = ({ armyName, groups }: { armyName: string; groups: Wh40kBuilderGroup[] }) => {
+  const picked = (key: Wh40kBuilderGroupKey) =>
+    groups
+      .find(group => group.key === key)
+      ?.options.filter(option => option.selected)
+      .map(option => option.name) ?? []
+  const detachment = picked('detachment')[0]
+  const enhancements = picked('enhancement')
+  const units = picked('datasheet')
+
+  return (
+    <header className="PrintHeader container">
+      <h1>
+        {armyName}
+        {detachment ? ` - ${detachment}` : ''}
+      </h1>
+      {enhancements.length > 0 && <p>Enhancements: {enhancements.join(', ')}</p>}
+      {units.length > 0 && <p>Units: {units.join(', ')}</p>}
+      <p>40K Reminders - cjwhitedev.github.io/40k-reminders</p>
+    </header>
+  )
+}
 
 const loadDocument = (): Wh40kArmyDocument => {
   try {
@@ -165,6 +193,8 @@ const Wh40kHome = () => {
 
       <UpdateAvailable />
 
+      <PrintHeader armyName={document.name} groups={builder.groups} />
+
       {!isGameMode && <SelectionCards groups={builder.groups} onSetGroupSelections={setSelections} />}
 
       {!isGameMode && (
@@ -172,6 +202,7 @@ const Wh40kHome = () => {
           cloudArmyLinked={false}
           hiddenCount={hiddenCount}
           onClearArmy={() => setClearArmyModalIsOpen(true)}
+          onPrint={() => window.print()}
           onShowAll={showAll}
           updateArmyStatus="idle"
         />

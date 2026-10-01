@@ -281,7 +281,7 @@ const ReminderEntry = <R extends ReminderCardModel>({
     <div
       ref={provided.innerRef}
       {...provided.draggableProps}
-      className={`mb-2 ${reminder.hidden ? 'd-print-none' : ''}`}
+      className={`ReminderEntry mb-2 ${reminder.hidden ? 'd-print-none' : ''}`}
     >
       <div className="d-flex mb-1">
         <div className="flex-grow-1 ReminderHeading" {...provided.dragHandleProps}>

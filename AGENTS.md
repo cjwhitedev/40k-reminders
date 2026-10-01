@@ -12,8 +12,9 @@ Pages.
 
 ## Non-negotiable constraints
 
-- Never push or merge `master` without the owner's explicit say-so. A push to `master` deploys the
-  live site through `.github/workflows/pages.yml`. Work on a branch.
+- A push to `master` deploys the live site through `.github/workflows/pages.yml`. The owner allows
+  pushing to `master` on `origin` (cjwhitedev/40k-reminders) once checks pass. Never push to the
+  `upstream` remote, which is Davis E. Ford's original AoS Reminders repository.
 - Do not offer anything AoS Reminders charges for: no accounts, saved armies, share links, or dark
   theme. Account routes forward to aosreminders.com.
 - Keep the credit to Davis E. Ford and AoS Reminders in the masthead, footer, FAQ, README, and

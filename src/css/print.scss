@@ -1,0 +1,140 @@
+/*
+ * The printer-friendly sheet. Everything interactive is already marked `d-print-none`; this file
+ * turns what is left into black-on-white pages: one column, no fills, and no reminder or group
+ * header split across a page break.
+ */
+
+/* Shown only on paper: the army the sheet was printed for. */
+.PrintHeader {
+  display: none;
+}
+
+@media print {
+  @page {
+    margin: 12mm;
+  }
+
+  html,
+  body,
+  #root {
+    background: white !important;
+    color: black !important;
+  }
+
+  body {
+    font-size: 10.5pt;
+  }
+
+  a {
+    color: black !important;
+    text-decoration: none !important;
+  }
+
+  /* Bootstrap rows use negative gutters, which push printed text past the page's left edge. */
+  .row {
+    --bs-gutter-x: 0;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .container {
+    max-width: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .PrintHeader {
+    display: block;
+    border-bottom: 2px solid black;
+    margin: 0 0 4mm;
+    padding-bottom: 2mm;
+
+    h1 {
+      font-size: 16pt;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    p {
+      margin: 1mm 0 0;
+    }
+  }
+
+  .ReminderContainer {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  /* Cards become plain bordered sections: browsers drop background fills when printing anyway. */
+  .ReminderContainer .card {
+    border: 1px solid black !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 0 3mm !important;
+    width: 100% !important;
+  }
+
+  /* A long group may run across pages; single reminders and headers still never split. */
+  .ReminderContainer .PageBreak {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+
+  .ReminderContainer .card-header {
+    background: none !important;
+    border-bottom: 1px solid black !important;
+    padding: 1mm 2mm !important;
+    break-after: avoid;
+  }
+
+  .ReminderContainer .CardHeaderToggle,
+  .ReminderContainer .CardHeaderToggle-Mobile {
+    padding: 0 !important;
+    background: none !important;
+  }
+
+  .ReminderContainer .CardHeaderTitle {
+    color: black !important;
+    font-size: 12pt !important;
+    font-weight: 700;
+    text-align: left;
+  }
+
+  .ReminderContainer .flex-grow-1.text-center {
+    padding-left: 0 !important;
+    text-align: left !important;
+  }
+
+  .ReminderCardBody {
+    background: none !important;
+    padding: 1mm 2mm !important;
+  }
+
+  .ReminderEntry {
+    break-inside: avoid;
+    font-size: 10pt;
+    margin-bottom: 1.5mm !important;
+  }
+
+  .ReminderEntry p {
+    color: black !important;
+    margin-bottom: 0.75mm;
+  }
+
+  .ReminderEntry hr,
+  .ReminderCardBody hr {
+    border-color: #999 !important;
+    margin: 1mm 0 !important;
+  }
+
+  .NoteBorder,
+  .NoteBorder-Dark {
+    border: 1px dashed black !important;
+    max-width: 100%;
+  }
+
+  .alert {
+    display: none !important;
+  }
+}

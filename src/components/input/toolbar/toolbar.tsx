@@ -5,6 +5,7 @@ import {
   MdCloudUpload,
   MdFileDownload,
   MdFileUpload,
+  MdPrint,
   MdSave,
   MdSaveAs,
   MdShare,
@@ -24,6 +25,7 @@ interface ToolbarProps {
   onDownloadPdf?: () => void
   onImportArmy?: () => void
   onOpenSavedArmies?: () => void
+  onPrint?: () => void
   onSaveArmy?: () => void
   onShareArmy?: () => void
   onShowAll: () => void
@@ -79,6 +81,7 @@ const Toolbar = ({
   onDownloadPdf,
   onImportArmy,
   onOpenSavedArmies,
+  onPrint,
   onSaveArmy,
   onShareArmy,
   onShowAll,
@@ -103,6 +106,14 @@ const Toolbar = ({
             Clear Army
           </ToolbarButton>
         </div>
+        {onPrint && (
+          <div className={buttonWrapperClass}>
+            <ToolbarButton onClick={onPrint}>
+              <MdPrint className="me-2" />
+              Print
+            </ToolbarButton>
+          </div>
+        )}
         {onDownloadPdf && (
           <div className={buttonWrapperClass}>
             <ToolbarButton onClick={onDownloadPdf}>

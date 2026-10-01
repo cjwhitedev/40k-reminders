@@ -401,6 +401,34 @@ small {
   margin-block-end: 0;
 }
 
+/* A printed list follows the paragraph that introduces it, so it sits tight beneath it. */
+.RuleList {
+  margin: -0.75rem 0 1rem;
+  padding-inline-start: 1.25rem;
+
+  > li + li {
+    margin-block-start: 0.15rem;
+  }
+}
+
+/* Short items (rolls, factions, weapon abilities) flow along the line instead of one per line. */
+.RuleList--compact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.1rem 1.25rem;
+  list-style: none;
+  padding-inline-start: 0;
+
+  > li + li {
+    margin-block-start: 0;
+  }
+
+  > li::before {
+    content: '\2022';
+    margin-inline-end: 0.4em;
+  }
+}
+
 .ReminderHr {
   background-color: rgba(255, 255, 255, 0.15);
   &-Dark {

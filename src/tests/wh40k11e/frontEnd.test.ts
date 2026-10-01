@@ -129,6 +129,28 @@ describe('40K reminder view models', () => {
     ])
   })
 
+  it('hangs a printed list on the paragraph that introduces it', () => {
+    const sections = splitWh40kRuleText(
+      'WHEN: Just after you make one of the following rolls:\n• Hit roll\n• Wound roll\nTARGET: That unit.'
+    )
+    expect(sections).toEqual([
+      {
+        label: 'When',
+        text: 'Just after you make one of the following rolls:',
+        items: ['Hit roll', 'Wound roll'],
+        compact: true,
+      },
+      { label: 'Target', text: 'That unit.' },
+    ])
+  })
+
+  it('keeps a list of full sentences as a bulleted list', () => {
+    const sentence = 'Each time this unit makes an attack, re-roll a Hit roll of 1.'
+    expect(splitWh40kRuleText(`Select one:\n• ${sentence}\n• ${sentence}`)).toEqual([
+      { text: 'Select one:', items: [sentence, sentence] },
+    ])
+  })
+
   it('groups an army by moment of the game and tags cost, turn, and carrier', () => {
     const reminders = createWh40kReminderViewModels(WH40K_CATALOG, custodes())
     expect(reminders.length).toBeGreaterThan(10)

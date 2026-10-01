@@ -62,13 +62,19 @@ const PrintHeader = ({ armyName, groups }: { armyName: string; groups: Wh40kBuil
 
   return (
     <header className="PrintHeader container">
-      <h1>
-        {armyName}
-        {detachment ? ` - ${detachment}` : ''}
-      </h1>
-      {enhancements.length > 0 && <p>Enhancements: {enhancements.join(', ')}</p>}
-      {units.length > 0 && <p>Units: {units.join(', ')}</p>}
-      <p>40K Reminders - cjwhitedev.github.io/40k-reminders</p>
+      <h1>{armyName}</h1>
+      {detachment && <p className="PrintStrap">{detachment}</p>}
+      {enhancements.length > 0 && (
+        <p className="PrintRoster">
+          <strong>Enhancements:</strong> {enhancements.join(', ')}
+        </p>
+      )}
+      {units.length > 0 && (
+        <p className="PrintRoster">
+          <strong>Units:</strong> {units.join(', ')}
+        </p>
+      )}
+      <p className="PrintSite">40K Reminders - cjwhitedev.github.io/40k-reminders</p>
     </header>
   )
 }

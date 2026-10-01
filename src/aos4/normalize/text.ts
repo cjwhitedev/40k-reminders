@@ -44,6 +44,13 @@ export interface SourceTextNormalizationResult {
   diagnostics: NormalizationDiagnostic[]
 }
 
+export interface SourceTextNormalizationOptions {
+  /** Elements carrying any of these classes are dropped with everything inside them. */
+  skipClasses?: readonly string[]
+  /** Starts each list item on its own line with this prefix, so the list survives as text. */
+  listItemMarker?: string
+}
+
 type Node = DefaultTreeAdapterMap['node']
 type Element = DefaultTreeAdapterMap['element']
 
@@ -118,10 +125,21 @@ const repairTruncatedKeywordSpans = (fragment: Node): number => {
   return repairs
 }
 
-export const normalizeSourceText = (source: string): SourceTextNormalizationResult => {
+export const normalizeSourceText = (
+  source: string,
+  options: SourceTextNormalizationOptions = {}
+): SourceTextNormalizationResult => {
   const fragment = parseFragment(source)
   const output: string[] = []
   const diagnostics: NormalizationDiagnostic[] = []
+  const skipClasses = options.skipClasses ?? []
+  const isSkipped = (node: Element): boolean =>
+    skipClasses.length > 0 &&
+    node.attrs.some(
+      attribute =>
+        attribute.name.toLowerCase() === 'class' &&
+        attribute.value.split(/\s+/).some(name => skipClasses.includes(name))
+    )
   if (repairTruncatedKeywordSpans(fragment)) {
     diagnostics.push({
       code: 'keyword-span-completed',
@@ -171,6 +189,13 @@ export const normalizeSourceText = (source: string): SourceTextNormalizationResu
         output.push('\n')
         return
       }
+      if (isSkipped(node)) return
+      if (tagName === 'li' && options.listItemMarker) {
+        output.push('\n', options.listItemMarker)
+        node.childNodes.forEach(visit)
+        output.push('\n')
+        return
+      }
       if (BLOCK_ELEMENTS.has(tagName)) output.push('\n')
       node.childNodes.forEach(visit)
       if (BLOCK_ELEMENTS.has(tagName)) output.push('\n')
@@ -182,7 +207,16 @@ export const normalizeSourceText = (source: string): SourceTextNormalizationResu
 
   visit(fragment)
 
+  const marker = options.listItemMarker?.trim()
   const text = normalizeWhitespace(output.join(''))
+    .split('\n')
+    .reduce<string[]>((lines, line) => {
+      // A list item that opens with a block element leaves its marker on a line of its own.
+      if (marker && lines[lines.length - 1] === marker) lines[lines.length - 1] = `${marker} ${line}`
+      else lines.push(line)
+      return lines
+    }, [])
+    .join('\n')
   const withoutEncodedMarkers = text.replace(/<\/?KY>/gi, '')
   if (withoutEncodedMarkers !== text) {
     diagnostics.push({

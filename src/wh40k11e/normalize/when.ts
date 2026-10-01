@@ -1,4 +1,5 @@
 import { normalizeSourceText } from '../../aos4/normalize/text'
+import { WH40K_SOURCE_TEXT_OPTIONS, withoutListMarkers } from './sourceText'
 import type {
   Wh40kGameWindow,
   Wh40kMoment,
@@ -149,11 +150,11 @@ export const parseWh40kWhen = (clause: string): Wh40kTiming | undefined => {
 
 /** Normalize a Wahapedia rule description to safe text and parse its WHEN clause. */
 export const parseWh40kRuleTiming = (descriptionHtml: string): Wh40kWhenResult => {
-  const source = normalizeSourceText(descriptionHtml)
+  const source = normalizeSourceText(descriptionHtml, WH40K_SOURCE_TEXT_OPTIONS)
   const diagnostics: Wh40kWhenDiagnostic[] = source.diagnostics
     .filter(diagnostic => diagnostic.severity === 'error')
     .map(diagnostic => ({ code: 'unsafe-source-text', severity: 'error', message: diagnostic.message }))
-  const when = extractWhenClause(source.text)
+  const when = extractWhenClause(withoutListMarkers(source.text))
   if (!when) {
     diagnostics.push({ code: 'missing-when', severity: 'error', message: 'Rule text has no WHEN clause' })
     return { text: source.text, diagnostics }

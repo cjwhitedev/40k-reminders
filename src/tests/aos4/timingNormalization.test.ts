@@ -262,6 +262,16 @@ describe('AoS 4 source text normalization', () => {
     expect(result.diagnostics).toEqual([])
   })
 
+  it('drops skipped classes and marks list items only when asked', () => {
+    const html =
+      '<p class="Lore x">Lore.</p>Roll one of:<ul><li><b>Hit</b> roll</li><li><p>Wound roll</p></li></ul>'
+
+    expect(normalizeSourceText(html).text).toBe('Lore.\nRoll one of:\nHit roll\nWound roll')
+    expect(normalizeSourceText(html, { skipClasses: ['Lore'], listItemMarker: '- ' }).text).toBe(
+      'Roll one of:\n- Hit roll\n- Wound roll'
+    )
+  })
+
   it('splits Declare and Effect while retaining reaction trigger text', () => {
     const result = normalizeAbilityText({
       descriptionHtml:

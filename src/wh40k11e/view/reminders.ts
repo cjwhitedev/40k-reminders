@@ -1,5 +1,5 @@
 import type { SourceRecordId } from '../../aos4/domain'
-import type { Wh40kCatalog, Wh40kRule } from '../domain/rules'
+import { WH40K_LIST_ITEM_MARKER, type Wh40kCatalog, type Wh40kRule } from '../domain/rules'
 import type { Wh40kUsagePeriod } from '../domain/timing'
 import { groupWh40kReminders, projectWh40kReminders, type Wh40kReminder } from '../reminders/projectReminders'
 import { selectWh40kRules } from '../select/selectRules'
@@ -26,6 +26,10 @@ export interface Wh40kReminderTag {
 export interface Wh40kReminderSection {
   label?: string
   text: string
+  /** The printed list that follows the paragraph, e.g. the rolls Command Re-roll can re-roll. */
+  items?: string[]
+  /** Most items are a few words, so they can share lines instead of stacking one per line. */
+  compact?: boolean
 }
 
 export interface Wh40kReminderViewModel {
@@ -72,18 +76,34 @@ const USAGE_PERIOD: Record<Wh40kUsagePeriod, string> = {
 }
 
 const LABELLED_LINE = /^([A-Z][A-Z ]{2,20}):\s*(.*)$/
+const COMPACT_ITEM_LENGTH = 30
 
 const titleCase = (value: string) => value.charAt(0) + value.slice(1).toLowerCase()
+
+const median = (values: number[]) => [...values].sort((a, b) => a - b)[Math.floor((values.length - 1) / 2)]
 
 export const splitWh40kRuleText = (text: string): Wh40kReminderSection[] =>
   text
     .split('\n')
     .map(line => line.trim())
     .filter(Boolean)
-    .map(line => {
+    .reduce<Wh40kReminderSection[]>((sections, line) => {
+      if (line.startsWith(WH40K_LIST_ITEM_MARKER)) {
+        const item = line.slice(WH40K_LIST_ITEM_MARKER.length)
+        const current = sections[sections.length - 1]
+        if (current) current.items = [...(current.items ?? []), item]
+        else sections.push({ text: '', items: [item] })
+        return sections
+      }
       const labelled = LABELLED_LINE.exec(line)
-      return labelled ? { label: titleCase(labelled[1]), text: labelled[2] } : { text: line }
-    })
+      sections.push(labelled ? { label: titleCase(labelled[1]), text: labelled[2] } : { text: line })
+      return sections
+    }, [])
+    .map(section =>
+      section.items && median(section.items.map(item => item.length)) <= COMPACT_ITEM_LENGTH
+        ? { ...section, compact: true }
+        : section
+    )
 
 const perspectiveTag = (reminder: Wh40kReminder): Wh40kReminderTag | undefined => {
   if (!('perspective' in reminder.window)) return undefined

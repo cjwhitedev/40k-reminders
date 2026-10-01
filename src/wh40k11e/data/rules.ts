@@ -11,6 +11,7 @@ import type {
 } from '../domain/rules'
 import type { Wh40kTiming } from '../domain/timing'
 import { parseWh40kAbilityTiming } from '../normalize/ability'
+import { WH40K_SOURCE_TEXT_OPTIONS } from '../normalize/sourceText'
 import { parseWh40kRuleTiming } from '../normalize/when'
 import type { Wh40kReviewedSources } from './review'
 import { compareCodeUnits, type Wh40kWahapediaRecord } from './wahapedia/decode'
@@ -25,7 +26,7 @@ export interface Wh40kRuleBuildResult {
 
 type Records = Record<string, Wh40kWahapediaRecord[]>
 
-const safeText = (html: string): string => normalizeSourceText(html).text
+const safeText = (html: string): string => normalizeSourceText(html, WH40K_SOURCE_TEXT_OPTIONS).text
 
 const numberOrUndefined = (value: string): number | undefined =>
   /^\d+$/.test(value.trim()) ? Number(value) : undefined

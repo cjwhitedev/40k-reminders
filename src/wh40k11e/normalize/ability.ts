@@ -1,4 +1,5 @@
 import { normalizeSourceText } from '../../aos4/normalize/text'
+import { WH40K_SOURCE_TEXT_OPTIONS, withoutListMarkers } from './sourceText'
 import type { Wh40kTiming, Wh40kUsagePeriod } from '../domain/timing'
 import { parseWh40kWhen } from './when'
 
@@ -53,7 +54,7 @@ export const parseWh40kAbilityTiming = (
   descriptionHtml: string,
   options: { eligibilityLine?: boolean } = {}
 ): Wh40kAbilityTimingResult => {
-  const source = normalizeSourceText(descriptionHtml)
+  const source = normalizeSourceText(descriptionHtml, WH40K_SOURCE_TEXT_OPTIONS)
   const diagnostics: Wh40kAbilityTimingResult['diagnostics'] = source.diagnostics
     .filter(diagnostic => diagnostic.severity === 'error')
     .map(diagnostic => ({ code: 'unsafe-source-text', severity: 'error', message: diagnostic.message }))
@@ -68,7 +69,7 @@ export const parseWh40kAbilityTiming = (
     }
   }
 
-  let rest = text.replace(/[‘’`]/g, "'")
+  let rest = withoutListMarkers(text).replace(/[‘’`]/g, "'")
   let armyFaction: string | undefined
   const armyFactionMatch = rest.match(ARMY_FACTION)
   if (armyFactionMatch) {

@@ -22,6 +22,9 @@ export type Wh40kTimingKind = 'timed' | 'reaction' | 'passive' | 'unclassified'
 
 export type Wh40kGameMode = 'matched-play' | 'boarding-actions'
 
+/** Opens each printed list item in rule text, e.g. Command Re-roll's list of rolls. */
+export const WH40K_LIST_ITEM_MARKER = '• '
+
 export interface Wh40kRule {
   sourceRecordId: SourceRecordId
   kind: Wh40kRuleKind

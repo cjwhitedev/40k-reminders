@@ -1,8 +1,19 @@
 /*
- * The printer-friendly sheet. Everything interactive is already marked `d-print-none`; this file
- * turns what is left into black-on-white pages: one column, no fills, and no reminder or group
- * header split across a page break.
+ * The printer-friendly sheet, styled after Games Workshop's faction packs in black and white:
+ * condensed capitals, black section bars with a clipped corner, and WHEN/EFFECT-style labels.
+ * Everything interactive is already marked `d-print-none`.
  */
+
+$print-condensed: 'Roboto Condensed', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif;
+$print-mono: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+
+@mixin print-display-type {
+  font-family: $print-condensed;
+  font-stretch: condensed;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
 
 /* Shown only on paper: the army the sheet was printed for. */
 .PrintHeader {
@@ -11,7 +22,18 @@
 
 @media print {
   @page {
-    margin: 12mm;
+    margin: 12mm 12mm 14mm;
+
+    @bottom-left {
+      content: '40K Reminders';
+      font: 7pt $print-mono;
+      text-transform: uppercase;
+    }
+
+    @bottom-right {
+      content: counter(page) ' / ' counter(pages);
+      font: 7pt $print-mono;
+    }
   }
 
   html,
@@ -22,7 +44,12 @@
   }
 
   body {
-    font-size: 10.5pt;
+    font-size: 10pt;
+  }
+
+  p {
+    orphans: 2;
+    widows: 2;
   }
 
   a {
@@ -43,21 +70,49 @@
     padding-right: 0 !important;
   }
 
+  /* The faction-pack title block: a big condensed title over a hairline, then a monospace strapline. */
   .PrintHeader {
     display: block;
-    border-bottom: 2px solid black;
-    margin: 0 0 4mm;
-    padding-bottom: 2mm;
+    margin: 0 0 5mm;
+    break-after: avoid;
 
     h1 {
-      font-size: 16pt;
-      font-weight: 700;
+      @include print-display-type;
+      border-bottom: 0.75pt solid black;
+      font-size: 24pt;
+      line-height: 1;
       margin: 0;
+      padding-bottom: 1.5mm;
     }
 
     p {
-      margin: 1mm 0 0;
+      margin: 1.25mm 0 0;
     }
+
+    strong {
+      text-transform: uppercase;
+    }
+  }
+
+  .PrintStrap,
+  .PrintSite {
+    font-family: $print-mono;
+    font-size: 8pt;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .PrintStrap {
+    font-weight: 700;
+  }
+
+  .PrintRoster {
+    font-size: 9pt;
+  }
+
+  .PrintSite {
+    font-size: 6.5pt;
+    margin-top: 2mm !important;
   }
 
   .ReminderContainer {
@@ -66,26 +121,32 @@
     padding: 0 !important;
   }
 
-  /* Cards become plain bordered sections: browsers drop background fills when printing anyway. */
+  /* Each group prints whole on one page when it fits; only a group longer than a page splits. */
+  .ReminderContainer .PageBreak {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Groups drop their card box: a section bar and the rules beneath it, as in the faction packs. */
   .ReminderContainer .card {
-    border: 1px solid black !important;
+    display: block;
+    border: 0 !important;
     border-radius: 0 !important;
     box-shadow: none !important;
-    margin: 0 0 3mm !important;
+    margin: 0 0 5mm !important;
     width: 100% !important;
   }
 
-  /* A long group may run across pages; single reminders and headers still never split. */
-  .ReminderContainer .PageBreak {
-    page-break-inside: auto !important;
-    break-inside: auto !important;
-  }
-
+  /* The black bar is the one fill on the sheet, so it is forced to print. */
   .ReminderContainer .card-header {
-    background: none !important;
-    border-bottom: 1px solid black !important;
-    padding: 1mm 2mm !important;
+    background: black !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 2.5mm) 100%, 0 100%);
+    padding: 0.9mm 2.5mm 0.7mm !important;
     break-after: avoid;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
   }
 
   .ReminderContainer .CardHeaderToggle,
@@ -95,9 +156,11 @@
   }
 
   .ReminderContainer .CardHeaderTitle {
-    color: black !important;
-    font-size: 12pt !important;
-    font-weight: 700;
+    @include print-display-type;
+    color: white !important;
+    font-size: 11pt !important;
+    letter-spacing: 0.05em;
+    margin: 0;
     text-align: left;
   }
 
@@ -108,24 +171,59 @@
 
   .ReminderCardBody {
     background: none !important;
-    padding: 1mm 2mm !important;
+    padding: 2mm 0 0 !important;
   }
 
   .ReminderEntry {
     break-inside: avoid;
-    font-size: 10pt;
+    font-size: 9.5pt;
     margin-bottom: 1.5mm !important;
+  }
+
+  .ReminderHeading strong {
+    @include print-display-type;
+    font-size: 11pt;
   }
 
   .ReminderEntry p {
     color: black !important;
+    line-height: 1.35;
     margin-bottom: 0.75mm;
+
+    > strong {
+      text-transform: uppercase;
+    }
+  }
+
+  .ReminderEntry .RuleList {
+    color: black !important;
+    margin: -0.5mm 0 1mm;
   }
 
   .ReminderEntry hr,
   .ReminderCardBody hr {
     border-color: #999 !important;
-    margin: 1mm 0 !important;
+    margin: 1.5mm 0 !important;
+    opacity: 1;
+  }
+
+  /* Tags read like the faction packs' monospace stratagem subtitles; the CP cost like their 1CP. */
+  .ReminderTag {
+    border: 0.5pt solid black !important;
+    border-radius: 0 !important;
+    font-family: $print-mono;
+    font-size: 6.5pt;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    padding: 0 1mm;
+  }
+
+  .ReminderTag--cost {
+    @include print-display-type;
+    border: 0 !important;
+    font-size: 11pt;
+    order: 99;
+    padding: 0 0 0 1mm;
   }
 
   .NoteBorder,

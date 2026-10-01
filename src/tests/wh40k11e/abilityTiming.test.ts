@@ -121,4 +121,22 @@ describe('parseWh40kAbilityTiming', () => {
     expect(result.kind).toBe('unclassified')
     expect(result.diagnostics.map(item => item.code)).toEqual(['unclassified-timing'])
   })
+
+  it('drops the core-rule heading and flavour, and keeps list items marked', () => {
+    const result = parseWh40kAbilityTiming(
+      '<div class="abNameWrap"><div class="abName">LEADER<span class="h_number">24.22</span></div></div>' +
+        '<p class="ShowFluff abLegend">Mighty heroes fight at the forefront of battle.</p>' +
+        'Before the battle, in the Muster Armies step, select a bodyguard unit.'
+    )
+    expect(result.text).toBe('Before the battle, in the Muster Armies step, select a bodyguard unit.')
+    expect(result.kind).toBe('timed')
+  })
+
+  it('reads the timing of a rule that opens with a list', () => {
+    const result = parseWh40kAbilityTiming(
+      '<ul><li>This unit has Stealth.</li><li>This unit has Scouts 6".</li></ul>'
+    )
+    expect(result.text).toBe('• This unit has Stealth.\n• This unit has Scouts 6".')
+    expect(result.kind).toBe('passive')
+  })
 })

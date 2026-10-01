@@ -36,7 +36,7 @@ export interface ReminderCardModel {
   declare?: string
   effect: string
   /** Labelled paragraphs that replace the Trigger/Declare/Effect lines when present. */
-  sections?: Array<{ label?: string; text: string }>
+  sections?: Array<{ label?: string; text: string; items?: string[]; compact?: boolean }>
   sourceRecordIndexes: readonly number[]
 }
 
@@ -80,6 +80,18 @@ const RuleText = ({ label, text, muted = false }: { label?: string; text: string
       {label && <strong>{label}: </strong>}
       {text}
     </p>
+  )
+}
+
+/** Short items share lines in a grid; longer ones keep a bullet each. */
+const RuleList = ({ items, compact = false }: { items: string[]; compact?: boolean }) => {
+  const { theme } = useTheme()
+  return (
+    <ul className={`RuleList ${compact ? 'RuleList--compact' : ''} ${theme.text}`}>
+      {items.map((item, index) => (
+        <li key={index}>{item}</li>
+      ))}
+    </ul>
   )
 }
 
@@ -320,11 +332,12 @@ const ReminderEntry = <R extends ReminderCardModel>({
         <>
           {reminder.sections ? (
             reminder.sections.map((section, index) => (
-              <RuleText
-                key={index}
-                {...(section.label ? { label: section.label } : {})}
-                text={section.text}
-              />
+              <Fragment key={index}>
+                {(section.label || section.text) && (
+                  <RuleText {...(section.label ? { label: section.label } : {})} text={section.text} />
+                )}
+                {section.items && <RuleList items={section.items} compact={Boolean(section.compact)} />}
+              </Fragment>
             ))
           ) : (
             <>

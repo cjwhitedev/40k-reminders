@@ -2,9 +2,7 @@
 
 <!-- impeccable:product-schema 1 -->
 
-> Inherited from AoS Reminders. The interface principles still apply to 40K Reminders; anything about
-> accounts, subscriptions, payments, roster import, PDF export, or dark theme describes features this
-> fork does not have.
+> Inherited from AoS Reminders. The interface principles still apply to 40K Reminders; anything about accounts, subscriptions, payments, roster import, PDF export, or dark theme describes features this fork does not have.
 
 ## Platform
 

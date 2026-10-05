@@ -9,6 +9,7 @@ Instructions for AI coding assistants working in this repository. Humans should 
 ## Non-negotiable constraints
 
 - A push to `master` deploys the live site through `.github/workflows/pages.yml`. The owner allows pushing to `master` on `origin` (cjwhitedev/40k-reminders) once checks pass. Never push to the `upstream` remote, which is Davis E. Ford's original AoS Reminders repository.
+- Never merge `upstream` normally or use GitHub's "Sync fork". Review new upstream commits, cherry-pick only shared code with Davis as author, then record the review with `git merge -s ours <sha>`, which must change no files. The full routine is CONTRIBUTING.md section 10.
 - Do not offer anything AoS Reminders charges for: no accounts, saved armies, share links, or dark theme. Account routes forward to aosreminders.com.
 - Keep the credit to Davis E. Ford and AoS Reminders in the masthead, footer, FAQ, README, and LICENSE.
 - Keep the "Powered by Wahapedia" attribution in the footer and README.

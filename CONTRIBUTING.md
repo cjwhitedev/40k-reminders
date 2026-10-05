@@ -138,7 +138,36 @@ If the parser itself misreads a common phrasing, the fix belongs in `src/wh40k11
 
 If TypeScript suddenly reports JSX errors in files you did not touch after switching branches, delete `node_modules` and reinstall; see `docs/solutions/workflow-learnings/stale-nested-types-react-after-package-track.md`.
 
-## 10. Ground rules
+## 10. Keep up with AoS Reminders
+
+This repo is a fork of [daviseford/aos-reminders](https://github.com/daviseford/aos-reminders), set up as the `upstream` remote (`git remote add upstream https://github.com/daviseford/aos-reminders.git` on a new clone). Most of Davis's work is Age of Sigmar data or features this fork removed, so it is reviewed commit by commit and never merged normally. GitHub's "commits behind" count on the repo page shows how many of his commits are still unreviewed.
+
+1. **List the new commits:**
+
+   ```bash
+   git fetch upstream
+   git log --oneline --reverse HEAD..upstream/master
+   ```
+
+2. **See which files each one touches that still exist here.** Anything under AoS data, accounts, subscriptions, roster import, cloud saves, or PDF export is gone from this fork and can be skipped.
+
+   ```bash
+   git diff-tree --no-commit-id -r --name-only <sha> | while read f; do [ -e "$f" ] && echo "$f"; done
+   ```
+
+3. **Bring over what is useful** with `git cherry-pick -n <sha>`, or for part of a commit, `git show <sha> -- <file> | git apply --3way`. Resolve conflicts in favour of this fork, run the section 3 checks, and commit with Davis as the author: `git commit --author="$(git log -1 --format='%an <%ae>' <sha>)"`. Say in the message which upstream commit it came from and what was adapted.
+4. **Mark everything reviewed** by merging the last commit you looked at with the `ours` strategy. It records Davis's commits as merged without changing a single file, which brings the "behind" count to zero:
+
+   ```bash
+   git merge -s ours <last-reviewed-sha> -m "Mark upstream AoS Reminders reviewed through <last-reviewed-sha>"
+   git diff --name-only HEAD^1 HEAD    # must print nothing
+   ```
+
+5. **Push** (section 4), and add a line to the upstream log in `TODO.md`.
+
+Never use the **Sync fork** button on GitHub. "Update branch" attempts a real merge that would bring the AoS app back, and "Discard commits" resets this fork to Davis's repo, deleting all 40K work.
+
+## 11. Ground rules
 
 - Never offer anything AoS Reminders charges for: accounts, saved armies, share links, dark theme.
 - Keep the credit to Davis E. Ford and AoS Reminders, and the "Powered by Wahapedia" attribution.

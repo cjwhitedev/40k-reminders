@@ -29,5 +29,8 @@ Follow-ups for 40K Reminders. Tick items off or delete them as they are done.
 
 ## Upstream (AoS Reminders)
 
-- Reviewed through `6ab87e1e` (2026-10-01). Brought over automatic update installs (`34df2f5d`) and bolder tag outlines (from `6f77e318`); the rest was AoS data, accounts, or features this fork removed.
-- [ ] Next time: `git fetch upstream && git log --oneline 6ab87e1e..upstream/master`, and cherry-pick only shared code. Never merge, which would bring back the AoS app.
+- Reviewed through `9ac93ac1` (2026-10-05).
+  - 2026-10-01, through `6ab87e1e`: brought over automatic update installs (`34df2f5d`) and bolder tag outlines (from `6f77e318`).
+  - 2026-10-05, through `9ac93ac1`: brought over the unused stats-page style removal (from `000c5d3d`). Its package and component removals were already done here; the rest was AoS data, accounts, and subscribe-page work.
+- GitHub's "commits behind" count never drops, because picked commits get new hashes here. Count from the review point instead.
+- [ ] Next time: `git fetch upstream && git log --oneline 9ac93ac1..upstream/master`, and cherry-pick only shared code. Never merge, which would bring back the AoS app.

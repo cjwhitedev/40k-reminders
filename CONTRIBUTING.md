@@ -49,9 +49,12 @@ yarn test --run
 
 The live site is <https://cjwhitedev.github.io/40k-reminders/>.
 
-1. Do your work on a branch and push it. CI (`.github/workflows/nodejs.yml`) lints, builds, and tests it.
-2. Open a pull request into `master` and merge it once CI is green.
-3. The merge runs `.github/workflows/pages.yml`, which tests again, builds the site for the `/40k-reminders/` path, and publishes it. Watch it under the repository's **Actions** tab.
+All work happens on `master`, and every push to `master` deploys. `.github/workflows/pages.yml` lints, builds, and tests the push, then publishes the site for the `/40k-reminders/` path only if all of that passed. Watch it under the repository's **Actions** tab.
+
+1. Run the section 3 checks (`yarn prepush` runs them all).
+2. Commit, then `git push origin master`.
+
+To try a risky change before it goes live, push it to a branch instead. `.github/workflows/nodejs.yml` checks every other branch and every pull request; merging into `master` deploys it.
 
 You can also redeploy without a code change: **Actions > Deploy to GitHub Pages > Run workflow**.
 
@@ -92,6 +95,8 @@ To restore on a new machine, extract the archive in the repository root.
 | `yarn data:wh40k11e:generate:write` | Rewrites `runtime.json`. Commit the result. |
 | `yarn data:wh40k11e:compare` | Cross-checks Wahapedia datasheets against BSData. |
 | `yarn data:wh40k11e:check-exports` | Confirms the downloaded CSVs match Wahapedia's published export list. |
+| `yarn data:wh40k11e:watch --candidate <dir>` | Says whether Wahapedia has changed since the review file was written, from a fetched `Last_update.csv`. |
+| `yarn data:archive pack\|encrypt\|decrypt ...` | Packs candidate folders into one archive, and encrypts or decrypts it with `DATA_ARCHIVE_PASSPHRASE`. |
 
 Faction IDs (`AC`, `SM`, `CSM`, ...) are Wahapedia's; the full list is in `runtime.json` under `catalog.factions`.
 
@@ -112,7 +117,24 @@ If the parser itself misreads a common phrasing, the fix belongs in `src/wh40k11
 
 ## 8. Refresh the rules data (new codex, balance update)
 
-1. **Download new sources** into a new folder. For example, the Wahapedia exports:
+`.github/workflows/data-watch.yml` checks Wahapedia every Monday and opens a **Wahapedia data changed** issue when its exports have moved on from the ones the review file was written against. That issue is the usual signal to start here. To check now, run **Actions > Watch Wahapedia for changes > Run workflow**.
+
+1. **Download new sources** into new candidate folders. The usual way is on GitHub's network, which also gets around Wahapedia blocking yours:
+
+   1. Run **Actions > Fetch rules sources > Run workflow**. Tick what to fetch; for BSData, paste the full commit SHA you want from [BSData/wh40k-11e](https://github.com/BSData/wh40k-11e/commits).
+   2. When it finishes, its summary page shows the exact commands. From the repository root:
+
+      ```bash
+      gh run download <run-id> -n wh40k11e-sources-<stamp>
+      read -rs DATA_ARCHIVE_PASSPHRASE && export DATA_ARCHIVE_PASSPHRASE   # paste it; nothing is shown
+      yarn data:archive decrypt wh40k11e-sources-<stamp>.tgz.enc wh40k11e-sources-<stamp>.tgz
+      tar -xzf wh40k11e-sources-<stamp>.tgz
+      rm wh40k11e-sources-<stamp>.tgz wh40k11e-sources-<stamp>.tgz.enc
+      ```
+
+      The sources land in `.cache/wh40k11e/` as new candidate folders named after the run, such as `.cache/wh40k11e/candidates/wahapedia-exports-<stamp>`. GitHub keeps the encrypted download for 3 days.
+
+   You can also download on your own machine with the same commands the workflow runs:
 
    ```bash
    yarn data:wh40k11e:candidate \
@@ -123,14 +145,23 @@ If the parser itself misreads a common phrasing, the fix belongs in `src/wh40k11
 
    Official PDFs use `--official-urls-file data/wh40k11e/official-urls.json` (add new PDF links to that list first). BSData uses `--bsdata-ref <40-character commit> --bsdata-paths-file data/wh40k11e/bsdata-paths.json`.
 
-   Wahapedia blocks some networks. If yours is blocked, follow [docs/data/wh40k11e-wahapedia-handoff.md](docs/data/wh40k11e-wahapedia-handoff.md) to fetch on another network and carry the files back.
+   If Wahapedia blocks both GitHub and your network, follow [docs/data/wh40k11e-wahapedia-handoff.md](docs/data/wh40k11e-wahapedia-handoff.md) to fetch on another network and carry the files back.
 
 2. **Copy the review file** to a new dated name, update its `revision`, and update its `inputs` section with the new checksums. Each checksum is in the new folder's `candidate-manifest.json`.
 3. **Point the pipeline at the new inputs** by updating `WH40K_DEFAULT_PIPELINE_OPTIONS` in `src/wh40k11e/data/pipeline.ts`.
 4. **Run `yarn data:wh40k11e:review`** and work through every reported problem until the status is `reviewed`. New errors usually mean new or renamed records that need an exclusion or decision.
 5. **Run `yarn data:wh40k11e:rules --output .cache/wh40k11e/rules/<date>.json`** and give every rule it lists a `timingOverrides` or `ignoredRules` decision.
 6. **Run `yarn data:wh40k11e:generate:write`**, the checks in section 3, and spot-check a few armies in the browser.
-7. **Commit** the review file, `pipeline.ts`, any URL-list changes, and `runtime.json`. Back up the cache (section 5).
+7. **Commit** the review file, `pipeline.ts`, any URL-list changes, and `runtime.json`. Back up the cache (section 5). Close the **Wahapedia data changed** issue, if there is one.
+
+### One-time setup for the data workflows
+
+The fetch workflow only uploads sources encrypted, because downloads from a public repository's workflows can be fetched by anyone signed in to GitHub. It needs a passphrase, stored in two places:
+
+1. Make one: `openssl rand -base64 32`. Save it in your password manager; it cannot be read back out of GitHub.
+2. Store it as the repository secret `DATA_ARCHIVE_PASSPHRASE`: run `gh secret set DATA_ARCHIVE_PASSPHRASE` and paste it, or use **Settings > Secrets and variables > Actions > New repository secret**.
+
+To change it, repeat both steps. Archives made with the old passphrase only decrypt with the old one.
 
 ## 9. Dependencies
 

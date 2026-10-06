@@ -1,8 +1,9 @@
 name: Lint, Test, and Build
 
+# Pushes to master are checked by pages.yml before it deploys; this covers other branches and PRs.
 on:
   push:
-    branches: [master, 40k-11e-port]
+    branches-ignore: [master]
   pull_request:
     branches: [master]
 

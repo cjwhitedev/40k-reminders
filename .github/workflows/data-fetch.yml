@@ -1,0 +1,118 @@
+name: Fetch rules sources
+
+# Downloads rules sources on GitHub's network and uploads them encrypted, for a rules-data refresh
+# (CONTRIBUTING.md section 8). Separate from the build: nothing here changes the repository or the site.
+on:
+  workflow_dispatch:
+    inputs:
+      wahapedia_exports:
+        description: Wahapedia CSV exports (data/wh40k11e/wahapedia-export-urls.json)
+        type: boolean
+        default: true
+      wahapedia_pages:
+        description: Wahapedia rules pages and export spreadsheet (data/wh40k11e/wahapedia-urls.json)
+        type: boolean
+        default: false
+      official_pdfs:
+        description: Official Games Workshop PDFs (data/wh40k11e/official-urls.json)
+        type: boolean
+        default: false
+      bsdata_ref:
+        description: BSData wh40k-11e commit to fetch (full 40-character SHA); leave empty to skip
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    env:
+      CANDIDATES: .cache/wh40k11e/candidates
+      DATA_ARCHIVE_PASSPHRASE: ${{ secrets.DATA_ARCHIVE_PASSPHRASE }}
+
+    steps:
+      # Raw sources are only ever uploaded encrypted, so stop before downloading anything.
+      - name: Require the archive passphrase
+        run: |
+          if [ -z "$DATA_ARCHIVE_PASSPHRASE" ]; then
+            echo "::error::Add the DATA_ARCHIVE_PASSPHRASE repository secret first (CONTRIBUTING.md section 8)."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: 'yarn'
+
+      - run: yarn install --frozen-lockfile
+
+      - name: Name this run
+        run: echo "STAMP=$(date -u +%Y-%m-%d)-run${{ github.run_number }}" >> "$GITHUB_ENV"
+
+      - name: Wahapedia exports
+        if: inputs.wahapedia_exports
+        run: >-
+          yarn data:wh40k11e:candidate
+          --wahapedia-urls-file data/wh40k11e/wahapedia-export-urls.json
+          --pause-ms 1000
+          --output "$CANDIDATES/wahapedia-exports-$STAMP"
+
+      - name: Wahapedia pages
+        if: inputs.wahapedia_pages
+        run: >-
+          yarn data:wh40k11e:candidate
+          --wahapedia-urls-file data/wh40k11e/wahapedia-urls.json
+          --pause-ms 1000
+          --output "$CANDIDATES/wahapedia-pages-$STAMP"
+
+      - name: Official PDFs
+        if: inputs.official_pdfs
+        run: >-
+          yarn data:wh40k11e:candidate
+          --official-urls-file data/wh40k11e/official-urls.json
+          --output "$CANDIDATES/official-$STAMP"
+
+      - name: BSData
+        if: inputs.bsdata_ref != ''
+        env:
+          BSDATA_REF: ${{ inputs.bsdata_ref }}
+        run: >-
+          yarn data:wh40k11e:candidate
+          --bsdata-ref "$BSDATA_REF"
+          --bsdata-paths-file data/wh40k11e/bsdata-paths.json
+          --output "$CANDIDATES/bsdata-$STAMP"
+
+      - name: Pack and encrypt
+        run: |
+          dirs=$(find "$CANDIDATES" -mindepth 1 -maxdepth 1 -type d | sort)
+          if [ -z "$dirs" ]; then
+            echo "::error::Nothing was selected to fetch."
+            exit 1
+          fi
+          yarn -s data:archive pack sources.tgz $dirs
+          yarn -s data:archive encrypt sources.tgz "wh40k11e-sources-$STAMP.tgz.enc"
+          rm sources.tgz
+          {
+            echo "## Fetched"
+            for dir in $dirs; do echo "- \`$dir\`"; done
+            echo
+            echo "Download and unpack from the repository root (CONTRIBUTING.md section 8):"
+            echo
+            echo '```bash'
+            echo "gh run download ${{ github.run_id }} -n wh40k11e-sources-$STAMP"
+            echo "yarn data:archive decrypt wh40k11e-sources-$STAMP.tgz.enc wh40k11e-sources-$STAMP.tgz"
+            echo "tar -xzf wh40k11e-sources-$STAMP.tgz"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: wh40k11e-sources-${{ env.STAMP }}
+          path: wh40k11e-sources-${{ env.STAMP }}.tgz.enc
+          if-no-files-found: error
+          retention-days: 3
+          compression-level: 0

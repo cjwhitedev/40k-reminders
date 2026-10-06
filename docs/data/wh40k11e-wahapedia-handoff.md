@@ -1,6 +1,6 @@
 # 40K 11th Edition: fetching Wahapedia on another network
 
-Wahapedia blocks the network the main development machine is on. These steps fetch the Wahapedia sources on a machine that can reach it, then carry the result back as one archive.
+Wahapedia blocks the network the main development machine is on. The first choice is the **Fetch rules sources** GitHub workflow (CONTRIBUTING.md section 8), which downloads on GitHub's network. If Wahapedia blocks that too, these steps fetch the Wahapedia sources on another machine that can reach it, then carry the result back as one archive.
 
 The fetch only saves source files to the ignored `.cache/` tree and writes a checksum manifest. It does not change accepted data, generated files, or the app. Raw Wahapedia pages and exports must never be committed; move them only as the archive described below.
 
@@ -11,15 +11,13 @@ You need Git, [nvm](https://github.com/nvm-sh/nvm), and a network that can reach
 ```bash
 git clone https://github.com/cjwhitedev/40k-reminders.git
 cd 40k-reminders
-git checkout 40k-11e-port
 ```
 
 If you already have a clone:
 
 ```bash
 cd 40k-reminders
-git fetch origin
-git checkout 40k-11e-port
+git checkout master
 git pull
 ```
 
@@ -88,19 +86,12 @@ If the data export page doesn't exist or lists no CSV files, skip this step and 
 
 ## 6. Package the results
 
-This archives each successful candidate directory together with the cached source files its manifest points to. Run it from the repository root.
+This archives each successful candidate directory together with the cached source files its manifest points to. Run it from the repository root, listing only the directories that exist.
 
 ```bash
-rm -f /tmp/wh40k11e-files.txt
-for name in wahapedia-pages wahapedia-exports; do
-  dir=".cache/wh40k11e/candidates/$name"
-  [ -f "$dir/candidate-manifest.json" ] || continue
-  echo "$dir" >> /tmp/wh40k11e-files.txt
-  node -e 'const m=require(process.argv[1]);for(const a of m.artifacts)console.log(".cache/wh40k11e/artifacts/"+a.checksum)' \
-    "./$dir/candidate-manifest.json" >> /tmp/wh40k11e-files.txt
-done
-tar -czf wh40k11e-wahapedia.tgz -T /tmp/wh40k11e-files.txt
-rm /tmp/wh40k11e-files.txt
+yarn data:archive pack wh40k11e-wahapedia.tgz \
+  .cache/wh40k11e/candidates/wahapedia-pages \
+  .cache/wh40k11e/candidates/wahapedia-exports
 tar -tzf wh40k11e-wahapedia.tgz | grep candidate-manifest.json
 ```
 
@@ -165,7 +156,7 @@ The check ends with one of two results:
 - `Candidate CSV exports match the published specification.` Nothing more is needed.
 - A list of `missing from candidate` or `not in specification` URLs. Correct `data/wh40k11e/wahapedia-export-urls.json` to match, then rerun step 5 with a new `--output` directory and rerun the check against it.
 
-Either way, package and bring back the results as in steps 6 and 7, with `wahapedia-spec` added to the candidate names in the step 6 loop (and the new exports directory, if you reran step 5). Add the check's output to your notes. On the development machine, replay the spreadsheet as in step 8:
+Either way, package and bring back the results as in steps 6 and 7, with `.cache/wh40k11e/candidates/wahapedia-spec` added to the step 6 command (and the new exports directory, if you reran step 5). Add the check's output to your notes. On the development machine, replay the spreadsheet as in step 8:
 
 ```bash
 yarn data:wh40k11e:candidate \

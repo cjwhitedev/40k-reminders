@@ -1,0 +1,53 @@
+name: Watch Wahapedia for changes
+
+# Weekly: fetch only Wahapedia's Last_update.csv and open an issue when it differs from the one the
+# current review file was built from. Nothing is stored or published.
+on:
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: 'yarn'
+
+      - run: yarn install --frozen-lockfile
+
+      - name: Fetch Last_update.csv
+        run: >-
+          yarn data:wh40k11e:candidate
+          --wahapedia-url https://wahapedia.ru/wh40k11ed/Last_update.csv
+          --output .cache/wh40k11e/candidates/watch
+
+      - name: Compare with the reviewed sources
+        id: check
+        run: yarn data:wh40k11e:watch --candidate .cache/wh40k11e/candidates/watch
+
+      - name: Open an issue
+        if: steps.check.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LAST_UPDATE: ${{ steps.check.outputs.last_update }}
+          REVIEW: ${{ steps.check.outputs.review }}
+        run: |
+          title='Wahapedia data changed'
+          open=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq length)
+          if [ "$open" != "0" ]; then
+            echo "An open issue already tracks this."
+            exit 0
+          fi
+          gh issue create --title "$title" --body "Wahapedia's exports report a new last update (\`$LAST_UPDATE\`) since \`$REVIEW\` was reviewed.
+
+          Refresh the rules data with CONTRIBUTING.md section 8, starting with **Actions > Fetch rules sources**. Close this issue once the refreshed data is on \`master\`."

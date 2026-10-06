@@ -22,6 +22,7 @@
   "scripts": {
     "brand:icons": "node scripts/brandIcons.mjs",
     "build": "tsc && vite build",
+    "data:archive": "node scripts/dataArchive.mjs",
     "data:wh40k11e:candidate": "vite-node --script src/wh40k11e/data/acquireCommand.ts",
     "data:wh40k11e:check-exports": "vite-node --script src/wh40k11e/data/checkExportsCommand.ts",
     "data:wh40k11e:compare": "vite-node --script src/wh40k11e/data/compareCommand.ts",
@@ -31,6 +32,7 @@
     "data:wh40k11e:reminders": "vite-node --script src/wh40k11e/data/remindersCommand.ts",
     "data:wh40k11e:review": "vite-node --script src/wh40k11e/data/reviewCommand.ts",
     "data:wh40k11e:rules": "vite-node --script src/wh40k11e/data/rulesCommand.ts",
+    "data:wh40k11e:watch": "vite-node --script src/wh40k11e/data/watchCommand.ts",
     "format": "yarn prettier --write \"**/*.*(js|jsx|mjs|cjs|ts|tsx|mts|cts|json|scss|css|yml|yaml|html)\"",
     "lint": "eslint src --max-warnings 0",
     "prepare": "husky",

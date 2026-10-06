@@ -63,7 +63,7 @@ If the run fails, it saves nothing: the output directory is only written after e
 
 - `returned HTTP 404`: that URL does not exist. Find the right address in a browser, fix it in `data/wh40k11e/wahapedia-urls.json`, and rerun with a new `--output` directory.
 - `returned HTTP 403`: Wahapedia blocked this network too. Try another network.
-- `Received text/... from`: the page returned an unexpected file type. Copy the whole error line for the report in step 7.
+- `Received text/... from`: the page returned an unexpected file type. Copy the whole error line into the notes for step 7.
 
 Every rerun needs a new `--output` directory, because the command never overwrites one.
 
@@ -84,7 +84,7 @@ yarn data:wh40k11e:candidate \
 
 Failures read the same way as in step 4. A 404 here usually means one guessed file name is wrong.
 
-If the data export page doesn't exist or lists no CSV files, skip this step and say so in the report.
+If the data export page doesn't exist or lists no CSV files, skip this step and say so in the notes for step 7.
 
 ## 6. Package the results
 
@@ -104,7 +104,7 @@ rm /tmp/wh40k11e-files.txt
 tar -tzf wh40k11e-wahapedia.tgz | grep candidate-manifest.json
 ```
 
-The last command should print one `candidate-manifest.json` line per candidate directory that was packaged. If it prints nothing, the archive is incomplete; report it rather than sending it.
+The last command should print one `candidate-manifest.json` line per candidate directory that was packaged. If it prints nothing, the archive is incomplete; don't send it, and note what happened instead.
 
 If neither step 4 nor step 5 succeeded, there is nothing to package. Go straight to step 7.
 
@@ -112,26 +112,34 @@ If neither step 4 nor step 5 succeeded, there is nothing to package. Go straight
 
 1. Copy `wh40k11e-wahapedia.tgz` to the main development machine (AirDrop, USB drive, or a cloud folder). Don't commit it or attach it to a GitHub issue; it contains raw Wahapedia content.
 2. On the development machine, put it in `40k-reminders/.cache/wh40k11e/incoming/wh40k11e-wahapedia.tgz`.
-3. Tell the assistant in chat that the archive is there. Include:
+3. Write down, for whoever runs step 8 (it may be you):
    - which steps succeeded
    - any error lines, copied in full
    - any URL changes you made to the two JSON lists
    - the CSV file names shown on the data export page, if step 5 was skipped or failed
 
-Commit any URL list corrections to the `40k-11e-port` branch, or paste them in chat.
+Commit and push any URL list corrections so the development machine gets them with `git pull`.
 
 ## 8. Unpacking on the development machine
 
-The assistant runs this; it's recorded here for reference. Replaying offline re-checks the SHA-256 of every file against the manifest, so a damaged or altered archive fails instead of loading.
+Run this from the repository root on the development machine. Replaying offline re-checks the SHA-256 of every file against its manifest, so a damaged or altered archive fails instead of loading. Each replay uses the same URL list as the fetch that made it; skip any line whose candidate directory is not in the archive.
 
 ```bash
+git pull
 tar -xzf .cache/wh40k11e/incoming/wh40k11e-wahapedia.tgz
 yarn data:wh40k11e:candidate \
   --wahapedia-urls-file data/wh40k11e/wahapedia-urls.json \
   --accepted-manifest .cache/wh40k11e/candidates/wahapedia-pages/candidate-manifest.json \
   --offline \
   --output .cache/wh40k11e/candidates/wahapedia-pages-replay
+yarn data:wh40k11e:candidate \
+  --wahapedia-urls-file data/wh40k11e/wahapedia-export-urls.json \
+  --accepted-manifest .cache/wh40k11e/candidates/wahapedia-exports/candidate-manifest.json \
+  --offline \
+  --output .cache/wh40k11e/candidates/wahapedia-exports-replay
 ```
+
+Every replay should end with `40K candidate manifest: .../candidate-manifest.json`. `Offline manifest has no compatible artifact for <url>` means the URL list changed after the fetch: replay with the list exactly as it was when the archive was made. The new candidate directories are then ready for CONTRIBUTING.md section 8, from step 2 (copy the review file and update its checksums).
 
 ## Follow-up: fetch the export specification
 
@@ -157,7 +165,17 @@ The check ends with one of two results:
 - `Candidate CSV exports match the published specification.` Nothing more is needed.
 - A list of `missing from candidate` or `not in specification` URLs. Correct `data/wh40k11e/wahapedia-export-urls.json` to match, then rerun step 5 with a new `--output` directory and rerun the check against it.
 
-Either way, package and send the results as in steps 6 and 7, with `wahapedia-spec` added to the candidate names in the step 6 loop (and the new exports directory, if you reran step 5). Include the check's output in your chat message.
+Either way, package and bring back the results as in steps 6 and 7, with `wahapedia-spec` added to the candidate names in the step 6 loop (and the new exports directory, if you reran step 5). Add the check's output to your notes. On the development machine, replay the spreadsheet as in step 8:
+
+```bash
+yarn data:wh40k11e:candidate \
+  --wahapedia-url 'https://wahapedia.ru/wh40k11ed/Export%20Data%20Specs.xlsx?v=20260817b' \
+  --accepted-manifest .cache/wh40k11e/candidates/wahapedia-spec/candidate-manifest.json \
+  --offline \
+  --output .cache/wh40k11e/candidates/wahapedia-spec-replay
+```
+
+Use the same `--wahapedia-url` as the fetch, if you had to change it.
 
 ## Status: rule timing (2026-10-01)
 

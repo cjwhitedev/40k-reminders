@@ -70,7 +70,8 @@ Pushing to `master` runs [.github/workflows/pages.yml](.github/workflows/pages.y
 - `data/wh40k11e/` - source URL lists, the faction map, and the reviewed source decisions
 - `src/aos4/` - source acquisition, text normalization, and shared types inherited from AoS Reminders
 - `src/components/` - the React interface
-- `brand/` - SVG sources for the icons and social preview image
+- `brand/` - SVG sources for the icons and social preview image; `yarn brand:icons` renders them into `public/`
+- `scripts/` - maintenance scripts run through `yarn`
 
 ## License and credits
 

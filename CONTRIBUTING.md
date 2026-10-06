@@ -138,6 +138,10 @@ If the parser itself misreads a common phrasing, the fix belongs in `src/wh40k11
 
 If TypeScript suddenly reports JSX errors in files you did not touch after switching branches, delete `node_modules` and reinstall; see `docs/solutions/workflow-learnings/stale-nested-types-react-after-package-track.md`.
 
+### Icons and social preview
+
+The favicon, app icons, and the social preview image in `public/` are generated from the SVG sources in `brand/`. Edit the SVGs (any vector editor, or by hand), then run `yarn brand:icons` to rewrite every PNG, `favicon.ico`, and `public/favicon.svg`. Commit `brand/` and `public/` together. Never edit the PNGs directly; the next run overwrites them.
+
 ## 10. Keep up with AoS Reminders
 
 This repo is a fork of [daviseford/aos-reminders](https://github.com/daviseford/aos-reminders), set up as the `upstream` remote (`git remote add upstream https://github.com/daviseford/aos-reminders.git` on a new clone). Most of Davis's work is Age of Sigmar data or features this fork removed, so it is reviewed commit by commit and never merged normally. GitHub's "commits behind" count on the repo page shows how many of his commits are still unreviewed.

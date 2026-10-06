@@ -20,6 +20,7 @@
     "sass": "^1.102.0"
   },
   "scripts": {
+    "brand:icons": "node scripts/brandIcons.mjs",
     "build": "tsc && vite build",
     "data:wh40k11e:candidate": "vite-node --script src/wh40k11e/data/acquireCommand.ts",
     "data:wh40k11e:check-exports": "vite-node --script src/wh40k11e/data/checkExportsCommand.ts",
@@ -73,6 +74,7 @@
     "prettier": "^3.9.6",
     "prettier-plugin-organize-imports": "^4.3.0",
     "pretty-quick": "^4.2.2",
+    "sharp": "^0.35.5",
     "typescript": "5.9.3",
     "typescript-eslint": "^8.66.0",
     "vite": "^8.2.0",

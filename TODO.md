@@ -24,8 +24,7 @@ Follow-ups for 40K Reminders. Tick items off or delete them as they are done.
 
 ## Data
 
-- [ ] Set up the `DATA_ARCHIVE_PASSPHRASE` secret (CONTRIBUTING.md section 8, one-time setup), then run **Fetch rules sources** once to learn whether GitHub's network can reach Wahapedia. If it cannot, the watch workflow fails the same way and the handoff doc stays the way to fetch.
-- [ ] Delete the retired `40k-11e-port` branch on GitHub once `master` is pushed.
+- [ ] Set up the `DATA_ARCHIVE_PASSPHRASE` secret (CONTRIBUTING.md section 8, one-time setup), then run **Fetch rules sources** once with the defaults to confirm the download, decrypt, and unpack steps end to end. GitHub's network can reach Wahapedia: the first watch run on 2026-10-06 fetched `Last_update.csv` fine.
 - [ ] Rule timing overrides rest on Wahapedia text except for the Core Rules and four faction packs. Revisit them as more official Games Workshop PDFs are added.
 - [ ] Back up `.cache/wh40k11e/` after any data refresh (CONTRIBUTING.md section 5).
 

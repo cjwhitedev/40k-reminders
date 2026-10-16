@@ -51,7 +51,7 @@ The command runs eight steps and only stops where a person has to decide.
 | 1. Checks git | Refuses to start unless you are on an up-to-date, clean `master`. | Nothing, or `git pull` / commit your changes if it says so. |
 | 2. Downloads | Fetches Wahapedia's exports, a second apart. Reuses the official PDFs unless their list changed. Stops with **Nothing to do** if nothing changed. | Nothing. |
 | 3. New review | Starts a dated review file bound to the new downloads; every earlier decision carries over. | Nothing. |
-| 4. Reviews | Asks before dropping decisions for rules Wahapedia removed, and asks for a new faction's Army Faction keywords. Then prompts for each rule that needs a decision (below). | Answer the prompts. If it lists a finding it cannot fix, edit the review file it names, then press Enter to re-check. |
+| 4. Reviews | Moves decisions for renumbered rules to their new IDs by name (they come up again to confirm). Lists by name any decisions whose rule is really gone and asks before dropping them. Asks before updating exclusion counts that changed, and asks for a new faction's Army Faction keywords. Then prompts for each rule that needs a decision (below). | Answer the prompts. If it lists a finding it cannot fix, edit the review file it names, then press Enter to re-check. |
 | 5. Generates | Rewrites `src/wh40k11e/generated/runtime.json`. | Nothing. |
 | 6. Reports | Lists what changed per faction and writes a commit message under `.cache/wh40k11e/reports/`. | Note which armies changed. |
 | 7. Checks | Lint, types, build, tests. | If they fail, fix them and resume (below). |

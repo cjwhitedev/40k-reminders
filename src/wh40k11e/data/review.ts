@@ -76,6 +76,9 @@ export interface Wh40kSubFactionKeywords {
   /** As Wahapedia prints them on datasheets, e.g. "Blood Angels". */
   keywords: string[]
   reason: string
+  /** Army rules that belong to one group only, by keyword, e.g. a Chapter's own army rule. */
+  armyRules?: Record<string, SourceRecordId[]>
+  armyRulesReason?: string
 }
 
 export interface Wh40kSourceReview {
@@ -145,6 +148,8 @@ export interface Wh40kReviewedSources {
   datasheetContexts: Map<SourceRecordId, Wh40kReviewContext>
   armyFactionKeywords: Map<string, string[]>
   subFactions: Map<string, { label: string; keywords: string[] }>
+  /** Army rules that apply only to one sub-faction, e.g. Heirs of Sigismund to Black Templars. */
+  subFactionArmyRules: Map<SourceRecordId, string>
   contexts: Record<Wh40kReviewContext, number>
   decisionChecks: Wh40kDecisionCheck[]
 }
@@ -231,6 +236,7 @@ export const applyWh40kSourceReview = (input: {
     | 'datasheetContexts'
     | 'armyFactionKeywords'
     | 'subFactions'
+    | 'subFactionArmyRules'
     | 'decisionChecks'
   > = {
     dispositions: [],
@@ -388,6 +394,7 @@ export const applyWh40kSourceReview = (input: {
     printedKeywords.set(sheet.record.values.faction_id, keywords)
   }
   const subFactions = new Map<string, { label: string; keywords: string[] }>()
+  const subFactionArmyRules = new Map<SourceRecordId, string>()
   for (const entry of review.subFactionKeywords ?? []) {
     if (!factionIds.has(entry.factionId) || subFactions.has(entry.factionId)) {
       finding(
@@ -404,6 +411,18 @@ export const applyWh40kSourceReview = (input: {
         )
     }
     subFactions.set(entry.factionId, { label: entry.label, keywords: entry.keywords })
+    for (const [keyword, ruleIds] of Object.entries(entry.armyRules ?? {})) {
+      if (!entry.keywords.includes(keyword))
+        finding(
+          'invalid-sub-faction-keywords',
+          `${entry.factionId} army rules name unlisted group ${keyword}`
+        )
+      for (const ruleId of ruleIds) {
+        if (!knownRecords.has(ruleId))
+          finding('invalid-sub-faction-keywords', `${keyword} army rules name unknown ${ruleId}`)
+        subFactionArmyRules.set(ruleId, keyword)
+      }
+    }
   }
 
   const sortIds = (ids: SourceRecordId[]) => Array.from(new Set(ids)).sort(compareCodeUnits)
@@ -424,6 +443,7 @@ export const applyWh40kSourceReview = (input: {
     datasheetContexts,
     armyFactionKeywords,
     subFactions,
+    subFactionArmyRules,
     contexts,
     decisionChecks,
   }

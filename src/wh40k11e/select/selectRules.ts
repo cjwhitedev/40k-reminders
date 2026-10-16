@@ -8,6 +8,8 @@ export interface Wh40kArmySelection {
   /** Chosen enhancement rules; enhancements are optional picks, not granted by the detachment. */
   enhancementIds?: SourceRecordId[]
   allowsLegends?: boolean
+  /** The chosen sub-faction, e.g. a Chapter; its own army rules apply even with none of its units yet. */
+  subFaction?: string
 }
 
 export type Wh40kSelectionCause =
@@ -88,14 +90,22 @@ export const selectWh40kRules = (
     if (rule.kind === 'core-stratagem') select(rule, { kind: 'core' })
   }
 
-  // Army rules no datasheet carries (e.g. Space Marine Chapters) apply to the whole army.
+  // Army rules no datasheet carries (e.g. Space Marine Chapters) apply to the whole army, except a
+  // sub-faction's own rule, which needs that sub-faction chosen or one of its units in the army.
   const carried = new Set(catalog.datasheets.flatMap(sheet => sheet.sharedRules.map(shared => shared.ruleId)))
+  const fieldedSubFactions = new Set(
+    catalog.datasheets
+      .filter(sheet => selection.datasheetIds.includes(sheet.sourceRecordId))
+      .flatMap(sheet => sheet.subFactionKeywords ?? [])
+  )
+  if (selection.subFaction) fieldedSubFactions.add(selection.subFaction)
   for (const rule of catalog.rules) {
     if (
       rule.kind === 'army-rule' &&
       rule.scope.kind === 'faction' &&
       rule.scope.factionId === selection.factionId &&
-      !carried.has(rule.sourceRecordId)
+      !carried.has(rule.sourceRecordId) &&
+      (!rule.subFaction || fieldedSubFactions.has(rule.subFaction))
     ) {
       select(rule, { kind: 'army-faction', factionId: selection.factionId })
     }

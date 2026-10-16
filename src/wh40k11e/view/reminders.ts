@@ -164,6 +164,7 @@ export const createWh40kReminderViewModels = (
     datasheetIds: document.datasheetIds as SourceRecordId[],
     enhancementIds: document.enhancementIds as SourceRecordId[],
     allowsLegends: document.allowsLegends,
+    ...(document.subFaction ? { subFaction: document.subFaction } : {}),
   })
   const datasheetNames = new Map<string, string>(
     catalog.datasheets.map(sheet => [sheet.sourceRecordId, sheet.name])

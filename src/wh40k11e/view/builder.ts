@@ -7,6 +7,8 @@ export interface Wh40kBuilderOption {
   selected: boolean
   available: boolean
   overlay?: 'legends'
+  /** The heading the option lists under, e.g. "Epic Heroes"; units are grouped by type. */
+  section?: string
 }
 
 export type Wh40kBuilderGroupKey = 'datasheet' | 'detachment' | 'enhancement'
@@ -27,6 +29,30 @@ export interface Wh40kBuilderViewModel {
 
 const byName = (left: { name: string }, right: { name: string }) =>
   left.name.localeCompare(right.name, 'en') || (left.name < right.name ? -1 : left.name > right.name ? 1 : 0)
+
+/** The unit-type headings, in the order Games Workshop lists an army: leaders first, then the rest. */
+export const WH40K_UNIT_SECTIONS = [
+  'Epic Heroes',
+  'Characters',
+  'Battleline',
+  'Dedicated Transports',
+  'Fortifications',
+  'Other units',
+] as const
+
+export const wh40kUnitSection = (role: string | undefined): (typeof WH40K_UNIT_SECTIONS)[number] => {
+  const value = (role ?? '').toLowerCase()
+  if (value.includes('epic hero')) return 'Epic Heroes'
+  if (value.includes('character')) return 'Characters'
+  if (value.includes('battleline')) return 'Battleline'
+  if (value.includes('dedicated transport')) return 'Dedicated Transports'
+  if (value.includes('fortification')) return 'Fortifications'
+  return 'Other units'
+}
+
+const bySection = (left: Wh40kBuilderOption, right: Wh40kBuilderOption) =>
+  WH40K_UNIT_SECTIONS.indexOf(left.section as (typeof WH40K_UNIT_SECTIONS)[number]) -
+    WH40K_UNIT_SECTIONS.indexOf(right.section as (typeof WH40K_UNIT_SECTIONS)[number]) || byName(left, right)
 
 /** The faction picker and the army's selection cards: Units, Detachment, then the detachment's Enhancements. */
 export const createWh40kBuilderViewModel = (
@@ -52,9 +78,10 @@ export const createWh40kBuilderViewModel = (
       name: sheet.name,
       selected: datasheetIds.has(sheet.sourceRecordId),
       available: true,
+      section: wh40kUnitSection(sheet.role),
       ...(sheet.context === 'legends' ? { overlay: 'legends' as const } : {}),
     }))
-    .sort(byName)
+    .sort(bySection)
 
   const detachments = catalog.detachments
     .filter(item => item.factionId === document.factionId && item.gameMode === 'matched-play')

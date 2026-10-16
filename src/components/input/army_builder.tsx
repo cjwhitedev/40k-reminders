@@ -12,6 +12,8 @@ export interface SelectionCardOption<Id extends string = string> {
   available: boolean
   overlay?: 'legends' | 'historical'
   seasonal?: boolean
+  /** A heading to list the option under, e.g. a unit type; options keep their given order. */
+  section?: string
 }
 
 interface Option<Id extends string> {
@@ -48,7 +50,16 @@ const SelectionCard = <Id extends string>({
   // content is always offered but sits under its own group header so its provenance stays
   // visible. The seasonal header also carries the disambiguation for the General's Handbook
   // 2026-27 enhancement tables, which share their battletome counterparts' names (#1979).
-  const currentOptions = group.options.filter(option => !option.overlay && !option.seasonal).map(toOption)
+  const currentCards = group.options.filter(option => !option.overlay && !option.seasonal)
+  const currentOptions = currentCards.map(toOption)
+  // Options carrying a section list under one heading per section, in the order they arrive.
+  const sections = Array.from(new Set(currentCards.map(option => option.section ?? '')))
+  const currentGroups = sections.some(Boolean)
+    ? sections.map(section => ({
+        label: section || 'Other',
+        options: currentCards.filter(option => (option.section ?? '') === section).map(toOption),
+      }))
+    : currentOptions
   const seasonalOptions = group.options.filter(option => !option.overlay && option.seasonal).map(toOption)
   const legendsOptions = group.options.filter(option => option.overlay === 'legends').map(toOption)
   const historicalOptions = group.options.filter(option => option.overlay === 'historical').map(toOption)
@@ -59,7 +70,7 @@ const SelectionCard = <Id extends string>({
     ...historicalOptions,
   ]
   const groupedOptions = [
-    ...currentOptions,
+    ...currentGroups,
     ...(seasonalOptions.length
       ? [{ label: 'General’s Handbook 2026-27 (Scourge of Aqshy)', options: seasonalOptions }]
       : []),

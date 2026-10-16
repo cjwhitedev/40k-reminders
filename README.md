@@ -23,6 +23,7 @@ If you play Age of Sigmar, use the original. If this site helps your games, cons
 1. Pick your faction, detachment, enhancements, and units. Space Marines can narrow the unit list to one Chapter.
 2. Every rule your army has is listed under the moment it applies: before the battle, the start and end of a battle round, each phase of the turn, reactions to your opponent, and rules that are always active.
 3. Switch to **Play** at the table. Hide the rules you already know, add notes, and drag reminders into your own order. Your army is saved in your browser.
+4. **Print** a black-and-white sheet, or **Export CSV** to take the reminders, with your notes, into a spreadsheet or your own format.
 
 It covers Warhammer 40,000 eleventh edition matched play. Boarding Actions detachments are not offered. Legends units are listed under their own heading.
 

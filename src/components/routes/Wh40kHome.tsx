@@ -19,6 +19,7 @@ import {
   type Wh40kBuilderGroupKey,
 } from '../../wh40k11e/view/builder'
 import { createWh40kReminderViewModels, type Wh40kReminderViewModel } from '../../wh40k11e/view/reminders'
+import { formatWh40kRemindersCsv } from '../../wh40k11e/view/remindersCsv'
 
 const ClearArmyModal = lazy(() => import('components/modals/generic/generic_destructive_modal'))
 
@@ -180,6 +181,15 @@ const Wh40kHome = () => {
       )
     )
 
+  const exportCsv = () => {
+    const url = URL.createObjectURL(new Blob([formatWh40kRemindersCsv(reminders)], { type: 'text/csv' }))
+    const link = window.document.createElement('a')
+    link.href = url
+    link.download = `${[document.name, document.subFaction].filter(Boolean).join(' - ')} reminders.csv`
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
   const showAll = () =>
     setDocument(current =>
       reminders.reduce(
@@ -233,6 +243,7 @@ const Wh40kHome = () => {
           hiddenCount={hiddenCount}
           onClearArmy={() => setClearArmyModalIsOpen(true)}
           onPrint={() => window.print()}
+          onExportCsv={exportCsv}
           onShowAll={showAll}
           updateArmyStatus="idle"
         />

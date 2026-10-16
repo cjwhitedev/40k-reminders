@@ -35,9 +35,30 @@ const REACTION =
   /^(?:each time|every time|when|whenever|the first time|after|just after|before|one (?:unit|model) from your army with this ability can use it when|you can target|you can use the [a-z' -]{1,40}? stratagem|you can change)\b/i
 const PASSIVE =
   /^(?:while|whilst|if|unless otherwise stated|for the purposes of|this (?:model|unit|officer|[a-z-]+ model)\b|this [a-z' -]{1,40}? can issue\b|the bearer|models in (?:this|the bearer's) unit|each model in this unit|friendly|enemy units|attacks that target|ranged weapons|melee weapons|weapons equipped|add \d|subtract \d|you can re-roll|you can ignore|units can|improve|worsen|you cannot include|your army cannot|your army can only include|you cannot re-roll|enemy models cannot|(?:ranged |melee )?attacks that target|(?:the area|certain areas) of the battlefield)\b/i
-// "Kroot models from your army have ...": a keyword subject followed by a standing verb.
+// "While this model is leading a unit, in your Command phase, ...": a standing condition before a window.
+const CONDITION_CLAUSE = /^(?:while|whilst|if)\b[^.:;]*?,\s*/i
 const PASSIVE_SUBJECT =
   /^[^,.:;]{1,80}? (?:units?|models?) from your army (?:have|has|gain|gains|are eligible|is eligible|can ignore)\b/i
+
+const timedWindow = (clause: string): Wh40kTiming | undefined => {
+  const timed = clause.match(TIMED)
+  if (!timed) return undefined
+  // "In your Shooting phase and the Fight phase" lists two windows, like the WHEN clause's "or".
+  return parseWh40kWhen(
+    timed[1]
+      .replace(/ and /g, ' or ')
+      .replace(/^the end of each phase$/i, 'end of any phase')
+      .replace(/^the start of each phase$/i, 'start of any phase')
+  )
+}
+
+/** The clause after a leading condition, when that clause opens with a window; otherwise unchanged. */
+const afterCondition = (rest: string): string => {
+  const condition = rest.match(CONDITION_CLAUSE)
+  if (!condition) return rest
+  const after = rest.slice(condition[0].length)
+  return PRE_BATTLE.test(after) || timedWindow(after) ? after : rest
+}
 
 const USAGE_PERIODS: Record<string, Wh40kUsagePeriod> = {
   'battle round': 'battle-round',
@@ -85,6 +106,7 @@ export const parseWh40kAbilityTiming = (
     }
     rest = rest.slice(usageMatch[0].length)
   }
+  rest = afterCondition(rest)
 
   const base = {
     text,
@@ -104,13 +126,7 @@ export const parseWh40kAbilityTiming = (
   }
   const timed = rest.match(TIMED)
   if (timed) {
-    // "In your Shooting phase and the Fight phase" lists two windows, like the WHEN clause's "or".
-    const timing = parseWh40kWhen(
-      timed[1]
-        .replace(/ and /g, ' or ')
-        .replace(/^the end of each phase$/i, 'end of any phase')
-        .replace(/^the start of each phase$/i, 'start of any phase')
-    )
+    const timing = timedWindow(rest)
     if (timing) {
       return { ...base, kind: 'timed', timing: { ...timing, ...(usage ? { usage } : {}) }, diagnostics }
     }

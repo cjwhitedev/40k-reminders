@@ -104,3 +104,6 @@ vite.config.*.timestamp-*
 
 # vite-plugin-pwa's dev-mode service worker output
 dev-dist/
+
+# Owner drop folder for sharing files (screenshots, feedback) with assistants; never committed
+input/

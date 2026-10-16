@@ -23,6 +23,7 @@ interface ToolbarProps {
   onClearArmy: () => void
   // The optional actions render only when handled; a game without that feature omits the button.
   onDownloadPdf?: () => void
+  onExportCsv?: () => void
   onImportArmy?: () => void
   onOpenSavedArmies?: () => void
   onPrint?: () => void
@@ -79,6 +80,7 @@ const Toolbar = ({
   hiddenCount,
   onClearArmy,
   onDownloadPdf,
+  onExportCsv,
   onImportArmy,
   onOpenSavedArmies,
   onPrint,
@@ -111,6 +113,14 @@ const Toolbar = ({
             <ToolbarButton onClick={onPrint}>
               <MdPrint className="me-2" />
               Print
+            </ToolbarButton>
+          </div>
+        )}
+        {onExportCsv && (
+          <div className={buttonWrapperClass}>
+            <ToolbarButton onClick={onExportCsv}>
+              <MdFileDownload className="me-2" />
+              Export CSV
             </ToolbarButton>
           </div>
         )}

@@ -21,6 +21,28 @@ describe('parseWh40kAbilityTiming', () => {
     })
   })
 
+  it('reads the window after a standing condition rather than calling the rule always active', () => {
+    expect(
+      parseWh40kAbilityTiming(
+        'While this model is leading a unit, in your Command phase, you can return 1 destroyed model to that unit.'
+      )
+    ).toMatchObject({
+      kind: 'timed',
+      timing: { windows: [{ kind: 'turn-phase', phase: 'command', moment: 'during', perspective: 'your' }] },
+    })
+    expect(
+      parseWh40kAbilityTiming(
+        "While this model is leading a unit, at the end of your opponent's turn, you can remove it."
+      ).timing?.windows
+    ).toEqual([{ kind: 'turn-step', step: 'end-of-turn', perspective: 'opponent' }])
+    expect(parseWh40kAbilityTiming('While this model is leading a unit, add 1 to Hit rolls.').kind).toBe(
+      'passive'
+    )
+    expect(
+      parseWh40kAbilityTiming('While this model is leading a unit, at any point, it can do something.').kind
+    ).toBe('passive')
+  })
+
   it('reads a timed opener with a usage limit and a specific battle round', () => {
     const result = parseWh40kAbilityTiming(
       'Once per battle, at the start of your first Movement phase, this unit can move.'

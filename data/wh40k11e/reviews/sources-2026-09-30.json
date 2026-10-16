@@ -1956,7 +1956,18 @@
         "Ultramarines",
         "White Scars"
       ],
-      "reason": "Chapter faction keywords on current Space Marines datasheets; ADEPTUS ASTARTES units without one are open to every Chapter. AGENTS OF THE IMPERIUM is an ally keyword, not a Chapter."
+      "reason": "Chapter faction keywords on current Space Marines datasheets; ADEPTUS ASTARTES units without one are open to every Chapter. AGENTS OF THE IMPERIUM is an ally keyword, not a Chapter.",
+      "armyRules": {
+        "Black Templars": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000010389%3ASM"],
+        "Blood Angels": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000009183%3ASM"],
+        "Dark Angels": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008767%3ASM"],
+        "Deathwatch": [
+          "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008521%3ASM",
+          "source-record:wahapedia-wh40k11e:Abilities.csv%3A000009792%3ASM"
+        ],
+        "Space Wolves": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000010258%3ASM"]
+      },
+      "armyRulesReason": "Chapter army rules no datasheet carries (Heirs of Sigismund, The Sons of Sanguinius, The Unforgiven, Sons of Russ, and Deathwatch's Mission Tactics and Kill Teams). Each applies only to an army from that Chapter: Heirs of Sigismund, for one, opens 'If your army includes one or more units from the Black Templars Chapter'."
     }
   ]
 }

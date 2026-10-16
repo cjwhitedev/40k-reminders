@@ -69,6 +69,7 @@ export const buildWh40kRules = (
         : undefined
       : parsed.timing
     const timingKind = override ? override.kind : parsed.kind
+    const subFaction = reviewed.subFactionArmyRules?.get(record.sourceRecordId)
     const timingSource = override ? 'reviewed' : timingKind === 'unclassified' ? 'unresolved' : 'printed'
     if (timingSource === 'unresolved') {
       unresolved.push({
@@ -81,6 +82,7 @@ export const buildWh40kRules = (
     rules.push({
       sourceRecordId: record.sourceRecordId,
       ...rule,
+      ...(subFaction ? { subFaction } : {}),
       gameMode,
       timingKind,
       ...(timing ? { timing } : {}),
@@ -276,6 +278,7 @@ export const buildWh40kCatalog = (
       factionId: sheet.record.values.faction_id,
       context,
       ...(subFactionKeywords.length ? { subFactionKeywords } : {}),
+      ...(sheet.record.values.role ? { role: sheet.record.values.role } : {}),
       sharedRules: sheet.abilities.flatMap(({ record, shared }) =>
         shared && ruleIds.has(shared.sourceRecordId)
           ? [

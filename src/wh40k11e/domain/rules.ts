@@ -43,6 +43,8 @@ export interface Wh40kRule {
   condition?: string
   /** The printed "If your Army Faction is X" gate; the rule applies only to an army declaring X. */
   armyFaction?: string
+  /** An army rule for one sub-faction only, e.g. "Black Templars" for Heirs of Sigismund. */
+  subFaction?: string
 }
 
 export type Wh40kDatasheetContext = 'current' | 'legends'
@@ -56,6 +58,8 @@ export interface Wh40kDatasheet {
   sharedRules: Array<{ ruleId: SourceRecordId; parameter?: string }>
   /** Which of its faction's sub-factions (e.g. Chapters) the datasheet belongs to; absent for all of them. */
   subFactionKeywords?: string[]
+  /** Wahapedia's battlefield role, e.g. "Infantry Epic Hero" or "Dedicated Transports". */
+  role?: string
 }
 
 export interface Wh40kDetachment {

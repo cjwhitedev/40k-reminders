@@ -59,7 +59,7 @@ const records = {
       faction_id: 'SM',
       detachment_id: 'D1',
       cp_cost: '1',
-      description: when('Your opponents Charge phase.'),
+      description: when('Whenever your opponent hesitates.'),
     }),
     record('Stratagems.csv', 'move', {
       id: 'S5',

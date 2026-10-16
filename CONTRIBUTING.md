@@ -132,29 +132,26 @@ The step-by-step checklist, with every prompt and what to do when something stop
 To refresh, on any machine that can reach Wahapedia:
 
 ```bash
-git checkout master && git pull
-yarn install --frozen-lockfile
+git checkout master
 yarn data:wh40k11e:update
 ```
 
-It walks through every step and stops for you only where a person has to decide:
+Every prompt has a default that is normally right, so pressing Enter throughout usually completes a refresh; read the rules as they go by. The steps:
 
-1. **Checks git**: refuses to run unless you are on an up-to-date, clean `master`.
+1. **Checks git**: must be on `master`. Offers to pull newer commits (then restarts with the new code), and to continue, start over or quit an unfinished refresh.
 2. **Downloads** Wahapedia's exports (pausing a second between files). It reuses the official PDFs unless `data/wh40k11e/official-urls.json` changed (add new PDF links there first), and stops with "Nothing to do" if Wahapedia and the PDFs are unchanged. It then takes BSData's latest commit for the cross-check.
 3. **Starts a new review**: a dated copy of the review file bound to the new checksums, with every earlier decision carried over, and `data/wh40k11e/pipeline.json` pointed at it.
 4. **Reviews.** When Wahapedia renumbers a rule, it moves the decision to the rule's new ID by name, and asks you to confirm it again with the rest. It offers to drop decisions for rules that are really gone, listing them by name. It offers to update exclusion counts that changed because Wahapedia fixed its data, and asks for the Army Faction keywords of any new faction. Anything else the review reports needs a hand edit; it waits while you make it, then checks again. Then it prompts for each rule that needs a decision:
-   - rules the parsers cannot read, with a **suggested** answer when the wording or an earlier same-named rule gives one;
-   - rules reworded since they were decided, showing the text the decision was made against. Rules that changed only in spacing or capital letters are listed first and kept with one yes.
+   - rules the parsers cannot read, with a **suggested** answer from an earlier same-named rule or the wording (always active when the wording names no time);
+   - rules reworded since they were decided, showing the text the decision was made against. Rules that changed only in spacing or capital letters are listed first and kept with one Enter.
 
    For each, press **Enter** to accept the suggestion (or keep the old decision), or choose **t** timed (type the timing the way a WHEN: line reads, such as `start of your Command phase` or `before the battle: Deploy Armies step`), **r** reaction, **p** always active, **n** not a reminder, **s** skip, **q** save and quit. An answer covers every copy of the same rule on other datasheets or factions. Every answer is saved as you go.
 5. **Generates** `runtime.json`.
 6. **Reports what changed** by faction, and saves the list and a ready commit message under `.cache/wh40k11e/reports/`.
 7. **Runs the checks** from section 3.
-8. **Waits while you spot-check** the listed armies with `yarn start`, backs up the cache if `WH40K_CACHE_BACKUP_DIR` is set, and offers to **commit**.
+8. **Waits while you spot-check** the listed armies with `yarn start`, backs up the cache if `WH40K_CACHE_BACKUP_DIR` is set, and offers to **commit** and **push**. GitHub then builds and publishes the site, and you can close the issue.
 
-Then `git push origin master`; GitHub builds and publishes the site, and you can close the issue.
-
-If you quit or a step fails, fix what it says and continue with `yarn data:wh40k11e:update --no-fetch`, which picks up from the review with the sources already downloaded. `--force` refreshes even when nothing changed, and `--no-commit` stops before committing.
+If you quit or a step fails, fix what it says and run the command again; it offers to continue the unfinished refresh (`--no-fetch` goes straight there). `--force` refreshes even when nothing changed, and `--no-commit` stops before committing.
 
 If no machine you have can reach Wahapedia, [docs/data/wh40k11e-wahapedia-handoff.md](docs/data/wh40k11e-wahapedia-handoff.md) describes fetching on someone else's network and carrying the files back.
 

@@ -95,11 +95,8 @@ const parsePart = (
   return undefined
 }
 
-/**
- * Parse a WHEN clause into game windows. Only the official clause grammar is accepted; anything
- * else stays unresolved for review rather than being coerced into a nearby window.
- */
-export const parseWh40kWhen = (clause: string): Wh40kTiming | undefined => {
+/** The official clause grammar only. */
+const parseStrictWh40kWhen = (clause: string): Wh40kTiming | undefined => {
   const normalized = clause
     .replace(/[‘’`]/g, "'")
     .replace(/\s+/g, ' ')
@@ -146,6 +143,61 @@ export const parseWh40kWhen = (clause: string): Wh40kTiming | undefined => {
     ...(combinedTrigger ? { trigger: combinedTrigger } : {}),
     raw: clause.replace(/\s+/g, ' ').trim(),
   }
+}
+
+/** The phase a named step outside a phase name falls in, e.g. "your opponent's Reinforcements step". */
+const STEP_PHASES: Record<string, string> = { reinforcements: 'movement', 'battle-shock': 'command' }
+
+/** "start of your Command, Movement or Fight phase" → "start of your Command phase or start of your Movement phase or ...". */
+export const expandWh40kPhaseLists = (text: string): string =>
+  text.replace(
+    new RegExp(
+      `\\b((?:start|end) of )?((?:your opponent['’]s|your|the) )?(${PHASES}(?:, ${PHASES})+,? or ${PHASES}) phase`,
+      'gi'
+    ),
+    (_, moment: string | undefined, owner: string | undefined, list: string) =>
+      list
+        .split(/,? or |, /)
+        .map(phase => `${moment ?? ''}${owner ?? ''}${phase} phase`)
+        .join(' or ')
+  )
+
+/**
+ * Parse a WHEN clause into game windows. The official clause grammar is tried first; failing that,
+ * the spellings the 11th-edition codexes use on Wahapedia ("Your Movement/Charge phase", "Your
+ * Shooting phase when ...", ", or the Fight phase,") are rewritten into it. Anything else stays
+ * unresolved for review rather than being coerced into a nearby window.
+ */
+export const parseWh40kWhen = (clause: string): Wh40kTiming | undefined => {
+  const strict = parseStrictWh40kWhen(clause)
+  if (strict) return strict
+  const lenient = expandWh40kPhaseLists(clause)
+    .replace(/[‘’`]/g, "'")
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/^in (?=your|the)/i, '')
+    .replace(/\s*\((?:excluding|except)[^)]*\)/gi, '')
+    .replace(/\bopponents?\s?s\b/gi, "opponent's")
+    .replace(/\bor at (?=the (?:start|end) of)/gi, 'or ')
+    .replace(/\borthe\b/gi, 'or the')
+    .replace(/\bany of your phases\b/gi, 'any phase')
+    .replace(
+      /\b(start|end) of (your opponent's|your) (reinforcements|battle-shock) step\b/gi,
+      (_, moment: string, owner: string, step: string) =>
+        `${moment} of the ${step} step of ${owner} ${STEP_PHASES[step.toLowerCase()]} phase`
+    )
+    .replace(/\b(start|end)\/(start|end) of\b/gi, '$1 or $2 of')
+    .replace(new RegExp(`\\b${PHASES}/${PHASES} phase`, 'gi'), '$1 or $2 phase')
+    .replace(new RegExp(`\\b${PHASES} or your ${PHASES} phase`, 'gi'), '$1 or $2 phase')
+    .replace(
+      /\b(start|end) or (start|end) of ((?:your opponent's |your |the )?[a-z]+ phase)/gi,
+      '$1 of $3 or $2 of $3'
+    )
+    .replace(/,\s*or\b/gi, ' or')
+    .replace(/\b(phase|turn|step) (when|after|just after|each time)\b/i, '$1, $2')
+  if (lenient === clause.replace(/[‘’`]/g, "'").replace(/\s+/g, ' ').trim()) return undefined
+  const timing = parseStrictWh40kWhen(lenient)
+  return timing && { ...timing, raw: clause.replace(/\s+/g, ' ').trim() }
 }
 
 /** Normalize a Wahapedia rule description to safe text and parse its WHEN clause. */

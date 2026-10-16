@@ -72,10 +72,11 @@ describe('checked-in 40K runtime', () => {
 
   it('projects a Custodes army to reminders without unresolved timing', () => {
     const detachment = WH40K_CATALOG.detachments.find(
-      item => item.factionId === 'AC' && item.name === 'Shield Host' && item.gameMode === 'matched-play'
+      item =>
+        item.factionId === 'AC' && item.name === 'Lions of the Emperor' && item.gameMode === 'matched-play'
     )
     const guard = WH40K_CATALOG.datasheets.find(
-      item => item.factionId === 'AC' && item.name === 'Custodian Guard'
+      item => item.factionId === 'AC' && /^Custodian Guard(?: Sodality)?$/.test(item.name)
     )
     expect(detachment).toBeDefined()
     expect(guard).toBeDefined()
@@ -91,7 +92,7 @@ describe('checked-in 40K runtime', () => {
     expect(selection.diagnostics.filter(item => item.severity === 'error')).toEqual([])
     expect(reminders.length).toBeGreaterThan(10)
     expect(reminders.filter(item => item.lane === 'unresolved')).toEqual([])
-    expect(reminders.map(item => item.name)).toContain('Praesidium Shield')
+    expect(reminders.some(item => item.kind === 'datasheet-ability')).toBe(true)
   })
 
   it('gives a Chaos Space Marines army only the army rules its Army Faction meets', () => {

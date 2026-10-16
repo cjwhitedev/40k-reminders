@@ -123,16 +123,79 @@ const sameSet = (left: Wh40kPinnedArtifact[], right: Wh40kPinnedArtifact[]): boo
   return key(left) === key(right)
 }
 
-/** 1. Refuse to start on anything but an up-to-date, clean master. */
-const checkGit = () => {
+/** Files a refresh changes; anything else uncommitted stops the update. */
+const REFRESH_PATHS = ['data/wh40k11e/', 'src/wh40k11e/generated/']
+
+/**
+ * 1. Start from an up-to-date master: offers to continue or start over an unfinished refresh, and to
+ * pull when behind. Returns 'resume' to pick up the unfinished refresh, 'restart' when a pull
+ * brought new code (so the caller re-runs the command), or 'fresh'.
+ */
+const checkGit = async (io: Wh40kPromptIo): Promise<'fresh' | 'resume' | 'restart' | 'stop'> => {
   step('1. Checking git')
   const branch = capture('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
   if (branch !== 'master') throw new Error(`Switch to master first (on ${branch}).`)
-  if (capture('git', ['status', '--porcelain'])) throw new Error('Commit or stash your changes first.')
+  const dirty = capture('git', ['status', '--porcelain'])
+    .split('\n')
+    .filter(Boolean)
+    .map(line => line.slice(3).split(' -> ').pop() as string)
+  if (dirty.length) {
+    const other = dirty.filter(file => !REFRESH_PATHS.some(prefix => file.startsWith(prefix)))
+    if (other.length) throw new Error(`Commit or stash these changes first: ${other.join(', ')}`)
+    io.print('An unfinished data refresh is here:')
+    dirty.forEach(file => io.print(`  ${file}`))
+    const choice = await choose(
+      io,
+      'What now?',
+      [
+        ['c', 'continue it'],
+        ['s', 'start over (discards it)'],
+        ['q', 'quit'],
+      ],
+      'c'
+    )
+    if (choice === 'q') return 'stop'
+    if (choice === 'c') {
+      run('git', ['fetch', '-q', 'origin'])
+      const behind = Number(capture('git', ['rev-list', '--count', 'HEAD..origin/master']))
+      if (behind > 0)
+        io.print(`Note: master is ${behind} commit(s) behind origin; start over to use the newest updater.`)
+      return 'resume'
+    }
+    run('git', ['restore', '--source=HEAD', '--staged', '--worktree', '--', ...REFRESH_PATHS])
+    run('git', ['clean', '-fdq', '--', ...REFRESH_PATHS])
+    io.print('Discarded the unfinished refresh.')
+  }
   if (run('git', ['fetch', '-q', 'origin']) !== 0) throw new Error('git fetch failed.')
   const behind = Number(capture('git', ['rev-list', '--count', 'HEAD..origin/master']))
-  if (behind > 0) throw new Error(`master is ${behind} commit(s) behind origin; run git pull first.`)
+  if (behind > 0) {
+    if (!(await yes(io, `master is ${behind} commit(s) behind GitHub. Pull them now?`)))
+      throw new Error('Run git pull first.')
+    if (run('git', ['pull', '-q', '--ff-only', 'origin', 'master']) !== 0) throw new Error('git pull failed.')
+    if (run('yarn', ['install', '--frozen-lockfile', '--silent']) !== 0)
+      throw new Error('yarn install failed.')
+    io.print('Pulled. Restarting with the updated code...')
+    return 'restart'
+  }
   console.log('On an up-to-date, clean master.')
+  return 'fresh'
+}
+
+/** A one-letter menu; Enter picks `fallback`, shown in capitals. */
+const choose = async (
+  io: Wh40kPromptIo,
+  question: string,
+  options: Array<[key: string, label: string]>,
+  fallback: string
+): Promise<string> => {
+  const menu = options
+    .map(([key, label]) => (key === fallback ? `[${key.toUpperCase()}] ${label}` : `${key} ${label}`))
+    .join(' · ')
+  for (;;) {
+    const answer = (await io.ask(`${question} ${menu}: `)).trim().toLowerCase() || fallback
+    if (options.some(([key]) => key === answer)) return answer
+    io.print('  Type one of the letters shown.')
+  }
 }
 
 /** 2. Download the newest sources and bind a new review file to them. */
@@ -390,7 +453,16 @@ const main = async (): Promise<void> => {
   const flags = parseFlags(process.argv.slice(2))
   const io = createWh40kTerminalIo()
   try {
-    if (flags.gitCheck && flags.fetch) checkGit()
+    if (flags.gitCheck && flags.fetch) {
+      const start = await checkGit(io)
+      if (start === 'stop') return
+      if (start === 'restart') {
+        io.close()
+        process.exitCode = run('yarn', ['-s', 'data:wh40k11e:update', ...process.argv.slice(2)])
+        return
+      }
+      if (start === 'resume') flags.fetch = false
+    }
     let options: Wh40kPipelineOptions | undefined = { ...WH40K_DEFAULT_PIPELINE_OPTIONS }
     if (flags.fetch) {
       options = await fetchAndRefresh(options, flags)
@@ -429,8 +501,13 @@ const main = async (): Promise<void> => {
 
     if (flags.commit && (await yes(io, 'Commit the refreshed data?'))) {
       run('git', ['add', '-A', 'data/wh40k11e', WH40K_RUNTIME_PATH])
-      if (run('git', ['commit', '-q', '-F', messagePath]) === 0)
-        io.print('\nCommitted. Push when ready: git push origin master')
+      if (run('git', ['commit', '-q', '-F', messagePath]) !== 0) {
+        io.print('\nThe commit failed; see the error above.')
+      } else if (await yes(io, 'Committed. Push to GitHub now (it then rebuilds the site)?')) {
+        if (run('git', ['push', '-q', 'origin', 'master']) === 0)
+          io.print('\nPushed. GitHub is publishing the site; close the "Rules data sources changed" issue.')
+        else io.print('\nThe push failed; run git push origin master when it is sorted.')
+      } else io.print('\nPush when ready: git push origin master')
     } else {
       io.print(`\nNot committed. The suggested message is in ${messagePath}.`)
     }

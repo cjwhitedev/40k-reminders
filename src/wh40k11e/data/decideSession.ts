@@ -17,6 +17,7 @@ import {
   WH40K_IGNORE_GROUPS,
   type Wh40kDecision,
   type Wh40kDecisionCandidate,
+  type Wh40kDecisionSuggestion,
 } from './decisions'
 import type { Wh40kPipelineResult } from './pipeline'
 import type { Wh40kSourceReview } from './review'
@@ -195,7 +196,6 @@ export const runWh40kDecisionSession = async (input: {
   let review = input.review
   let decided = 0
   const skipped: SourceRecordId[] = []
-  const settled = new Set<SourceRecordId>()
 
   const askDecision = async (
     candidate: Wh40kDecisionCandidate,
@@ -225,9 +225,14 @@ export const runWh40kDecisionSession = async (input: {
     }
     if (choice === 'p') return { kind: 'passive', reason: await reason(defaultWh40kReason(candidate.text)) }
     if (choice === 'n') {
+      const suggested = suggestWh40kDecision(candidate, new Map()).decision
+      const fallback =
+        suggested.kind === 'ignore'
+          ? Math.max(1, WH40K_IGNORE_GROUPS.findIndex(group => group.key === suggested.groupId) + 1)
+          : 1
       WH40K_IGNORE_GROUPS.forEach((group, index) => io.print(`    ${index + 1}) ${group.label}`))
       io.print(`    ${WH40K_IGNORE_GROUPS.length + 1}) Something else`)
-      const picked = Number((await io.ask('  Which? ')).trim())
+      const picked = Number((await io.ask(`  Which? [${fallback}] `)).trim() || fallback)
       const group = WH40K_IGNORE_GROUPS[picked - 1]
       if (group) return { kind: 'ignore', groupId: group.key, reason: group.reason }
       if (picked !== WH40K_IGNORE_GROUPS.length + 1) return undefined
@@ -237,27 +242,35 @@ export const runWh40kDecisionSession = async (input: {
     return undefined
   }
 
-  for (let index = 0; index < candidates.length; index += 1) {
-    const candidate = candidates[index]
-    if (settled.has(candidate.sourceRecordId)) continue
-    const copies = candidates
-      .slice(index + 1)
-      .filter(
-        other =>
-          !settled.has(other.sourceRecordId) &&
-          other.current?.summary === candidate.current?.summary &&
-          other.name.trim().toLowerCase() === candidate.name.trim().toLowerCase() &&
-          sameWh40kWording(other.text, candidate.text)
-      )
+  // Identical copies of a rule (same name, wording and current decision) share one prompt.
+  const groups: Wh40kDecisionCandidate[][] = []
+  for (const candidate of candidates) {
+    const group = groups.find(
+      ([head]) =>
+        head.current?.summary === candidate.current?.summary &&
+        head.name.trim().toLowerCase() === candidate.name.trim().toLowerCase() &&
+        sameWh40kWording(head.text, candidate.text)
+    )
+    if (group) group.push(candidate)
+    else groups.push([candidate])
+  }
+
+  for (let index = 0; index < groups.length; index += 1) {
+    const group = groups[index]
+    const [candidate, ...copies] = group
     const suggestion =
-      candidate.why === 'unresolved' ? suggestWh40kDecision(candidate, input.earlierByName) : undefined
+      candidate.why === 'unresolved'
+        ? suggestWh40kDecision(candidate, input.earlierByName)
+        : candidate.why === 'changed'
+          ? retimed(candidate)
+          : undefined
     const heading =
       candidate.why === 'changed'
         ? 'its text changed since it was decided'
         : candidate.why === 'requested'
           ? 'decide again'
           : 'needs a timing'
-    io.print(`\n── ${index + 1} of ${candidates.length} · ${heading} ──`)
+    io.print(`\n── ${index + 1} of ${groups.length} · ${heading} ──`)
     io.print(`${candidate.label} · ${candidate.where}`)
     io.print(`${candidate.name.toUpperCase()}   (${candidate.sourceRecordId})`)
     io.print(wrap(candidate.text || '(no text)'))
@@ -275,7 +288,11 @@ export const runWh40kDecisionSession = async (input: {
 
     const keepable = Boolean(candidate.current)
     const options = [
-      suggestion ? '[Enter] accept suggestion' : keepable ? '[Enter] keep it' : '',
+      suggestion
+        ? `[Enter] ${describeWh40kDecision(suggestion.decision)}`
+        : keepable
+          ? `[Enter] keep (${candidate.current?.summary})`
+          : '',
       keepable && suggestion ? 'k keep' : '',
       't timed',
       'r reaction',
@@ -288,12 +305,8 @@ export const runWh40kDecisionSession = async (input: {
     for (;;) {
       const choice = (await io.ask(`  ${options.join(' · ')}\n  > `)).trim().toLowerCase()
       if (choice === 'q') return { review, decided, skipped, quit: true }
-      const group = [candidate, ...copies]
       if (choice === 's') {
-        group.forEach(item => {
-          skipped.push(item.sourceRecordId)
-          settled.add(item.sourceRecordId)
-        })
+        skipped.push(...group.map(item => item.sourceRecordId))
         break
       }
       if ((choice === '' && !suggestion && keepable) || (choice === 'k' && keepable)) {
@@ -306,7 +319,6 @@ export const runWh40kDecisionSession = async (input: {
           }
         ).review
         await save(input.reviewPath, review)
-        group.forEach(item => settled.add(item.sourceRecordId))
         decided += group.length
         io.print('  Kept.')
         break
@@ -316,11 +328,26 @@ export const runWh40kDecisionSession = async (input: {
       if (!decision) continue
       review = addWh40kDecision(review, group, decision, date)
       await save(input.reviewPath, review)
-      group.forEach(item => settled.add(item.sourceRecordId))
       decided += group.length
       io.print(`  Saved: ${describeWh40kDecision(decision)}`)
       break
     }
   }
   return { review, decided, skipped, quit: false }
+}
+
+/**
+ * For a reworded rule: dropping it when it lost its text, or a new timing when its new wording names
+ * a time its decision does not; otherwise nothing, so Enter keeps the decision.
+ */
+const retimed = (candidate: Wh40kDecisionCandidate): Wh40kDecisionSuggestion | undefined => {
+  if (!candidate.text.trim()) {
+    const empty = suggestWh40kDecision(candidate, new Map())
+    return { decision: empty.decision, because: `${empty.because} any more` }
+  }
+  if (!candidate.current?.text) return undefined
+  const fresh = suggestWh40kDecision(candidate, new Map())
+  if (fresh.decision.kind !== 'timed' || describeWh40kDecision(fresh.decision) === candidate.current.summary)
+    return undefined
+  return { decision: fresh.decision, because: `its new wording names a time: ${fresh.because}` }
 }

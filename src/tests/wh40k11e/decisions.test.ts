@@ -76,8 +76,50 @@ describe('suggestWh40kDecision', () => {
     })
   })
 
-  it('offers nothing it cannot read', () => {
-    expect(suggest('Keep a tally of destroyed enemy models.')).toBeUndefined()
+  it('reads WHEN lines, later sentences, extra doctrine picks and framing text', () => {
+    expect(
+      suggest('WHEN: Your Movement/Charge phase, when a unit is selected to move. TARGET: That unit.')
+        .decision
+    ).toMatchObject({ kind: 'timed', windows: [{ phase: 'movement' }, { phase: 'charge' }] })
+    expect(
+      suggest('This ability always takes the form Firing Deck X. In your Shooting phase, select it.').decision
+    ).toMatchObject({ kind: 'timed', windows: [{ phase: 'shooting' }] })
+    expect(
+      suggest(
+        'This ability always takes the form Feel No Pain X+. Each time a model would lose a wound, roll.'
+      ).decision
+    ).toMatchObject({ kind: 'reaction', trigger: 'Each time a model would lose a wound' })
+    expect(
+      suggest('You can select the assault doctrine one additional time per battle.').decision
+    ).toMatchObject({
+      kind: 'timed',
+      windows: [{ kind: 'turn-phase', phase: 'command', moment: 'start', perspective: 'your' }],
+    })
+    expect(
+      suggest('The following are special move types that your units are eligible to make.').decision
+    ).toMatchObject({
+      kind: 'ignore',
+      groupId: 'framing',
+    })
+  })
+
+  it('reads an enhancement past its eligibility line and usage limit', () => {
+    expect(
+      suggest(
+        'ADEPTUS ASTARTES model only. (Once per battle, per army) In your Command phase you can use this ability.'
+      ).decision
+    ).toMatchObject({ kind: 'timed', windows: [{ phase: 'command', moment: 'during', perspective: 'your' }] })
+    expect(
+      suggest('Gravis model only. At the end of a phase in which this model is destroyed, roll one D6.')
+        .decision
+    ).toMatchObject({ kind: 'reaction', trigger: 'At the end of a phase in which this model is destroyed' })
+  })
+
+  it('falls back to always active, so every prompt has a default', () => {
+    expect(suggest('Keep a tally of destroyed enemy models.')).toMatchObject({
+      decision: { kind: 'passive' },
+      because: expect.stringContaining('nothing in its wording'),
+    })
   })
 })
 

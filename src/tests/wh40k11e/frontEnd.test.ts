@@ -29,17 +29,21 @@ const memoryStorage = (): Storage => {
   }
 }
 
+// Names that exist before and after the 2026-10 Custodes codex (which renamed Custodian Guard).
+const custodianGuard = () =>
+  WH40K_CATALOG.datasheets.find(
+    item => item.factionId === 'AC' && /^Custodian Guard(?: Sodality)?$/.test(item.name)
+  )!
+
 const custodes = (): Wh40kArmyDocument => {
   const detachment = WH40K_CATALOG.detachments.find(
-    item => item.factionId === 'AC' && item.name === 'Shield Host' && item.gameMode === 'matched-play'
-  )!
-  const guard = WH40K_CATALOG.datasheets.find(
-    item => item.factionId === 'AC' && item.name === 'Custodian Guard'
+    item =>
+      item.factionId === 'AC' && item.name === 'Lions of the Emperor' && item.gameMode === 'matched-play'
   )!
   return {
     ...createWh40kArmyDocument(WH40K_CATALOG, 'AC'),
     detachmentId: detachment.id,
-    datasheetIds: [guard.sourceRecordId],
+    datasheetIds: [custodianGuard().sourceRecordId],
   }
 }
 
@@ -103,10 +107,10 @@ describe('40K builder view model', () => {
     const army = createWh40kBuilderViewModel(WH40K_CATALOG, custodes())
     expect(army.groups.map(group => group.title)).toEqual(['Units', 'Detachment', 'Enhancements'])
     expect(army.groups[0].options.filter(option => option.selected).map(option => option.name)).toEqual([
-      'Custodian Guard',
+      custodianGuard().name,
     ])
     expect(army.groups[1].options.filter(option => option.selected).map(option => option.name)).toEqual([
-      'Shield Host',
+      'Lions of the Emperor',
     ])
   })
 
@@ -201,9 +205,11 @@ describe('40K reminder view models', () => {
     expect(reminders.length).toBeGreaterThan(10)
     const stratagem = reminders.find(item => item.tags.some(tag => tag.tone === 'cost'))!
     expect(stratagem.tags[0].label).toMatch(/Stratagem/)
-    const shield = reminders.find(item => item.name === 'Praesidium Shield')!
-    expect(shield.windowLabel).toBe('Always active')
-    expect(shield.tags.map(tag => tag.label)).toContain('Custodian Guard')
+    const standing = reminders.find(
+      item =>
+        item.windowLabel === 'Always active' && item.tags.some(tag => tag.label === custodianGuard().name)
+    )
+    expect(standing).toBeDefined()
   })
 
   it('applies hidden, note, and drag order preferences', () => {

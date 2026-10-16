@@ -45,15 +45,56 @@ describe('parseWh40kWhen', () => {
     })
   })
 
-  it('leaves clauses outside the grammar unresolved rather than guessing', () => {
+  it('reads the 11th-edition codex spellings: slashes, a missing comma, and ", or" alternatives', () => {
+    const movementOrCharge = [
+      { kind: 'turn-phase', phase: 'movement', moment: 'during', perspective: 'your' },
+      { kind: 'turn-phase', phase: 'charge', moment: 'during', perspective: 'your' },
+    ]
+    expect(
+      parseWh40kWhen('Your Movement/Charge phase, when a friendly Ravenwing unit is selected to move.')
+    ).toMatchObject({
+      windows: movementOrCharge,
+      trigger: 'when a friendly Ravenwing unit is selected to move',
+      raw: 'Your Movement/Charge phase, when a friendly Ravenwing unit is selected to move.',
+    })
+    expect(parseWh40kWhen('Your Movement or your Charge phase.')?.windows).toEqual(movementOrCharge)
+    expect(parseWh40kWhen('Your Shooting phase when a KILL TEAM unit is selected to shoot.')).toMatchObject({
+      windows: [{ kind: 'turn-phase', phase: 'shooting', moment: 'during', perspective: 'your' }],
+      trigger: 'when a KILL TEAM unit is selected to shoot',
+    })
+    expect(
+      parseWh40kWhen('Your Shooting phase, or the Fight phase, when a friendly unit is selected to attack.')
+        ?.windows
+    ).toEqual([
+      { kind: 'turn-phase', phase: 'shooting', moment: 'during', perspective: 'your' },
+      { kind: 'turn-phase', phase: 'fight', moment: 'during', perspective: 'either' },
+    ])
     expect(
       parseWh40kWhen(
         'End of the Fight phase, or your opponent’s Shooting phase, just after an enemy unit has selected its targets.'
-      )
-    ).toBeUndefined()
-    expect(parseWh40kWhen('Your opponent’s Shooting phase orthe Fight phase.')).toBeUndefined()
-    expect(parseWh40kWhen('Start of any phase (excluding the Command phase).')).toBeUndefined()
-    expect(parseWh40kWhen('Your Movement/Charge phase.')).toBeUndefined()
+      )?.windows
+    ).toEqual([
+      { kind: 'turn-phase', phase: 'fight', moment: 'end', perspective: 'either' },
+      { kind: 'turn-phase', phase: 'shooting', moment: 'during', perspective: 'opponent' },
+    ])
+    expect(parseWh40kWhen('Your opponent’s Shooting phase orthe Fight phase.')?.windows).toHaveLength(2)
+    expect(parseWh40kWhen('Start of any phase (excluding the Command phase).')?.windows).toEqual([
+      { kind: 'any-phase', moments: ['start'], perspective: 'either' },
+    ])
+    expect(parseWh40kWhen('Start/end of your Movement phase.')?.windows).toEqual([
+      { kind: 'turn-phase', phase: 'movement', moment: 'start', perspective: 'your' },
+      { kind: 'turn-phase', phase: 'movement', moment: 'end', perspective: 'your' },
+    ])
+    expect(parseWh40kWhen('Start of your opponent’s Reinforcements step.')).toMatchObject({
+      windows: [{ kind: 'turn-phase', phase: 'movement', moment: 'during', perspective: 'opponent' }],
+      trigger: 'Start of the Reinforcements step',
+    })
+  })
+
+  it('leaves clauses outside the grammar unresolved rather than guessing', () => {
+    expect(parseWh40kWhen('Whenever your opponent hesitates.')).toBeUndefined()
+    expect(parseWh40kWhen('Your Shooting-ish phase.')).toBeUndefined()
+    expect(parseWh40kWhen('Any phase, or whenever you like.')).toBeUndefined()
   })
 })
 

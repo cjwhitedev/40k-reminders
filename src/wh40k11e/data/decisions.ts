@@ -1,7 +1,8 @@
 import type { SourceRecordId } from '../../aos4/domain'
 import { WH40K_TURN_PHASES, type Wh40kGameWindow } from '../domain/timing'
+import { parseWh40kAbilityTiming } from '../normalize/ability'
 import { withoutListMarkers } from '../normalize/sourceText'
-import { parseWh40kWhen } from '../normalize/when'
+import { extractWhenClause, parseWh40kWhen } from '../normalize/when'
 import type { Wh40kIgnoredRules, Wh40kPinnedArtifact, Wh40kSourceReview, Wh40kTimingOverride } from './review'
 import { compareCodeUnits } from './wahapedia/decode'
 
@@ -123,14 +124,19 @@ const TIMED = /^(?:once per (?:battle|battle round|turn|phase),\s*)?(?:in|at|dur
 const PASSIVE =
   /^(?:while|whilst|if|this (?:unit|model)|models in|the bearer|each model|add \d|subtract \d|improve|[^,.]{1,60} (?:units?|models?) from your army (?:have|has|gain|can))\b/i
 
+const FRAMING = /^(?:the following are special move types|(?:maximum distance|set-up distance|eligible if):)/i
+// "You can select the assault doctrine one additional time per battle": an extra Combat Doctrines pick.
+const EXTRA_DOCTRINE = /\bdoctrines?\b[^.]*\bone additional time\b/i
+
 /**
- * Suggests a decision for the prompt to offer. Nothing is applied without a person accepting it.
- * An earlier decision for a rule of the same name wins over wording patterns.
+ * Suggests a decision for the prompt to offer as its Enter default; nothing is applied without a
+ * person accepting it. An earlier decision for a rule of the same name wins over wording patterns,
+ * and a rule whose wording matches nothing is suggested as always active.
  */
 export const suggestWh40kDecision = (
   candidate: Pick<Wh40kDecisionCandidate, 'name' | 'text'>,
   earlierByName: ReadonlyMap<string, { ownerId: string; decision: Wh40kDecision }>
-): Wh40kDecisionSuggestion | undefined => {
+): Wh40kDecisionSuggestion => {
   const earlier = earlierByName.get(candidate.name.trim().toLowerCase())
   if (earlier) {
     return {
@@ -140,20 +146,49 @@ export const suggestWh40kDecision = (
   }
   const text = opening(candidate.text)
   const reason = defaultWh40kReason(candidate.text)
-  if (/^designer['’]s note/i.test(text)) {
+  const ignore = (group: (typeof WH40K_IGNORE_GROUPS)[number], because: string): Wh40kDecisionSuggestion => ({
+    decision: { kind: 'ignore', groupId: group.key, reason: group.reason },
+    because,
+  })
+  if (!text) return ignore(WH40K_IGNORE_GROUPS[2], 'Wahapedia gives it no text')
+  if (/^designer['’]s note/i.test(text))
+    return ignore(WH40K_IGNORE_GROUPS[1], "it opens with Designer's Note")
+  if (FRAMING.test(text))
+    return ignore(WH40K_IGNORE_GROUPS[2], 'it describes move types rather than adding a rule')
+
+  const when = extractWhenClause(text)
+  if (when) {
+    const timing = parseWh40kWhen(when)
+    return timing
+      ? {
+          decision: { kind: 'timed', windows: timing.windows, reason },
+          because: `its WHEN line reads "${when}"`,
+        }
+      : {
+          decision: { kind: 'reaction', trigger: when.replace(/\.$/, ''), reason },
+          because: `its WHEN line ("${when}") names no phase the parser knows`,
+        }
+  }
+  if (EXTRA_DOCTRINE.test(text)) {
     return {
-      decision: { kind: 'ignore', groupId: 'designers-note', reason: WH40K_IGNORE_GROUPS[1].reason },
-      because: "it opens with Designer's Note",
+      decision: {
+        kind: 'timed',
+        windows: [{ kind: 'turn-phase', phase: 'command', moment: 'start', perspective: 'your' }],
+        reason,
+      },
+      because: 'it adds a Combat Doctrines pick, which is made at the start of your Command phase',
     }
   }
-  if (ARMY_BUILDING.test(text)) {
-    return {
-      decision: { kind: 'ignore', groupId: 'army-building', reason: WH40K_IGNORE_GROUPS[0].reason },
-      because: 'its wording is about building the army',
-    }
-  }
-  if (PRE_BATTLE.test(text)) {
-    const step = text.match(/in the ((?:[a-z]+ ){1,3}step)/i)?.[1]
+
+  const parsed = parseWh40kAbilityTiming(
+    candidate.text.replace(/^(\s*)up to (?:once|twice) per [a-z ]+?,\s*/i, '$1').replace(/;/, ','),
+    { eligibilityLine: true }
+  )
+  const rest = opening(parsed.opening)
+  if (ARMY_BUILDING.test(rest))
+    return ignore(WH40K_IGNORE_GROUPS[0], 'its wording is about building the army')
+  if (PRE_BATTLE.test(rest)) {
+    const step = rest.match(/in the ((?:[a-z]+ ){1,3}step)/i)?.[1]
     return {
       decision: {
         kind: 'timed',
@@ -163,21 +198,51 @@ export const suggestWh40kDecision = (
       because: 'it happens before the battle',
     }
   }
-  const timed = text.match(TIMED)
-  const windows = timed ? parseWh40kWhen(timed[1])?.windows : undefined
+  const timed = rest.match(TIMED)
+  const windows = parsed.timing?.windows ?? (timed ? parseWh40kWhen(timed[1])?.windows : undefined)
   if (windows) {
-    return { decision: { kind: 'timed', windows, reason }, because: `it opens with "${timed?.[0]}"` }
-  }
-  if (REACTION.test(text)) {
     return {
-      decision: { kind: 'reaction', trigger: firstClause(text), reason },
+      decision: { kind: 'timed', windows, reason },
+      because: `it opens with "${parsed.timing?.raw ?? timed?.[0]}"`,
+    }
+  }
+  if (parsed.kind === 'reaction' || REACTION.test(rest)) {
+    return {
+      decision: { kind: 'reaction', trigger: firstClause(rest), reason },
       because: 'it opens with an each time / when / after trigger',
     }
   }
-  if (PASSIVE.test(text)) {
+  // "This ability always takes the form Firing Deck X. In your Shooting phase, ..."
+  for (const sentence of withoutListMarkers(candidate.text)
+    .split(/(?<=[.:])\s+|\n+/)
+    .slice(1)) {
+    const later = parseWh40kAbilityTiming(sentence.replace(/;/, ','))
+    if (later.kind === 'timed' && later.timing) {
+      return {
+        decision: { kind: 'timed', windows: later.timing.windows, reason },
+        because: `a later sentence opens with "${later.timing.raw}"`,
+      }
+    }
+    if (later.kind === 'reaction') {
+      return {
+        decision: { kind: 'reaction', trigger: firstClause(later.opening), reason },
+        because: 'a later sentence opens with an each time / when / after trigger',
+      }
+    }
+  }
+  if (/\btarget(?:ed)?\b[^.]*\bwith (?:a|the [a-z' -]+) stratagem\b/i.test(text)) {
+    return {
+      decision: { kind: 'reaction', trigger: 'When you target this unit with a Stratagem', reason },
+      because: 'it changes how a Stratagem is used on this unit',
+    }
+  }
+  if (parsed.kind === 'passive' || PASSIVE.test(rest)) {
     return { decision: { kind: 'passive', reason }, because: 'it describes a standing effect' }
   }
-  return undefined
+  return {
+    decision: { kind: 'passive', reason },
+    because: 'nothing in its wording names a time or a trigger, so it reads as a standing effect',
+  }
 }
 
 /** The decision a review entry encodes, for suggesting it again for a rule of the same name. */

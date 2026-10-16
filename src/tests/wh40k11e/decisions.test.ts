@@ -5,9 +5,12 @@ import {
   defaultWh40kReason,
   parseWh40kWindowsInput,
   refreshWh40kReviewInputs,
+  relinkWh40kDecisions,
   removeWh40kDecision,
+  removeWh40kSubFactionArmyRule,
   stampWh40kDecisions,
   suggestWh40kDecision,
+  updateWh40kDispositionCounts,
   type Wh40kDecision,
 } from '../../wh40k11e/data/decisions'
 import type { Wh40kSourceReview } from '../../wh40k11e/data/review'
@@ -108,6 +111,7 @@ describe('recording decisions', () => {
       kind: 'passive',
       reason: 'standing',
       fingerprints: { [rule.sourceRecordId]: rule.recordChecksum },
+      names: { [rule.sourceRecordId]: 'Rites of Battle' },
     })
   })
 
@@ -132,6 +136,7 @@ describe('recording decisions', () => {
         sourceRecordIds: [rule.sourceRecordId, id('2')],
         reason: 'army',
         fingerprints: { [rule.sourceRecordId]: rule.recordChecksum, [id('2')]: rule.recordChecksum },
+        names: { [rule.sourceRecordId]: 'Rites of Battle', [id('2')]: 'Other' },
       },
     ])
   })
@@ -148,6 +153,79 @@ describe('recording decisions', () => {
       { id: 'group', sourceRecordIds: [id('2')], reason: 'r', fingerprints: {} },
     ])
     expect(next.timingOverrides).toEqual([])
+  })
+
+  it('follows a rule Wahapedia renumbered, keeping the old fingerprint so it is confirmed again', () => {
+    const ability = (raw: string) => sourceRecordId('wahapedia-wh40k11e', `Abilities.csv:${raw}`)
+    const decided = review({
+      timingOverrides: [
+        {
+          id: 'oath',
+          sourceRecordIds: [ability('000008350:SM')],
+          kind: 'passive',
+          reason: 'r',
+          fingerprints: { [ability('000008350:SM')]: 'old-checksum' },
+          names: { [ability('000008350:SM')]: 'Oath of Moment' },
+        },
+        { id: 'gone', sourceRecordIds: [ability('000000001:SM')], kind: 'passive', reason: 'r' },
+      ],
+      subFactionKeywords: [
+        {
+          factionId: 'SM',
+          label: 'Chapter',
+          keywords: ['Black Templars'],
+          reason: 'r',
+          armyRules: { 'Black Templars': [ability('000010389:SM')] },
+        },
+      ],
+    })
+    const result = relinkWh40kDecisions(
+      decided,
+      [ability('000008350:SM'), ability('000000001:SM'), ability('000010389:SM')],
+      [
+        { sourceRecordId: ability('000099999:SM'), name: 'Oath of Moment' },
+        { sourceRecordId: ability('000099999:CSM'), name: 'Oath of Moment' },
+        { sourceRecordId: ability('000088888:SM'), name: 'Heirs of Sigismund' },
+      ],
+      new Map([[ability('000010389:SM'), 'Heirs of Sigismund']])
+    )
+
+    expect(result.relinked.map(item => item.name)).toEqual(['Oath of Moment', 'Heirs of Sigismund'])
+    expect(result.unmatched).toEqual([{ sourceRecordId: ability('000000001:SM') }])
+    expect(result.review.timingOverrides?.[0]).toMatchObject({
+      sourceRecordIds: [ability('000099999:SM')],
+      fingerprints: { [ability('000099999:SM')]: 'old-checksum' },
+      names: { [ability('000099999:SM')]: 'Oath of Moment' },
+    })
+    expect(result.review.subFactionKeywords?.[0].armyRules).toEqual({
+      'Black Templars': [ability('000088888:SM')],
+    })
+    expect(
+      removeWh40kSubFactionArmyRule(result.review, ability('000088888:SM')).subFactionKeywords?.[0].armyRules
+    ).toEqual({})
+  })
+
+  it('updates exclusion counts and drops exclusions that now cover nothing', () => {
+    const disposition = (key: string, expectedCount: number) => ({
+      id: key,
+      match: { code: 'dangling-reference' as const, field: 'datasheet_id', values: ['X'] },
+      expectedCount,
+      action: 'exclude-records' as const,
+      reason: 'r',
+    })
+    const next = updateWh40kDispositionCounts(
+      review({
+        linkDispositions: [disposition('shrunk', 303), disposition('emptied', 9), disposition('kept', 4)],
+      }),
+      new Map([
+        ['shrunk', 18],
+        ['emptied', 0],
+      ])
+    )
+    expect(next.linkDispositions.map(item => [item.id, item.expectedCount])).toEqual([
+      ['shrunk', 18],
+      ['kept', 4],
+    ])
   })
 
   it('stamps only missing fingerprints unless asked to restamp', () => {

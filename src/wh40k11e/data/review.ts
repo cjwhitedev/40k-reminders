@@ -51,6 +51,8 @@ export interface Wh40kTimingOverride {
   officialEvidence?: Wh40kOfficialEvidence[]
   /** Each record's `recordChecksum` when the decision was made; a different checksum means its text changed. */
   fingerprints?: Record<string, string>
+  /** Each record's rule name, so a decision can follow a rule Wahapedia renumbers. */
+  names?: Record<string, string>
 }
 
 /** Records that are not reminders, e.g. the Core Rules move and shoot types Wahapedia files as stratagems. */
@@ -59,6 +61,7 @@ export interface Wh40kIgnoredRules {
   sourceRecordIds: SourceRecordId[]
   reason: string
   fingerprints?: Record<string, string>
+  names?: Record<string, string>
 }
 
 /** The Army Faction keywords a faction's army declares, which "If your Army Faction is X" rules test. */

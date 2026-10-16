@@ -58,14 +58,23 @@ export const createWh40kTerminalIo = (): Wh40kPromptIo & { close: () => void } =
 }
 
 /** Rule text from the committed runtime, to show what a changed decision was made against. */
-export const readWh40kPreviousRuleText = async (): Promise<Map<string, string>> => {
+export const readWh40kPreviousRuleText = async (): Promise<Map<string, string>> =>
+  new Map(Array.from(await readPreviousRules(), rule => [rule.sourceRecordId, rule.text]))
+
+/** Rule names from the committed runtime, to follow a rule Wahapedia renumbers. */
+export const readWh40kPreviousRuleNames = async (): Promise<Map<string, string>> =>
+  new Map(Array.from(await readPreviousRules(), rule => [rule.sourceRecordId, rule.name]))
+
+const readPreviousRules = async (): Promise<
+  Array<{ sourceRecordId: string; name: string; text: string }>
+> => {
   try {
     const runtime = JSON.parse(await readFile(WH40K_RUNTIME_PATH, 'utf8')) as {
-      catalog: { rules: Array<{ sourceRecordId: string; text: string }> }
+      catalog: { rules: Array<{ sourceRecordId: string; name: string; text: string }> }
     }
-    return new Map(runtime.catalog.rules.map(rule => [rule.sourceRecordId, rule.text]))
+    return runtime.catalog.rules
   } catch {
-    return new Map()
+    return []
   }
 }
 
@@ -117,9 +126,10 @@ const run = async (): Promise<void> => {
 
   if (stamp) {
     const result = await runWh40kSourcePipeline(options)
-    const { checksums } = buildWh40kDecisionContext(result)
+    const { checksums, names } = buildWh40kDecisionContext(result)
     const stamped = stampWh40kDecisions(await readWh40kReview(options.review), checksums, {
       onlyMissing: true,
+      names,
     })
     await saveWh40kReview(options.review, stamped.review)
     console.log(`Stamped ${stamped.stamped} decision record(s) in ${options.review} with their current text.`)

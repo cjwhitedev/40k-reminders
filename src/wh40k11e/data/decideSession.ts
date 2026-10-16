@@ -132,6 +132,9 @@ export const buildWh40kDecisionContext = (
   }
 
   const checksums = new Map(Array.from(records, ([id, record]) => [id, record.recordChecksum]))
+  const names = new Map(
+    Array.from(records, ([id, record]) => [id, record.values.name ?? ''] as const).filter(([, name]) => name)
+  )
   /** Rule records named by source record ID or by rule name (any case). */
   const matching = (wanted: string[]): Wh40kDecisionCandidate[] => {
     const keys = new Set(wanted.map(value => value.trim().toLowerCase()))
@@ -145,7 +148,7 @@ export const buildWh40kDecisionContext = (
       .map(record => describe(record.sourceRecordId, 'requested'))
       .filter((candidate): candidate is Wh40kDecisionCandidate => Boolean(candidate))
   }
-  return { pending, earlierByName, checksums, describe, matching }
+  return { pending, earlierByName, checksums, names, describe, matching }
 }
 
 const wrap = (text: string, indent = '    ', width = Math.min(process.stdout.columns || 100, 110)): string =>

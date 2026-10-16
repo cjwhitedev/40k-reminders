@@ -208,21 +208,33 @@ export const findWh40kDecisionEntry = (
   return ignored ? { section: 'ignoredRules', entry: ignored } : undefined
 }
 
-const withoutRecord = <
-  T extends { sourceRecordIds: SourceRecordId[]; fingerprints?: Record<string, string> },
->(
+type DecisionEntry = {
+  sourceRecordIds: SourceRecordId[]
+  fingerprints?: Record<string, string>
+  names?: Record<string, string>
+}
+
+const withoutKey = (record: Record<string, string> | undefined, key: string) => {
+  if (!record) return undefined
+  const copy = { ...record }
+  delete copy[key]
+  return copy
+}
+
+const withoutRecord = <T extends DecisionEntry>(
   entries: T[] | undefined,
   sourceRecordId: SourceRecordId
 ): T[] =>
   (entries ?? [])
     .map(entry => {
       if (!entry.sourceRecordIds.includes(sourceRecordId)) return entry
-      const fingerprints = { ...entry.fingerprints }
-      delete fingerprints[sourceRecordId]
+      const fingerprints = withoutKey(entry.fingerprints, sourceRecordId)
+      const names = withoutKey(entry.names, sourceRecordId)
       return {
         ...entry,
         sourceRecordIds: entry.sourceRecordIds.filter(id => id !== sourceRecordId),
-        ...(entry.fingerprints ? { fingerprints } : {}),
+        ...(fingerprints ? { fingerprints } : {}),
+        ...(names ? { names } : {}),
       }
     })
     .filter(entry => entry.sourceRecordIds.length > 0)
@@ -253,6 +265,7 @@ export const addWh40kDecision = (
 ): Wh40kSourceReview => {
   const base = removeWh40kDecision(review, candidate.sourceRecordId)
   const fingerprint = { [candidate.sourceRecordId]: candidate.recordChecksum }
+  const name = { [candidate.sourceRecordId]: candidate.name }
   if (decision.kind === 'ignore') {
     const ignoredRules = [...(base.ignoredRules ?? [])]
     const preset = WH40K_IGNORE_GROUPS.some(group => group.key === decision.groupId)
@@ -264,6 +277,7 @@ export const addWh40kDecision = (
         ...entry,
         sourceRecordIds: [...entry.sourceRecordIds, candidate.sourceRecordId],
         fingerprints: { ...entry.fingerprints, ...fingerprint },
+        names: { ...entry.names, ...name },
       }
     } else {
       ignoredRules.push({
@@ -271,6 +285,7 @@ export const addWh40kDecision = (
         sourceRecordIds: [candidate.sourceRecordId],
         reason: decision.reason,
         fingerprints: fingerprint,
+        names: name,
       })
     }
     return { ...base, ignoredRules }
@@ -288,29 +303,39 @@ export const addWh40kDecision = (
     ...(decision.kind === 'reaction' ? { trigger: decision.trigger } : {}),
     reason: decision.reason,
     fingerprints: fingerprint,
+    names: name,
   }
   return { ...base, timingOverrides: [...(base.timingOverrides ?? []), override] }
 }
 
-/** Fills in fingerprints from the current records; with `onlyMissing`, an existing one is never replaced. */
+/** Fills in fingerprints and names from the current records; with `onlyMissing`, an existing fingerprint is never replaced. */
 export const stampWh40kDecisions = (
   review: Wh40kSourceReview,
   checksums: ReadonlyMap<string, string>,
-  options: { onlyMissing: boolean; sourceRecordIds?: ReadonlySet<string> }
+  options: {
+    onlyMissing: boolean
+    sourceRecordIds?: ReadonlySet<string>
+    names?: ReadonlyMap<string, string>
+  }
 ): { review: Wh40kSourceReview; stamped: number } => {
   let stamped = 0
-  const stamp = <T extends { sourceRecordIds: SourceRecordId[]; fingerprints?: Record<string, string> }>(
-    entry: T
-  ): T => {
+  const stamp = <T extends DecisionEntry>(entry: T): T => {
     const fingerprints = { ...entry.fingerprints }
+    const names = { ...entry.names }
     for (const id of entry.sourceRecordIds) {
+      const name = options.names?.get(id)
+      if (name && !names[id]) names[id] = name
       const checksum = checksums.get(id)
       if (!checksum || (options.sourceRecordIds && !options.sourceRecordIds.has(id))) continue
       if (options.onlyMissing && fingerprints[id]) continue
       if (fingerprints[id] !== checksum) stamped += 1
       fingerprints[id] = checksum
     }
-    return Object.keys(fingerprints).length ? { ...entry, fingerprints } : entry
+    return {
+      ...entry,
+      ...(Object.keys(fingerprints).length ? { fingerprints } : {}),
+      ...(Object.keys(names).length ? { names } : {}),
+    }
   }
   return {
     review: {
@@ -343,4 +368,129 @@ export const refreshWh40kReviewInputs = (
       compareCodeUnits(left.url, right.url)
     ),
   },
+})
+
+/** "Abilities.csv", "000008767", "SM" from `source-record:wahapedia-wh40k11e:Abilities.csv%3A000008767%3ASM`. */
+const recordParts = (sourceRecordId: string): string[] =>
+  decodeURIComponent(sourceRecordId.slice(sourceRecordId.lastIndexOf(':') + 1)).split(':')
+
+export interface Wh40kRelinkResult {
+  review: Wh40kSourceReview
+  relinked: Array<{ name: string; from: SourceRecordId; to: SourceRecordId }>
+  unmatched: Array<{ name?: string; sourceRecordId: SourceRecordId }>
+}
+
+/**
+ * Follows rules Wahapedia renumbered: a missing record moves to the one current record in the same
+ * export file with the same name (and the same trailing scope, such as the faction, when that is
+ * needed to tell several apart). The old fingerprint moves with it, so the rule still comes up for
+ * confirmation unless its row is byte-identical.
+ */
+export const relinkWh40kDecisions = (
+  review: Wh40kSourceReview,
+  missing: SourceRecordId[],
+  current: ReadonlyArray<{ sourceRecordId: SourceRecordId; name: string }>,
+  knownNames: ReadonlyMap<string, string> = new Map()
+): Wh40kRelinkResult => {
+  const nameOf = (id: SourceRecordId): string | undefined =>
+    [...(review.timingOverrides ?? []), ...(review.ignoredRules ?? [])].find(entry => entry.names?.[id])
+      ?.names?.[id] ?? knownNames.get(id)
+  const byFileAndName = new Map<string, Array<{ sourceRecordId: SourceRecordId; scope: string }>>()
+  for (const record of current) {
+    const parts = recordParts(record.sourceRecordId)
+    const key = `${parts[0]}\n${record.name.trim().toLowerCase()}`
+    byFileAndName.set(key, [
+      ...(byFileAndName.get(key) ?? []),
+      { sourceRecordId: record.sourceRecordId, scope: parts[parts.length - 1] },
+    ])
+  }
+  const target = new Map<SourceRecordId, SourceRecordId>()
+  const relinked: Wh40kRelinkResult['relinked'] = []
+  const unmatched: Wh40kRelinkResult['unmatched'] = []
+  for (const id of Array.from(new Set(missing))) {
+    const name = nameOf(id)
+    const parts = recordParts(id)
+    let matches = name ? (byFileAndName.get(`${parts[0]}\n${name.trim().toLowerCase()}`) ?? []) : []
+    if (matches.length > 1) matches = matches.filter(match => match.scope === parts[parts.length - 1])
+    if (matches.length === 1 && name) {
+      target.set(id, matches[0].sourceRecordId)
+      relinked.push({ name, from: id, to: matches[0].sourceRecordId })
+    } else unmatched.push({ ...(name ? { name } : {}), sourceRecordId: id })
+  }
+
+  const move = <T extends DecisionEntry>(entry: T): T => {
+    if (!entry.sourceRecordIds.some(id => target.has(id))) return entry
+    const rename = (record: Record<string, string> | undefined) =>
+      record &&
+      Object.fromEntries(
+        Object.entries(record).map(([key, value]) => [target.get(key as SourceRecordId) ?? key, value])
+      )
+    const fingerprints = rename(entry.fingerprints)
+    const names = rename(entry.names)
+    return {
+      ...entry,
+      sourceRecordIds: entry.sourceRecordIds.map(id => target.get(id) ?? id),
+      ...(fingerprints ? { fingerprints } : {}),
+      ...(names ? { names } : {}),
+    }
+  }
+  return {
+    review: {
+      ...review,
+      timingOverrides: review.timingOverrides?.map(move),
+      ignoredRules: review.ignoredRules?.map(move),
+      subFactionKeywords: review.subFactionKeywords?.map(entry =>
+        entry.armyRules
+          ? {
+              ...entry,
+              armyRules: Object.fromEntries(
+                Object.entries(entry.armyRules).map(([keyword, ids]) => [
+                  keyword,
+                  ids.map(id => target.get(id) ?? id),
+                ])
+              ),
+            }
+          : entry
+      ),
+    },
+    relinked,
+    unmatched,
+  }
+}
+
+/** Removes a record from the sub-faction army-rule lists, for a rule Wahapedia no longer has. */
+export const removeWh40kSubFactionArmyRule = (
+  review: Wh40kSourceReview,
+  sourceRecordId: SourceRecordId
+): Wh40kSourceReview => ({
+  ...review,
+  subFactionKeywords: review.subFactionKeywords?.map(entry =>
+    entry.armyRules
+      ? {
+          ...entry,
+          armyRules: Object.fromEntries(
+            Object.entries(entry.armyRules)
+              .map(([keyword, ids]) => [keyword, ids.filter(id => id !== sourceRecordId)] as const)
+              .filter(([, ids]) => ids.length > 0)
+          ),
+        }
+      : entry
+  ),
+})
+
+/**
+ * Sets each link disposition's expected count to what it matches now. A disposition that matches
+ * nothing any more is removed: the rows it excused are gone.
+ */
+export const updateWh40kDispositionCounts = (
+  review: Wh40kSourceReview,
+  matched: ReadonlyMap<string, number>
+): Wh40kSourceReview => ({
+  ...review,
+  linkDispositions: review.linkDispositions
+    .map(disposition => ({
+      ...disposition,
+      expectedCount: matched.get(disposition.id) ?? disposition.expectedCount,
+    }))
+    .filter(disposition => disposition.expectedCount > 0),
 })

@@ -6,14 +6,27 @@ import { fileURLToPath } from 'node:url'
 import type { Wh40kRuntime } from '../domain/runtime'
 import { buildWh40kRuntime, serializeWh40kRuntime, WH40K_RUNTIME_PATH } from '../generate/runtime'
 import { compareWh40kRuntimes, formatWh40kChangeReport, formatWh40kCommitMessage } from './changeReport'
-import { createWh40kTerminalIo, decideWh40kPending, otherWh40kFindings, today } from './decideCommand'
+import {
+  createWh40kTerminalIo,
+  decideWh40kPending,
+  otherWh40kFindings,
+  readWh40kPreviousRuleNames,
+  today,
+} from './decideCommand'
 import {
   buildWh40kDecisionContext,
   readWh40kReview,
   saveWh40kReview,
   type Wh40kPromptIo,
 } from './decideSession'
-import { refreshWh40kReviewInputs, removeWh40kDecision, stampWh40kDecisions } from './decisions'
+import {
+  refreshWh40kReviewInputs,
+  relinkWh40kDecisions,
+  removeWh40kDecision,
+  removeWh40kSubFactionArmyRule,
+  stampWh40kDecisions,
+  updateWh40kDispositionCounts,
+} from './decisions'
 import {
   runWh40kSourcePipeline,
   WH40K_DEFAULT_PIPELINE_OPTIONS,
@@ -137,7 +150,7 @@ const fetchAndRefresh = async (
     )
   ) {
     const before = buildWh40kDecisionContext(await runWh40kSourcePipeline(current))
-    const stamped = stampWh40kDecisions(review, before.checksums, { onlyMissing: true })
+    const stamped = stampWh40kDecisions(review, before.checksums, { onlyMissing: true, names: before.names })
     if (stamped.stamped) {
       Object.assign(review, stamped.review)
       console.log(`Stamped ${stamped.stamped} older decision(s) with the text they were made against.`)
@@ -232,15 +245,56 @@ const settleReview = async (options: Wh40kPipelineOptions, io: Wh40kPromptIo): P
     const findings = otherWh40kFindings(result)
     if (findings.length) {
       let review = await readWh40kReview(options.review)
-      const gone = findings
-        .filter(item => item.code === 'unknown-record')
-        .map(item => item.message.split(' names unknown ')[1])
-        .filter(Boolean)
-      if (
-        gone.length &&
-        (await yes(io, `${gone.length} decision(s) name rules Wahapedia removed. Drop them?`))
-      ) {
-        for (const id of gone) review = removeWh40kDecision(review, id as never)
+      const missing = findings
+        .filter(
+          item =>
+            item.code === 'unknown-record' ||
+            (item.code === 'invalid-sub-faction-keywords' && / army rules name unknown /.test(item.message))
+        )
+        .map(item => item.message.match(/ (?:names|name) unknown (\S+)$/)?.[1])
+        .filter((id): id is string => Boolean(id))
+      if (missing.length) {
+        const current = Object.values(result.decoded.records).flatMap(records =>
+          records.map(record => ({ sourceRecordId: record.sourceRecordId, name: record.values.name ?? '' }))
+        )
+        const relink = relinkWh40kDecisions(
+          review,
+          missing as never[],
+          current.filter(record => record.name),
+          await readWh40kPreviousRuleNames()
+        )
+        review = relink.review
+        if (relink.relinked.length) {
+          io.print(
+            `Followed ${relink.relinked.length} rule(s) Wahapedia renumbered; each comes up below to confirm:`
+          )
+          relink.relinked.forEach(item => io.print(`  ${item.name}`))
+        }
+        if (relink.unmatched.length) {
+          io.print(`${relink.unmatched.length} decision(s) name rules Wahapedia no longer has:`)
+          relink.unmatched.forEach(item => io.print(`  ${item.name ?? item.sourceRecordId}`))
+          if (await yes(io, 'Drop those decisions? (A renamed rule comes up again as needing a timing.)')) {
+            for (const item of relink.unmatched) {
+              review = removeWh40kSubFactionArmyRule(
+                removeWh40kDecision(review, item.sourceRecordId),
+                item.sourceRecordId
+              )
+            }
+          }
+        }
+      }
+      const counts = findings.filter(item => item.code === 'disposition-count-mismatch')
+      if (counts.length) {
+        io.print(
+          'Wahapedia changed how many rows these exclusions cover (rows pointing at unpublished records):'
+        )
+        counts.forEach(item => io.print(`  ${item.message}`))
+        if (await yes(io, 'Update the expected counts (and drop exclusions that now cover nothing)?')) {
+          review = updateWh40kDispositionCounts(
+            review,
+            new Map(result.reviewed.dispositions.map(item => [item.id, item.matched]))
+          )
+        }
       }
       const factions = findings
         .filter(

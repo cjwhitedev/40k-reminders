@@ -304,7 +304,10 @@
           "page": 80,
           "quote": "Each time a model in this unit is destroyed"
         }
-      ]
+      ],
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008339%3A": "a55ce83dc02ea74ba9509e57734dde0f0d0e44f54dca517bfb270c6bc27d79e2"
+      }
     },
     {
       "id": "core-deep-strike",
@@ -318,7 +321,10 @@
           "page": 80,
           "quote": "Each time this unit makes an ingress move"
         }
-      ]
+      ],
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008343%3A": "4d5183d0c2d01b83254e69ef349587a1b0c30b3034601569755436c555b911e0"
+      }
     },
     {
       "id": "core-feel-no-pain",
@@ -332,7 +338,10 @@
           "page": 81,
           "quote": "Each time a model with this ability would lose a wound, roll one D6"
         }
-      ]
+      ],
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008338%3A": "a7a31ec2a3863de0e3847de0f4f3824ff10abfccb74d70df0fd72b1a9160af5a"
+      }
     },
     {
       "id": "core-fights-first",
@@ -345,7 +354,10 @@
           "page": 81,
           "quote": "While every model in a unit has this ability, that unit is a Fights First unit."
         }
-      ]
+      ],
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008340%3A": "17ba8421097ed08b7d22c1c5f410b5796ca1b9468c02b4f3be3d7f6e3e055bd8"
+      }
     },
     {
       "id": "core-firing-deck",
@@ -367,7 +379,10 @@
           "page": 81,
           "quote": "In your Shooting phase, each time this TRANSPORT is selected to shoot"
         }
-      ]
+      ],
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008334%3A": "7643045a7ac5cc51cd7cfc2e2e24dcb1c1d1367270a67036a08a5a13c2238bd8"
+      }
     },
     {
       "id": "core-hover",
@@ -381,7 +396,10 @@
           "page": 82,
           "quote": "Each time this unit takes to the skies"
         }
-      ]
+      ],
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008342%3A": "3fd2459d0d108309ff729177bc1a395b05d770d286933b688d202abc51e26bf0"
+      }
     },
     {
       "id": "core-infiltrators",
@@ -400,7 +418,10 @@
           "page": 82,
           "quote": "During deployment, if every model in a unit has this ability"
         }
-      ]
+      ],
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008345%3A": "373d8a6617c26895b647ee1178edd7096ba46c6c79d192fd2fb222c9c3b40a5c"
+      }
     },
     {
       "id": "core-leader-and-support",
@@ -422,7 +443,11 @@
           "page": 66,
           "quote": "Before the battle, in the Muster Armies step, for each leader and support unit in your army"
         }
-      ]
+      ],
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008346%3A": "47c838613a93464d33f1e581b69e30b5f2f056b38f438c4e2da4240f3e4d03cd",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000010857%3A": "078cb952db886ef0e3dc90500cd4f08a6a2baf19657928e88ff1a885ca14a187"
+      }
     },
     {
       "id": "core-lone-operative",
@@ -435,7 +460,10 @@
           "page": 83,
           "quote": "Unless part of an attached unit, this unit is not visible to enemy models"
         }
-      ]
+      ],
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008336%3A": "4f5227d3b23b3b790e4984a5cfb59b81d05fcc532643efb676a6aa6a6ba689bc"
+      }
     },
     {
       "id": "core-scouts",
@@ -454,7 +482,10 @@
           "page": 84,
           "quote": "Abilities step, if every model in a unit has this ability, you can do one of the following"
         }
-      ]
+      ],
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008344%3A": "95672f4d5ce5a13e95a4407ca2a71ed7d2053e319b9d24b4d96bb4330aca7a1a"
+      }
     },
     {
       "id": "core-stealth",
@@ -467,7 +498,10 @@
           "page": 85,
           "quote": "each time a ranged attack targets that unit, that unit has the benefit of cover against that attack"
         }
-      ]
+      ],
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008337%3A": "352e0229217ff0276047018b85498b8402c84729094e9dc8b807f5fcc52190ba"
+      }
     },
     {
       "id": "core-super-heavy-walker",
@@ -481,13 +515,19 @@
           "page": 85,
           "quote": "Each time a unit with this ability makes a normal"
         }
-      ]
+      ],
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000010844%3A": "80a1dba46481ecca6fd1c9c52b4c26413fc0ddf17b2e3ea2b315d749050744a6"
+      }
     },
     {
       "id": "core-damaged",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000011125%3A"],
       "kind": "passive",
-      "reason": "Wahapedia prints Damaged as Core Rules 24.39, a standing modifier while a model’s remaining wounds are at or below a threshold. Neither the Core Rules nor the Universal Rules Updates candidate documents print 24.39, so this relies on the Wahapedia text until an official source is pinned."
+      "reason": "Wahapedia prints Damaged as Core Rules 24.39, a standing modifier while a model’s remaining wounds are at or below a threshold. Neither the Core Rules nor the Universal Rules Updates candidate documents print 24.39, so this relies on the Wahapedia text until an official source is pinned.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011125%3A": "70c813965710f9978c30fa4e79589ef3d2fd30a23892cfe1a9489b8453d764b4"
+      }
     },
     {
       "id": "wahapedia-standing-effects",
@@ -527,90 +567,214 @@
         "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000011148004"
       ],
       "kind": "passive",
-      "reason": "33 rules whose Wahapedia text states a standing effect with no window of its own: weapon and unit abilities (Root-carved Weapons, Paired Krumpas), keyword-subject grants and eligibilities (Questing Tendrils, Yriel's Own, Interlocking Tactics), round-gated modifiers (Patient Hunter, Killing Blow 'During the first, second and third battle rounds'), and limits on other rules (Unstable Energies, Sacred Rites, Valour's Reward, Extremis Sanction). Brood Brothers and Wretched Thralls also permit units at muster, but each carries a standing in-game effect, so they stay always active."
+      "reason": "33 rules whose Wahapedia text states a standing effect with no window of its own: weapon and unit abilities (Root-carved Weapons, Paired Krumpas), keyword-subject grants and eligibilities (Questing Tendrils, Yriel's Own, Interlocking Tactics), round-gated modifiers (Patient Hunter, Killing Blow 'During the first, second and third battle rounds'), and limits on other rules (Unstable Energies, Sacred Rites, Valour's Reward, Extremis Sanction). Brood Brothers and Wretched Thralls also permit units at muster, but each carries a standing in-game effect, so they stay always active.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011127%3AORK": "ace4177f3a93234c3ea0e2773b07bafc58266ab98fabdbdc2266d481d2d3e847",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000000016%3A4": "d4f83cdcd1d7bfb2a37d9e14ab2733dd07818e55b2352c771bd9b0bd89d1c467",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000000021%3A4": "3a8fe0db92468c4507a3a0696eeb36ca1cc140603aa9df1e651095642d7c7eb7",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000000087%3A6": "bf5888908a051e1e51c42510697e198b7fc45b2f24026993adcae7103173f90a",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002362%3A3": "821bc2356cb4a70e06cd3ace88e3c7224d094e4cdc36ea7f3b36f83849f2be8e",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000008415": "39404c5832a2089344f604446932c0fd2ed6ca68bcb473fde3ef74d33eee0113",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000008441": "81094b56bf1a38f029bac572332059b6657b8c923fa37ecdc8f3f5583c4dccec",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000008810": "eb019af5f338c42716da8f1a93dfdb908efd85460fe4f424163923cd21b14f48",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009036": "508318b79cda400d93594460c030441df6c9f152b14eb5a094b3a1c0ebeaad76",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009070": "d462d1df5b3e46fd44c00186c1d210a52249ba610d0bf1b1b939ca7cea9235f6",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009083": "7cc7d099954e8a5c668a782fd0c0e7fe815316562b246e3bcaa2f19a3ddee2e7",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009756": "e5b613ca0d2d389fe8278cafdde9295b9a7902a923ef8e387032d57bc5e859c2",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009764": "1a1ff4abb082c7f7e7e57ad7024fa4ed7af72336d6f484244b73d81e4ed896af",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009978": "25660290a16e3d258eb2098a32ec8645d1cf6543bb8e1e506e6db516ffb72064",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010501": "08571b4772552ca3ad6d640eaed67f00eb4f5279ad85955cf392cd04335b9fae",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010675": "a716ad8ef517500b375264e2cef3263cbe1aa5f719551458440f7860ab170a68",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010691": "ff491e9315dc072d84fc056244e51e72d4d58a15f75ba423668cf2f65edd9356",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010697": "b8a5c7ef7748907ab6ec141de6863f3b7fb12c225ea32d8ec37d24ae6c6be912",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010790": "d02e04019a586b67cec65cee429c8a1379b40358b955b919e081324bfaa36158",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010867": "4b97fedf67d5ac7f83e92222906a0f2d3ec808a04327ca6bb722b21fac0da4f4",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000011112": "6b73b1d37b3bc3ff213ce1a51b8d2fc3b54fc8ea7d02ca724b12c4682bdb09f1",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000008821005": "4eaab50ed387b5a3f8815dc828879a04a68f3a2c841a673549d7b2e930cf6f44",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000008921003": "9c252e9203e8001d138d9664d1aafae33be363c10c955f401dad1a8c86dc6403",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000008968004": "4e0cd678d0d907ccf6396aa442533390f464ebbe0f85f60530e7aa422af1a8e7",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000008976003": "20ef3b0322629e2025652479d09a00ab32deeb538db498e6278547272fbb8a64",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009071004": "16d323c67834c32851e7314fa61938b1ddf7a089d06391b64f79cb44a0b65836",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009130002": "1853ab23a96ab1d0b6bcd5bdc3a3c731649c45997370100824a30553c0444c1c",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009745003": "aca2dd7c615bf85af022da592e4c29c4a4a66f7b2d363f3e1d9c3dddb3eb1d96",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009903004": "6d9bedfba0723dfce67a584d1925785ade659a29b02ae2f988e8c13ade374eeb",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009923004": "80e10e5960bded951db509025226a1fd78c35a920f34e1530fb86160d2eb08c6",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010694004": "61ff4672ec5410705f7d388959c8f320abccf0df7a4e01cb3c439518a2ce2d17",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010747002": "ad5c14417e6cb5462bf57e702ca9fbe97cac4d2fceda74f680bf044c68ec4134",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000011148004": "5e165cbb78f7725735ab92ee2099fa8f8b27ce806d7036140a290541a240168d"
+      }
     },
     {
       "id": "voice-of-command",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008377%3AAM"],
       "kind": "timed",
       "windows": [
-        { "kind": "turn-phase", "phase": "command", "moment": "during", "perspective": "your" },
-        { "kind": "any-phase", "moments": ["end"], "perspective": "either" }
+        {
+          "kind": "turn-phase",
+          "phase": "command",
+          "moment": "during",
+          "perspective": "your"
+        },
+        {
+          "kind": "any-phase",
+          "moments": ["end"],
+          "perspective": "either"
+        }
       ],
       "trigger": "OFFICER models issue Orders in your Command phase, and at the end of a phase in which they disembarked or were set up",
-      "reason": "Wahapedia text: 'OFFICER models can issue Orders in your Command phase and at the end of a phase in which they disembarked from a Transport or were set up on the battlefield.'"
+      "reason": "Wahapedia text: 'OFFICER models can issue Orders in your Command phase and at the end of a phase in which they disembarked from a Transport or were set up on the battlefield.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008377%3AAM": "1273bbfc5b68f5f921c2bd90328eda2ab9a2028623715d46c1038180e3ebce88"
+      }
     },
     {
       "id": "for-the-greater-good",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008439%3ATAU"],
       "kind": "timed",
-      "windows": [{ "kind": "turn-phase", "phase": "shooting", "moment": "start", "perspective": "your" }],
-      "reason": "Wahapedia text: 'at the start of your Shooting phase you can select units from your army with this ability to become Observer units.'"
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "shooting",
+          "moment": "start",
+          "perspective": "your"
+        }
+      ],
+      "reason": "Wahapedia text: 'at the start of your Shooting phase you can select units from your army with this ability to become Observer units.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008439%3ATAU": "20ea9198b895fd1a0d34dedf921c1506d02a8ca98517cfc8b39c13e4b33ae187"
+      }
     },
     {
       "id": "bondsman",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008459%3AQI"],
       "kind": "timed",
-      "windows": [{ "kind": "turn-phase", "phase": "command", "moment": "during", "perspective": "your" }],
-      "reason": "Wahapedia text: 'In your Command phase, one or more models from your army with a Bondsman ability can use that ability.'"
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "command",
+          "moment": "during",
+          "perspective": "your"
+        }
+      ],
+      "reason": "Wahapedia text: 'In your Command phase, one or more models from your army with a Bondsman ability can use that ability.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008459%3AQI": "b8bc5d95bcf5d6bccb4d8ff37e1be1bcbaf9717dfa3aff152f22106c91e7e134"
+      }
     },
     {
       "id": "acts-of-faith",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008466%3AAS"],
       "kind": "reaction",
       "trigger": "Before making a dice roll for a model or unit from your army with this ability",
-      "reason": "Wahapedia text: an Act of Faith is performed 'Before making a dice roll for a model or unit from your army'; Miracle dice are gained at the start of each turn and each time an ADEPTA SORORITAS unit is destroyed."
+      "reason": "Wahapedia text: an Act of Faith is performed 'Before making a dice roll for a model or unit from your army'; Miracle dice are gained at the start of each turn and each time an ADEPTA SORORITAS unit is destroyed.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008466%3AAS": "c9790460aa03866cfaf5ba4d8fc96410824b2f0ecef3c8ca18f18a6e9f2f038a"
+      }
     },
     {
       "id": "cult-ambush",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008501%3AGC"],
       "kind": "reaction",
       "trigger": "Each time a unit from your army is destroyed",
-      "reason": "Wahapedia text: 'Each time a unit from your army is destroyed, if every model ... has this ability, you can spend the relevant number of Resurgence points'."
+      "reason": "Wahapedia text: 'Each time a unit from your army is destroyed, if every model ... has this ability, you can spend the relevant number of Resurgence points'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008501%3AGC": "861faeb59b2e0563e82fe23d40b687a5f0222b9273d751ac5056c9c8c292dc8b"
+      }
     },
     {
       "id": "power-from-pain",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008507%3ADRU"],
       "kind": "timed",
-      "windows": [{ "kind": "turn-phase", "phase": "command", "moment": "start", "perspective": "your" }],
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "command",
+          "moment": "start",
+          "perspective": "your"
+        }
+      ],
       "trigger": "Gain 1 Pain token",
-      "reason": "Wahapedia text: 'you gain Pain tokens as follows: 1 Pain token at the start of your Command phase.' Spending tokens is prompted by each unit's own Pain ability."
+      "reason": "Wahapedia text: 'you gain Pain tokens as follows: 1 Pain token at the start of your Command phase.' Spending tokens is prompted by each unit's own Pain ability.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008507%3ADRU": "d4217748441bf983f097b35adbae61477744fa08a4c37049635d6cd2e876b95c"
+      }
     },
     {
       "id": "harbingers-of-dread",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008512%3AQT"],
       "kind": "timed",
       "windows": [
-        { "kind": "battle-round", "moment": "start", "round": 1 },
-        { "kind": "battle-round", "moment": "start", "round": 3 },
-        { "kind": "battle-round", "moment": "start", "round": 5 }
+        {
+          "kind": "battle-round",
+          "moment": "start",
+          "round": 1
+        },
+        {
+          "kind": "battle-round",
+          "moment": "start",
+          "round": 3
+        },
+        {
+          "kind": "battle-round",
+          "moment": "start",
+          "round": 5
+        }
       ],
-      "reason": "Wahapedia text: 'at the start of the first, third and fifth battle rounds, you can either select one of the other Dread abilities or randomly select two'."
+      "reason": "Wahapedia text: 'at the start of the first, third and fifth battle rounds, you can either select one of the other Dread abilities or randomly select two'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008512%3AQT": "e77b88568ca850656990ea579ad03170fba6c74699e928ce6c401a491bfaf80f"
+      }
     },
     {
       "id": "agile-manoeuvres",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000009895%3AAE"],
       "kind": "reaction",
       "trigger": "When an eligible unit from your army is selected to move, is set up on the battlefield, or declares a charge",
-      "reason": "Wahapedia text: each Agile Manoeuvre has a TRIGGER such as 'When an eligible unit from your army is selected to make a Normal, Advance or Fall Back move'."
+      "reason": "Wahapedia text: each Agile Manoeuvre has a TRIGGER such as 'When an eligible unit from your army is selected to make a Normal, Advance or Fall Back move'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000009895%3AAE": "30135c339cb90ba9fcbf2917e6dbd7a1e883f4740f82c091cefbe464ce8266df"
+      }
     },
     {
       "id": "lithe-agility",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000000639%3A3"],
       "kind": "timed",
       "windows": [
-        { "kind": "turn-phase", "phase": "movement", "moment": "during", "perspective": "your" },
-        { "kind": "turn-phase", "phase": "charge", "moment": "during", "perspective": "your" }
+        {
+          "kind": "turn-phase",
+          "phase": "movement",
+          "moment": "during",
+          "perspective": "your"
+        },
+        {
+          "kind": "turn-phase",
+          "phase": "charge",
+          "moment": "during",
+          "perspective": "your"
+        }
       ],
       "trigger": "when this unit Advances, or before its Charge roll",
-      "reason": "Wahapedia text: 'In your Movement phase when you select this model’s unit to Advance, or in your Charge phase before you make a Charge roll'."
+      "reason": "Wahapedia text: 'In your Movement phase when you select this model’s unit to Advance, or in your Charge phase before you make a Charge roll'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000000639%3A3": "98c557d46198c2f23d7d8a4e017f24de3bdc34e53aadfdc7772a8012886c2e00"
+      }
     },
     {
       "id": "tally-of-pestilence",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000001129%3A5"],
       "kind": "timed",
-      "windows": [{ "kind": "turn-phase", "phase": "command", "moment": "start", "perspective": "your" }],
-      "reason": "Wahapedia text: 'At the start of your Command phase, if this tally is 7 or more, you gain 1CP'."
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "command",
+          "moment": "start",
+          "perspective": "your"
+        }
+      ],
+      "reason": "Wahapedia text: 'At the start of your Command phase, if this tally is 7 or more, you gain 1CP'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000001129%3A5": "12e2821dc7b61a96cb391c5626f5ed8b721cd188a2ccacb61a452c0513899072"
+      }
     },
     {
       "id": "strategic-mastery",
@@ -621,87 +785,194 @@
       ],
       "kind": "reaction",
       "trigger": "When you target this model’s unit with a Stratagem",
-      "usage": { "limit": 1, "period": "battle-round" },
-      "reason": "Wahapedia text: 'Once per battle round, you can select one model from your army with this ability and target that model’s unit with a Stratagem ... reduce the CP cost'."
+      "usage": {
+        "limit": 1,
+        "period": "battle-round"
+      },
+      "reason": "Wahapedia text: 'Once per battle round, you can select one model from your army with this ability and target that model’s unit with a Stratagem ... reduce the CP cost'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000001447%3A5": "a6a6f63544289955291904c711892c420a167e44df58e4530d249ebda926a37f",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000001448%3A5": "1fef0cc056200287286c441df0d5d7d8592e8f5253aacb64a17aa48f699a80d8",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000001449%3A4": "0452e3224a14b8f84840b1a23f98c8d884cf110af6fdc933cbd1972c555a4955"
+      }
     },
     {
       "id": "harbinger-of-despair",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002353%3A4"],
       "kind": "timed",
       "windows": [
-        { "kind": "turn-phase", "phase": "command", "moment": "start", "perspective": "your" },
-        { "kind": "turn-phase", "phase": "movement", "moment": "start", "perspective": "your" },
-        { "kind": "turn-phase", "phase": "shooting", "moment": "start", "perspective": "your" },
-        { "kind": "turn-phase", "phase": "charge", "moment": "start", "perspective": "your" },
-        { "kind": "turn-phase", "phase": "fight", "moment": "start", "perspective": "your" }
+        {
+          "kind": "turn-phase",
+          "phase": "command",
+          "moment": "start",
+          "perspective": "your"
+        },
+        {
+          "kind": "turn-phase",
+          "phase": "movement",
+          "moment": "start",
+          "perspective": "your"
+        },
+        {
+          "kind": "turn-phase",
+          "phase": "shooting",
+          "moment": "start",
+          "perspective": "your"
+        },
+        {
+          "kind": "turn-phase",
+          "phase": "charge",
+          "moment": "start",
+          "perspective": "your"
+        },
+        {
+          "kind": "turn-phase",
+          "phase": "fight",
+          "moment": "start",
+          "perspective": "your"
+        }
       ],
-      "usage": { "limit": 1, "period": "turn" },
-      "reason": "Wahapedia text: 'Once per turn, at the start of your Command, Movement, Shooting, Charge or Fight phase'."
+      "usage": {
+        "limit": 1,
+        "period": "turn"
+      },
+      "reason": "Wahapedia text: 'Once per turn, at the start of your Command, Movement, Shooting, Charge or Fight phase'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002353%3A4": "7457cc9dae7f0c874c570ce49333c4e1bf08ee9d4ac5633b078d711a19cefcc8"
+      }
     },
     {
       "id": "inescapable-death",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002355%3A4"],
       "kind": "reaction",
       "trigger": "When you use the Fire Overwatch Stratagem",
-      "usage": { "limit": 1, "period": "turn" },
-      "reason": "Wahapedia text: 'Once per turn, one unit from your army with this ability can be targeted with the Fire Overwatch Stratagem for 0CP'."
+      "usage": {
+        "limit": 1,
+        "period": "turn"
+      },
+      "reason": "Wahapedia text: 'Once per turn, one unit from your army with this ability can be targeted with the Fire Overwatch Stratagem for 0CP'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002355%3A4": "373d8f84eb445f1ba9830e32d5e7e5494f0023d569cb23ad93a0a2834beafbeb"
+      }
     },
     {
       "id": "deadly-retinue",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002471%3A2"],
       "kind": "timed",
       "windows": [
-        { "kind": "turn-phase", "phase": "shooting", "moment": "start", "perspective": "your" },
-        { "kind": "turn-phase", "phase": "fight", "moment": "start", "perspective": "either" }
+        {
+          "kind": "turn-phase",
+          "phase": "shooting",
+          "moment": "start",
+          "perspective": "your"
+        },
+        {
+          "kind": "turn-phase",
+          "phase": "fight",
+          "moment": "start",
+          "perspective": "either"
+        }
       ],
-      "reason": "Wahapedia text: 'At the start of your Shooting phase or at the start of the Fight phase, you can spend 1 Pain token to Empower this unit.'"
+      "reason": "Wahapedia text: 'At the start of your Shooting phase or at the start of the Fight phase, you can spend 1 Pain token to Empower this unit.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002471%3A2": "efb3055d5dd9c6719c5928c3749902b3f70311290b159b4340dc70665ba7a5bf"
+      }
     },
     {
       "id": "inevitable-death",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002544%3A5"],
       "kind": "reaction",
       "trigger": "Just after another friendly AELDARI unit is destroyed in your opponent’s turn",
-      "usage": { "limit": 1, "period": "turn" },
-      "reason": "Wahapedia text: 'Once in each of your opponent’s turns, ... when another friendly AELDARI unit is destroyed, just after removing the last model'."
+      "usage": {
+        "limit": 1,
+        "period": "turn"
+      },
+      "reason": "Wahapedia text: 'Once in each of your opponent’s turns, ... when another friendly AELDARI unit is destroyed, just after removing the last model'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002544%3A5": "880787e17fabe8958f181b55d4cf891006a2633867446559b20d846bec5ca484"
+      }
     },
     {
       "id": "ancestral-fortune",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002593%3A3"],
       "kind": "reaction",
       "trigger": "After a Hit roll, Wound roll or saving throw is made for this model",
-      "usage": { "limit": 1, "period": "turn" },
-      "reason": "Wahapedia text: 'Once per turn, you can spend 1YP to change one Hit roll, one Wound roll or one saving throw made for this model to an unmodified 6.'"
+      "usage": {
+        "limit": 1,
+        "period": "turn"
+      },
+      "reason": "Wahapedia text: 'Once per turn, you can spend 1YP to change one Hit roll, one Wound roll or one saving throw made for this model to an unmodified 6.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002593%3A3": "da671320fcbfcf0f7cf57d2dc32dcea4ac2759065183f2eace74cf18cec82f20"
+      }
     },
     {
       "id": "tactical-genius",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002606%3A4"],
       "kind": "reaction",
       "trigger": "When you target a friendly Regiment unit within 12\" with a Stratagem",
-      "usage": { "limit": 1, "period": "battle-round" },
-      "reason": "Wahapedia text: 'Once per battle round, one friendly Regiment unit within 12\" of this model can be targeted with a Stratagem ... reduce the CP cost'."
+      "usage": {
+        "limit": 1,
+        "period": "battle-round"
+      },
+      "reason": "Wahapedia text: 'Once per battle round, one friendly Regiment unit within 12\" of this model can be targeted with a Stratagem ... reduce the CP cost'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002606%3A4": "a3dfa5cf0473e4e1671d04b21f85a83ae53d98c96557627d314975f9c1b6fb0b"
+      }
     },
     {
       "id": "inquisitorial-retinue",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000003828%3A5"],
       "kind": "timed",
-      "windows": [{ "kind": "pre-battle", "step": "Declare Battle Formations step" }],
-      "reason": "Wahapedia text: 'At the start of the Declare Battle Formations step, this unit can join one INQUISITORIAL AGENTS unit'. Its army-building allowance needs no reminder."
+      "windows": [
+        {
+          "kind": "pre-battle",
+          "step": "Declare Battle Formations step"
+        }
+      ],
+      "reason": "Wahapedia text: 'At the start of the Declare Battle Formations step, this unit can join one INQUISITORIAL AGENTS unit'. Its army-building allowance needs no reminder.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000003828%3A5": "7a6149d5f53b502da07bef25e55aeb7dd97a4d84d94f06e27beab3f3638b2c41"
+      }
     },
     {
       "id": "duellists-hubris",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004083%3A6"],
       "kind": "timed",
-      "windows": [{ "kind": "turn-phase", "phase": "fight", "moment": "start", "perspective": "either" }],
-      "reason": "Wahapedia text: 'At the start of the Fight phase; if this model is not leading a unit, until the end of the phase, it has the Fights First ability.'"
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "fight",
+          "moment": "start",
+          "perspective": "either"
+        }
+      ],
+      "reason": "Wahapedia text: 'At the start of the Fight phase; if this model is not leading a unit, until the end of the phase, it has the Fights First ability.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004083%3A6": "08243bc1c6a18ae19d5e730e717606cabb7efabac9ea16122f7e79258df87023"
+      }
     },
     {
       "id": "geomantic-hunters",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004145%3A3"],
       "kind": "timed",
-      "windows": [{ "kind": "turn-phase", "phase": "shooting", "moment": "during", "perspective": "your" }],
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "shooting",
+          "moment": "during",
+          "perspective": "your"
+        }
+      ],
       "trigger": "when this unit is selected to shoot",
-      "usage": { "limit": 2, "period": "battle" },
-      "reason": "Wahapedia text: 'Up to twice per battle, in your Shooting phase, when this unit is selected to shoot, it can use this ability.'"
+      "usage": {
+        "limit": 2,
+        "period": "battle"
+      },
+      "reason": "Wahapedia text: 'Up to twice per battle, in your Shooting phase, when this unit is selected to shoot, it can use this ability.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004145%3A3": "d7a7ebb0c300a44feacab7add39bf0496e55a799346650c4eed60a0e891a8b9f"
+      }
     },
     {
       "id": "thulia-ghuld-icon-of-war",
@@ -711,125 +982,277 @@
         "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004210%3A8"
       ],
       "kind": "timed",
-      "windows": [{ "kind": "turn-phase", "phase": "command", "moment": "during", "perspective": "your" }],
-      "reason": "The datasheet's Rod of the War Forge reads 'In your Command phase, select one of the abilities in the Icon of War section'; these three are those abilities, each lasting 'until the start of your next Command phase'."
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "command",
+          "moment": "during",
+          "perspective": "your"
+        }
+      ],
+      "reason": "The datasheet's Rod of the War Forge reads 'In your Command phase, select one of the abilities in the Icon of War section'; these three are those abilities, each lasting 'until the start of your next Command phase'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004210%3A6": "0cbd8896fbf18d56c891fa6035f700b8be4648b63e3d18b0c8daab54dcb33a05",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004210%3A7": "a51e20c5c237ef7312cbb00eedb2568e85cb7df28508a2530840033ebbae586e",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004210%3A8": "5a44d8b41111a9398f209aab85389dccd375193c7ee12bc2afd08e860e70fe63"
+      }
     },
     {
       "id": "decisive-command",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004216%3A7"],
       "kind": "timed",
-      "windows": [{ "kind": "turn-phase", "phase": "command", "moment": "during", "perspective": "your" }],
-      "reason": "Wahapedia text: 'if this is the first Order issued by a unit from your army this Command phase'. Orders are issued in your Command phase (Voice of Command)."
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "command",
+          "moment": "during",
+          "perspective": "your"
+        }
+      ],
+      "reason": "Wahapedia text: 'if this is the first Order issued by a unit from your army this Command phase'. Orders are issued in your Command phase (Voice of Command).",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004216%3A7": "ea209c9ac3c426a57558db024e577b10a6686bedbd57b8f14477c3651ae8972f"
+      }
     },
     {
       "id": "unparalleled-luck",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004244%3A7"],
       "kind": "timed",
-      "windows": [{ "kind": "any-phase", "moments": ["start"], "perspective": "either" }],
-      "usage": { "limit": 1, "period": "battle" },
-      "reason": "Wahapedia text: 'At the start of a phase, you can use this ability.' The ability's name carries '(Once per battle, per army)'."
+      "windows": [
+        {
+          "kind": "any-phase",
+          "moments": ["start"],
+          "perspective": "either"
+        }
+      ],
+      "usage": {
+        "limit": 1,
+        "period": "battle"
+      },
+      "reason": "Wahapedia text: 'At the start of a phase, you can use this ability.' The ability's name carries '(Once per battle, per army)'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004244%3A7": "57c977f54bd31406afd19c132f644001300b16a3d4445ce27bf90a1f4a659e95"
+      }
     },
     {
       "id": "rad-bombardment",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000008384"],
       "kind": "timed",
       "windows": [
-        { "kind": "battle-round", "moment": "start", "round": 1 },
-        { "kind": "turn-phase", "phase": "command", "moment": "start", "perspective": "your" }
+        {
+          "kind": "battle-round",
+          "moment": "start",
+          "round": 1
+        },
+        {
+          "kind": "turn-phase",
+          "phase": "command",
+          "moment": "start",
+          "perspective": "your"
+        }
       ],
-      "reason": "Wahapedia text: Bombardment 'At the start of the first battle round'; Fallout 'At the start of your Command phase during the second, third, fourth and fifth battle rounds'."
+      "reason": "Wahapedia text: Bombardment 'At the start of the first battle round'; Fallout 'At the start of your Command phase during the second, third, fourth and fifth battle rounds'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000008384": "8c76946f950b3e10cbbeed3c2250309b3ab39e92f182cba4248273c97cfb2a62"
+      }
     },
     {
       "id": "upon-wings-of-fire",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009189"],
       "kind": "timed",
-      "windows": [{ "kind": "turn-step", "step": "end-of-turn", "perspective": "opponent" }],
-      "reason": "Wahapedia text: 'At the end of your opponent s turn, you can select a number of Adeptus Astartes Jump Pack units'."
+      "windows": [
+        {
+          "kind": "turn-step",
+          "step": "end-of-turn",
+          "perspective": "opponent"
+        }
+      ],
+      "reason": "Wahapedia text: 'At the end of your opponent s turn, you can select a number of Adeptus Astartes Jump Pack units'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009189": "eb616d8275ec51896e4bfceb3027838aa99e9f5176341897645ea1d44286f4af"
+      }
     },
     {
       "id": "fates-in-flux",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009809"],
       "kind": "reaction",
       "trigger": "Just after an Advance roll, Hit roll, Wound roll, Damage roll, saving throw or Hazardous test is made",
-      "reason": "Wahapedia text: 'You can spend one Flux token just after an Advance roll, Hit roll, Wound roll, Damage roll, saving throw or Hazardous test is made'."
+      "reason": "Wahapedia text: 'You can spend one Flux token just after an Advance roll, Hit roll, Wound roll, Damage roll, saving throw or Hazardous test is made'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009809": "4a40ff19da89064b1bc7665c23f0a1290e001f0b188bb70f0c39f07c16462e10"
+      }
     },
     {
       "id": "blood-tainted",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009814"],
       "kind": "timed",
-      "windows": [{ "kind": "any-phase", "moments": ["end"], "perspective": "either" }],
-      "reason": "Wahapedia text: 'At the end of a phase in which a Legiones Daemonica Khorne unit from your army destroyed an enemy unit'."
+      "windows": [
+        {
+          "kind": "any-phase",
+          "moments": ["end"],
+          "perspective": "either"
+        }
+      ],
+      "reason": "Wahapedia text: 'At the end of a phase in which a Legiones Daemonica Khorne unit from your army destroyed an enemy unit'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009814": "d747f19d427e2b7da9de373a69664b721f120b8bcad5358d7996b8db48eb8aa4"
+      }
     },
     {
       "id": "strength-from-death",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009918"],
       "kind": "timed",
       "windows": [
-        { "kind": "turn-phase", "phase": "shooting", "moment": "end", "perspective": "opponent" },
-        { "kind": "turn-phase", "phase": "fight", "moment": "start", "perspective": "either" }
+        {
+          "kind": "turn-phase",
+          "phase": "shooting",
+          "moment": "end",
+          "perspective": "opponent"
+        },
+        {
+          "kind": "turn-phase",
+          "phase": "fight",
+          "moment": "start",
+          "perspective": "either"
+        }
       ],
-      "reason": "Wahapedia text: Lethal Intent 'At the end of your opponent’s Shooting phase'; Lethal Reprisal 'At the start of the Fight phase'. Lethal Surge rides on the Fade Back Agile Manoeuvre."
+      "reason": "Wahapedia text: Lethal Intent 'At the end of your opponent’s Shooting phase'; Lethal Reprisal 'At the start of the Fight phase'. Lethal Surge rides on the Fade Back Agile Manoeuvre.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009918": "c4e80494938960f748de2c49232fa3544244b6d8bed83732e600a56670f1badd"
+      }
     },
     {
       "id": "numberless-horde",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010138"],
       "kind": "timed",
-      "windows": [{ "kind": "turn-phase", "phase": "command", "moment": "during", "perspective": "your" }],
-      "reason": "Wahapedia text: 'In your Command phase in each of the following battle rounds ... add a new Poxwalkers unit'."
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "command",
+          "moment": "during",
+          "perspective": "your"
+        }
+      ],
+      "reason": "Wahapedia text: 'In your Command phase in each of the following battle rounds ... add a new Poxwalkers unit'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010138": "7447146c86820cd170cf5d1eb218b5262795a5305030afdc7ed8f410c7de5a30"
+      }
     },
     {
       "id": "prescient-redeployment",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010363"],
       "kind": "timed",
-      "windows": [{ "kind": "turn-phase", "phase": "movement", "moment": "start", "perspective": "your" }],
-      "reason": "Wahapedia text: 'From the second battle round onwards, at the start of your Movement phase'."
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "movement",
+          "moment": "start",
+          "perspective": "your"
+        }
+      ],
+      "reason": "Wahapedia text: 'From the second battle round onwards, at the start of your Movement phase'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010363": "517d024c2802b9688c51c9811950c7107dc406368f586169ad10c60076fd545c"
+      }
     },
     {
       "id": "mastered-doctrines",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010632"],
       "kind": "timed",
-      "windows": [{ "kind": "turn-phase", "phase": "command", "moment": "start", "perspective": "your" }],
-      "reason": "Wahapedia text: 'At the start of up to three of your Command phases, you can select one of the Combat Doctrines listed below.'"
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "command",
+          "moment": "start",
+          "perspective": "your"
+        }
+      ],
+      "reason": "Wahapedia text: 'At the start of up to three of your Command phases, you can select one of the Combat Doctrines listed below.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010632": "bf05dbe6051937e4c4354d951c0f2e7204b3792d743299665dca7d4bf3ba9d26"
+      }
     },
     {
       "id": "ruthless-reinvestment",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010707"],
       "kind": "timed",
       "windows": [
-        { "kind": "battle", "moment": "start" },
-        { "kind": "turn-phase", "phase": "command", "moment": "end", "perspective": "your" }
+        {
+          "kind": "battle",
+          "moment": "start"
+        },
+        {
+          "kind": "turn-phase",
+          "phase": "command",
+          "moment": "end",
+          "perspective": "your"
+        }
       ],
-      "reason": "Wahapedia text: 'At the start of the battle, your LEAGUES OF VOTANN units have the Hostile Acquisition ability. At the end of your Command phase, you can spend 3YP'."
+      "reason": "Wahapedia text: 'At the start of the battle, your LEAGUES OF VOTANN units have the Hostile Acquisition ability. At the end of your Command phase, you can spend 3YP'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010707": "4ee442110f4e533e54cb21cfab2546f920ad7edcf5a91a175bc86486479c1d0b"
+      }
     },
     {
       "id": "radial-suffusion",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000008385002"],
       "kind": "timed",
-      "windows": [{ "kind": "turn-phase", "phase": "command", "moment": "start", "perspective": "your" }],
-      "reason": "Wahapedia text: it applies 'when resolving the Fallout effect of the Rad-bombardment Detachment rule', which happens at the start of your Command phase."
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "command",
+          "moment": "start",
+          "perspective": "your"
+        }
+      ],
+      "reason": "Wahapedia text: it applies 'when resolving the Fallout effect of the Rad-bombardment Detachment rule', which happens at the start of your Command phase.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000008385002": "920b82b5a058bdacd733faae7ef82d2b46c5766784e1a3a0e68e9c77fb9b60dd"
+      }
     },
     {
       "id": "mutagenic-regeneration",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009075004"],
       "kind": "timed",
-      "windows": [{ "kind": "turn-phase", "phase": "command", "moment": "during", "perspective": "either" }],
-      "reason": "Wahapedia text: 'In each Command phase, one model in the bearer’s unit regains 1 lost wound.'"
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "command",
+          "moment": "during",
+          "perspective": "either"
+        }
+      ],
+      "reason": "Wahapedia text: 'In each Command phase, one model in the bearer’s unit regains 1 lost wound.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009075004": "4499c753c80cb3b95c739516de957c0f53800de963a6503992bcc11a4de60a59"
+      }
     },
     {
       "id": "amulet-of-auto-chastisement",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009126002"],
       "kind": "timed",
       "windows": [
-        { "kind": "turn-phase", "phase": "shooting", "moment": "start", "perspective": "opponent" }
+        {
+          "kind": "turn-phase",
+          "phase": "shooting",
+          "moment": "start",
+          "perspective": "opponent"
+        }
       ],
-      "reason": "Wahapedia text: 'At the start of your opponents Shooting phase, select one enemy VEHICLE unit'."
+      "reason": "Wahapedia text: 'At the start of your opponents Shooting phase, select one enemy VEHICLE unit'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009126002": "98e55d36f5bfc77262aa4a491a3c722a3fe0673d56cd4b071bc87df445123490"
+      }
     },
     {
       "id": "vengeful-onslaught",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009186005"],
       "kind": "reaction",
       "trigger": "When the bearer is destroyed",
-      "reason": "Wahapedia text (typo 'It the bearer'): 'It the bearer is destroyed, until the end of your next turn, each time a friendly DEATH COMPANY model makes an attack, add 1 to the Hit roll.'"
+      "reason": "Wahapedia text (typo 'It the bearer'): 'It the bearer is destroyed, until the end of your next turn, each time a friendly DEATH COMPANY model makes an attack, add 1 to the Hit roll.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009186005": "b15f121efaab31a9947176f1c607b9910fd76176aae7332ea859b40280528308"
+      }
     },
     {
       "id": "battle-shock-step-enhancements",
@@ -839,69 +1262,143 @@
       ],
       "kind": "timed",
       "windows": [
-        { "kind": "turn-phase", "phase": "command", "moment": "during", "perspective": "opponent" }
+        {
+          "kind": "turn-phase",
+          "phase": "command",
+          "moment": "during",
+          "perspective": "opponent"
+        }
       ],
       "trigger": "In the Battle-shock step",
-      "reason": "Wahapedia text: Visage of Death 'In the Battle-shock step of your opponents Command phase'; Mortality Shroud 'In your opponent’s Battle-shock step'. The Battle-shock step is in the Command phase (Core Rules 08.03)."
+      "reason": "Wahapedia text: Visage of Death 'In the Battle-shock step of your opponents Command phase'; Mortality Shroud 'In your opponent’s Battle-shock step'. The Battle-shock step is in the Command phase (Core Rules 08.03).",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009190003": "6bfbcb11f596b4552cc0a0e9adcc8660740f59dffa0badf92735be2ef9fcb2dd",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010891003": "f3e169be71537413903b9d110e4c410bec4c0e249cbc8ed5718f0a4eedbaf143"
+      }
     },
     {
       "id": "prescience",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009785003"],
       "kind": "timed",
       "windows": [
-        { "kind": "turn-phase", "phase": "movement", "moment": "during", "perspective": "opponent" }
+        {
+          "kind": "turn-phase",
+          "phase": "movement",
+          "moment": "during",
+          "perspective": "opponent"
+        }
       ],
       "trigger": "when an enemy unit ends a move within 8\" of this unit",
-      "usage": { "limit": 1, "period": "turn" },
-      "reason": "Wahapedia text: '(Once per turn per unit) In your opponent’s Movement phase, when an enemy unit ends a move within 8\" of this unit'."
+      "usage": {
+        "limit": 1,
+        "period": "turn"
+      },
+      "reason": "Wahapedia text: '(Once per turn per unit) In your opponent’s Movement phase, when an enemy unit ends a move within 8\" of this unit'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000009785003": "49239e004deff7c672afda65930023088f22d84bd75fb1c1b60839fbd8ee95a8"
+      }
     },
     {
       "id": "abhuman-detail",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010637002"],
       "kind": "timed",
-      "windows": [{ "kind": "pre-battle", "step": "Declare Battle Formations step" }],
-      "reason": "Wahapedia text: 'In the Declare Battle Formations step, the bearer can be attached to an Ogryn Squad or Bullgryn squad unit.'"
+      "windows": [
+        {
+          "kind": "pre-battle",
+          "step": "Declare Battle Formations step"
+        }
+      ],
+      "reason": "Wahapedia text: 'In the Declare Battle Formations step, the bearer can be attached to an Ogryn Squad or Bullgryn squad unit.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010637002": "dd84666e3869d7d59e0ae546aa5792259f0448bc24f8e9933f382d5bd954aec8"
+      }
     },
     {
       "id": "grimnars-mark",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010660002"],
       "kind": "reaction",
       "trigger": "When you use the Rapid Ingress or Heroic Intervention Stratagem, from the second battle round onwards",
-      "usage": { "limit": 1, "period": "battle-round" },
-      "reason": "Wahapedia text: 'Once per battle round, from the second battle round onwards, you can target the bearer’s unit with the Rapid Ingress or Heroic Intervention Stratagem for 0CP'."
+      "usage": {
+        "limit": 1,
+        "period": "battle-round"
+      },
+      "reason": "Wahapedia text: 'Once per battle round, from the second battle round onwards, you can target the bearer’s unit with the Rapid Ingress or Heroic Intervention Stratagem for 0CP'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010660002": "132f892c545668a27d09b4eeca467a23c37fe1b2eca20e3ee35f0f31cd750132"
+      }
     },
     {
       "id": "reletavistic-tether",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010672005"],
       "kind": "reaction",
       "trigger": "When this unit makes an ingress/advance move using its Transdimensional Displacement ability",
-      "reason": "Wahapedia text: 'In your turn, when this unit makes an ingress/advance move using its Transdimensional Displacement ability'."
+      "reason": "Wahapedia text: 'In your turn, when this unit makes an ingress/advance move using its Transdimensional Displacement ability'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010672005": "69596aa62ecbd909ab9ef8882fbee257f351eadabf4b00f38bb5414bc10ccabb"
+      }
     },
     {
       "id": "hagiomnifex",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010868002"],
       "kind": "timed",
-      "windows": [{ "kind": "any-phase", "moments": ["start"], "perspective": "either" }],
-      "usage": { "limit": 1, "period": "turn" },
-      "reason": "Wahapedia text: '(Once per turn, per unit) At the start of a phase, you can use this ability.'"
+      "windows": [
+        {
+          "kind": "any-phase",
+          "moments": ["start"],
+          "perspective": "either"
+        }
+      ],
+      "usage": {
+        "limit": 1,
+        "period": "turn"
+      },
+      "reason": "Wahapedia text: '(Once per turn, per unit) At the start of a phase, you can use this ability.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010868002": "c3a107e3348dc340c4027abc15b37be2814f6e4dbf28e3a68b112ad49603d57b"
+      }
     },
     {
       "id": "weaver-of-sagas",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000011107003"],
       "kind": "timed",
-      "windows": [{ "kind": "turn-phase", "phase": "movement", "moment": "during", "perspective": "your" }],
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "movement",
+          "moment": "during",
+          "perspective": "your"
+        }
+      ],
       "trigger": "at the start or end of this unit’s move",
-      "usage": { "limit": 1, "period": "battle-round" },
-      "reason": "Wahapedia text: '(Once per battle-round, per army) In your Movement phase, at the start or end of this unit’s move'."
+      "usage": {
+        "limit": 1,
+        "period": "battle-round"
+      },
+      "reason": "Wahapedia text: '(Once per battle-round, per army) In your Movement phase, at the start or end of this unit’s move'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000011107003": "6abbcf366d5541afe4ea2b90d28a0f7629ac7e0c69e4ffc7abeb253eae1567ac"
+      }
     },
     {
       "id": "surly-as-a-squiggoth",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Enhancements.csv%3A000011148002"],
       "kind": "timed",
-      "windows": [{ "kind": "any-phase", "moments": ["end"], "perspective": "either" }],
+      "windows": [
+        {
+          "kind": "any-phase",
+          "moments": ["end"],
+          "perspective": "either"
+        }
+      ],
       "trigger": "if this model was destroyed this phase",
-      "usage": { "limit": 1, "period": "battle" },
-      "reason": "Wahapedia text: '(Once per battle, per army) At the end of a phase in which this model is destroyed, roll one D6'."
+      "usage": {
+        "limit": 1,
+        "period": "battle"
+      },
+      "reason": "Wahapedia text: '(Once per battle, per army) At the end of a phase in which this model is destroyed, roll one D6'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000011148002": "05cd35d2da2f99ca5b826fec45deea5c3e7e4ce7052565810fe02c49c6194646"
+      }
     },
     {
       "id": "stratagems-after-targets-selected",
@@ -912,11 +1409,26 @@
       ],
       "kind": "timed",
       "windows": [
-        { "kind": "turn-phase", "phase": "shooting", "moment": "during", "perspective": "opponent" },
-        { "kind": "turn-phase", "phase": "fight", "moment": "during", "perspective": "either" }
+        {
+          "kind": "turn-phase",
+          "phase": "shooting",
+          "moment": "during",
+          "perspective": "opponent"
+        },
+        {
+          "kind": "turn-phase",
+          "phase": "fight",
+          "moment": "during",
+          "perspective": "either"
+        }
       ],
       "trigger": "just after an enemy unit has selected its targets",
-      "reason": "Wahapedia WHEN with typos ('orthe', 'opponents'): 'Your opponent’s Shooting phase or the Fight phase, just after an enemy unit has selected its targets.' Read as the parser reads the untypoed form."
+      "reason": "Wahapedia WHEN with typos ('orthe', 'opponents'): 'Your opponent’s Shooting phase or the Fight phase, just after an enemy unit has selected its targets.' Read as the parser reads the untypoed form.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008561002": "2ad24e52a0d47b346eade2c63a97b6eee6c5567237b2bc91e505f3b38574c9b6",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008961003": "ee2518e401eacab84441f906745943c4b3a58966d04bf7acc22416840bacb85e",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009135005": "663f95238c33128b8cde7f305c0e0ca02b10772154d44ee29f60f74c31f3bbf5"
+      }
     },
     {
       "id": "stratagems-walker-moves-or-charges",
@@ -926,64 +1438,140 @@
       ],
       "kind": "timed",
       "windows": [
-        { "kind": "turn-phase", "phase": "movement", "moment": "during", "perspective": "your" },
-        { "kind": "turn-phase", "phase": "charge", "moment": "during", "perspective": "your" }
+        {
+          "kind": "turn-phase",
+          "phase": "movement",
+          "moment": "during",
+          "perspective": "your"
+        },
+        {
+          "kind": "turn-phase",
+          "phase": "charge",
+          "moment": "during",
+          "perspective": "your"
+        }
       ],
       "trigger": "when your unit is selected to move or declares a charge",
-      "reason": "Wahapedia WHEN: 'Your Movement/Charge phase, when a friendly Orks Walker unit is selected to move or declares a charge' and 'Your Movement or your Charge phase, when a friendly DEATH COMPANY DREADNOUGHT unit is selected to make a normal/advance/charge move'."
+      "reason": "Wahapedia WHEN: 'Your Movement/Charge phase, when a friendly Orks Walker unit is selected to move or declares a charge' and 'Your Movement or your Charge phase, when a friendly DEATH COMPANY DREADNOUGHT unit is selected to make a normal/advance/charge move'.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008878004": "adf88bc1aba726245e154b5eefd4b647e094677f5395bee38a815f6b6599e044",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000011088003": "b883636cef6819994326d50e1629bc02397f637ddc0f9fd22384e6870751966e"
+      }
     },
     {
       "id": "siegecraft",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008977007"],
       "kind": "timed",
-      "windows": [{ "kind": "turn-phase", "phase": "charge", "moment": "start", "perspective": "opponent" }],
-      "reason": "Wahapedia WHEN (typo 'opponents'): 'Start of your opponents Charge phase.'"
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "charge",
+          "moment": "start",
+          "perspective": "opponent"
+        }
+      ],
+      "reason": "Wahapedia WHEN (typo 'opponents'): 'Start of your opponents Charge phase.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008977007": "1bb10079bac2cb613a46324dc926fbca23f9aa796c5fbd8d18b64ef05b1e5e50"
+      }
     },
     {
       "id": "stun-grenades",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009131002"],
       "kind": "timed",
-      "windows": [{ "kind": "any-phase", "moments": ["start"], "perspective": "either" }],
+      "windows": [
+        {
+          "kind": "any-phase",
+          "moments": ["start"],
+          "perspective": "either"
+        }
+      ],
       "trigger": "excluding the Command phase",
-      "reason": "Wahapedia WHEN: 'Start of any phase (excluding the Command phase).'"
+      "reason": "Wahapedia WHEN: 'Start of any phase (excluding the Command phase).'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009131002": "832146476f356245a43d66f66a1c6152a7b7fabf5fcf612cac89cfb719ee5639"
+      }
     },
     {
       "id": "dubious-restraint",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009796002"],
       "kind": "timed",
       "windows": [
-        { "kind": "turn-phase", "phase": "movement", "moment": "start", "perspective": "your" },
-        { "kind": "turn-phase", "phase": "movement", "moment": "end", "perspective": "your" }
+        {
+          "kind": "turn-phase",
+          "phase": "movement",
+          "moment": "start",
+          "perspective": "your"
+        },
+        {
+          "kind": "turn-phase",
+          "phase": "movement",
+          "moment": "end",
+          "perspective": "your"
+        }
       ],
-      "reason": "Wahapedia WHEN: 'Start/end of your Movement phase.'"
+      "reason": "Wahapedia WHEN: 'Start/end of your Movement phase.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009796002": "4bfb68118ebe17436182cf077f9b5f1c05cc2d47f04c61119b3e1eb46c0fbb31"
+      }
     },
     {
       "id": "scramble-field",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009870004"],
       "kind": "timed",
       "windows": [
-        { "kind": "turn-phase", "phase": "movement", "moment": "during", "perspective": "opponent" }
+        {
+          "kind": "turn-phase",
+          "phase": "movement",
+          "moment": "during",
+          "perspective": "opponent"
+        }
       ],
       "trigger": "Start of the Reinforcements step",
-      "reason": "Wahapedia WHEN: 'Start of your opponent’s Reinforcements step.' The Reinforcements step ends the Movement phase."
+      "reason": "Wahapedia WHEN: 'Start of your opponent’s Reinforcements step.' The Reinforcements step ends the Movement phase.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009870004": "0904b966d719fabd22086970d3cb44a584e52263bc817230dcc5a22a161f5ee0"
+      }
     },
     {
       "id": "secure-positions",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010448002"],
       "kind": "timed",
-      "windows": [{ "kind": "any-phase", "moments": ["end"], "perspective": "your" }],
-      "reason": "Wahapedia WHEN: 'End of any of your phases.'"
+      "windows": [
+        {
+          "kind": "any-phase",
+          "moments": ["end"],
+          "perspective": "your"
+        }
+      ],
+      "reason": "Wahapedia WHEN: 'End of any of your phases.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010448002": "858bd2974beaab649f0b1f5ac1af5e9de41734b97c69268f4cf9cdaf04d54044"
+      }
     },
     {
       "id": "scriptural-prognosis",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010876002"],
       "kind": "timed",
       "windows": [
-        { "kind": "turn-phase", "phase": "shooting", "moment": "during", "perspective": "opponent" },
-        { "kind": "turn-phase", "phase": "fight", "moment": "during", "perspective": "either" }
+        {
+          "kind": "turn-phase",
+          "phase": "shooting",
+          "moment": "during",
+          "perspective": "opponent"
+        },
+        {
+          "kind": "turn-phase",
+          "phase": "fight",
+          "moment": "during",
+          "perspective": "either"
+        }
       ],
       "trigger": "when an enemy unit targets a friendly TECH-PRIEST unit within range of an objective",
-      "reason": "Wahapedia WHEN: 'In your opponent’s Shooting phase or the Fight phase, when an enemy unit targets a friendly TECH-PRIEST unit that is within range of an objective.'"
+      "reason": "Wahapedia WHEN: 'In your opponent’s Shooting phase or the Fight phase, when an enemy unit targets a friendly TECH-PRIEST unit that is within range of an objective.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010876002": "2eb14648bc7e7320ef43721e4e6b613f9b248bad1012c0567c789a9a4551093e"
+      }
     }
   ],
   "ignoredRules": [
@@ -1006,7 +1594,24 @@
         "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010628",
         "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010659"
       ],
-      "reason": "15 rules that only decide what an army may include or which keywords units carry at muster (Cult of the Dark Gods, Assigned Agents, Titanicus Traitoris, The Ravenwing, The Deathwing, Deathwatch, Corsairs and Travelling Players, retinue allowances, chapter Restrictions). Nothing to remind during a game."
+      "reason": "15 rules that only decide what an army may include or which keywords units carry at muster (Cult of the Dark Gods, Assigned Agents, Titanicus Traitoris, The Ravenwing, The Deathwing, Deathwatch, Corsairs and Travelling Players, retinue allowances, chapter Restrictions). Nothing to remind during a game.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008360%3ACSM": "0db46f5acf24d6e1b3f01a451a42d0bb85fd2cefca706f0edc82514063b5a28d",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008452%3AAoI": "e005be6727f3a553ad4fdceb4a0ca51421d71164ae56d094c299f7b425581f66",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008452%3ASM": "18c2fdacb8e0fb49f20abb9a518057ff4a897de60be31d7ae6e05905145ae4f1",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008535%3ATL": "0e539e8dbec855318b700961faa2d2d007f2d3f871e891e8e44774ecf1887570",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008768%3ASM": "87e3af9486f76025a83475df59b51518895ffd98f0a9ba32779365c8c1741bfa",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008808%3ASM": "60783d366c97ad105cec14a245172d3c70d4a4699700dd67910d1cd0401915a5",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000009853%3ASM": "2df337597b18289a5fd5f8368a8286ab60aee3623884b071b61f3f2fdb86961b",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000009974%3ADRU": "861aa8f9914aff2541669bb7a8f05c8ad3eddf7b975ca1d5f2c39d2b6d5ecf41",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002509%3A3": "4682bc89d00aa4c981d06cb1f0c6caa0bf9608143792abc0601fcf27af50e23a",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002767%3A4": "e60cb295091723e03d48ee7bdc65ec0c254efbea5be2f48c6de1fd61bf7b8378",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000003829%3A5": "33e070903852618523de916030582d3368dd4d9160341a1a123f4cce2c772176",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010465": "1ed46a3e07d1c61277953e06c02a0c3796c55886a1d1844f37fce75750967c41",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010622": "569825bec9841b0b7996417fd4aa669da639ee74bdbafe19018ae7bf1034347d",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010628": "c08c43dee6c0c679a7ec3d985673f39051e1e8bc28ad5c8de016202ada0e48fe",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010659": "312b1f599f156ec06e76bc1a060ec388cf4e30c51a40af26beff6c5d58695811"
+      }
     },
     {
       "id": "rule-framing-text",
@@ -1017,7 +1622,14 @@
         "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002462%3A6",
         "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010875003"
       ],
-      "reason": "Records with no playable rule of their own: the Sagas introduction ('Each Detachment rule in this book includes a Saga'), the Orks Special Move Types definitions that other rules invoke (like the excluded core move types), two FORTIFICATION assembly notes ('Both parts ... treated as a single model'), and the TL-4Ø9 enhancement, whose Wahapedia text is empty."
+      "reason": "Records with no playable rule of their own: the Sagas introduction ('Each Detachment rule in this book includes a Saga'), the Orks Special Move Types definitions that other rules invoke (like the excluded core move types), two FORTIFICATION assembly notes ('Both parts ... treated as a single model'), and the TL-4Ø9 enhancement, whose Wahapedia text is empty.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000010257%3ASM": "f48264ad4ff0b4ce17d69145ede6634b4686fdeaf2f0980f5fe529671988d351",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011129%3AORK": "00b31b0db1db93680ef8baf41e03fe792b090a87539c296af8b2c211f9cdb49c",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002459%3A5": "ae8a9df607dec20450a8bc0d23e1ed3b9b753cf32353d1f92d425e0e8ddbda70",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002462%3A6": "cf40bea0d3a03629e6ca7c2ae60b2ae73937118cfbf03e6d3100692e0aebe0e2",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010875003": "47ec21103660943bfd48d9d366c2990fb4b5d72e3d673bf1486ea15ada4a8cec"
+      }
     },
     {
       "id": "core-move-and-shoot-types",
@@ -1053,7 +1665,39 @@
         "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000011124002",
         "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000011128002"
       ],
-      "reason": "Wahapedia files 30 Core Rules move, shoot and fight types (Normal Move, Advance Move, Charge Move, Pile-in Move, Normal Shooting, Assault Shooting and similar) in Stratagems.csv with type 'Movement Ability' or 'Shooting Ability'. They are how every unit acts, not stratagems or optional rules, so they are not reminders."
+      "reason": "Wahapedia files 30 Core Rules move, shoot and fight types (Normal Move, Advance Move, Charge Move, Pile-in Move, Normal Shooting, Assault Shooting and similar) in Stratagems.csv with type 'Movement Ability' or 'Shooting Ability'. They are how every unit acts, not stratagems or optional rules, so they are not reminders.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010810009": "8df9ca093b3eb9ff0022020b42e7dd8c1a522b7b20f66678005617763b0d51f7",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010811002": "2c95eb5eb3b2e05352ead6968220e66ba42e97b68851a7bafda258d93f87f1ec",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010811003": "740f95ef99c23264f200daa6f671869137cbe8ae8554a7694d0248e2aa191e82",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010811004": "5a00cc86cd9e3700b6a5ed88c7e323d107e66dcbcc76adc907e6b8ccaa605f75",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010811005": "4a374cd2d980ab7691b79ba43eed89b882a6835c623b20f7bae4a0e50988d8d4",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010812002": "358800d612d6b955ffd2a7adf02d60969806bcc07f76e1f0c07a6c72509b936e",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010812003": "cc035d5c144877a1cfc14b036d37cf4436e698de4689597304fc947fd1742f71",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010812004": "a5ae6758afd23fd4a2806ae7327f7491048c2a43b47ef33d959e90b8e69021af",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010812005": "3a73c538a64c436063985bcdf06aadb50f5bb8e5bb6676ef3c0d8c8796fa1aa4",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010813002": "9e25786a10b57d340d02546c2151020c38f5c5033306241c6607c945cbc1b562",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010814002": "1f663bfa8c089d13e629401ddd49c77a8b2d894b779708039b1201fa0b12bc3b",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010815002": "04632cf7e0907d9e2eaaab69084585165a1c9e7b2ec165ae70fd887562e46e78",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010816002": "1d32c8ab0426fd7a51d5adae0e30d53780c1e5501df56fdf265b74ca41a54ea3",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010817002": "af9329ef77f256e3df455987483bac8e9a30b28400822bf698a5b82861f6251b",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010818002": "ffa48655150ab19c17f48eb7ee3c957088e1eccc8b756c00a1121e8f996aad87",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010819002": "decd505072130b447a794f207e2f9a13e05c092ba71290460b5f022fa1af8ee5",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010821002": "b73e47504fcb690f60f00c0cd8bb4303845b3bfcc42ad07a5be9709f31a1f1a4",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010822002": "9dde82634e47bace8b0313e72a50e843fb06d1fe7e73c2263293f6b2b2ea54fb",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010843002": "8cc54c8950c7bd12a375330da61d89ad41ee0100452f24beaca00c0bc3fb3c70",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010848002": "dbb72b11fdfd95df2a8eb11866bf4aae330638871bae9840c0cbe12d7f616a6a",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010849002": "6f3b933837be8bb18ccab8865e39a1616845dbda143d6c9e064a44d2a837ca17",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010850002": "31cb734881806d60562b6b395fb1d4b5a2ddf7813adcc1bea1b90d37520d4c9e",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010851002": "0f94ec2e38d413386f1cfafc71ef42db6137f65671d8dc67b3a4827feb2ed6f8",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010852002": "d43521a7cea5c989ac2c437ec62b3c768a5c469f7f32587fdf2b095ebc02f7a5",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010853002": "0921904333aed875eb24213f4650557ef714a0da120714609eb3811d25773727",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010854002": "60f4cc02f106c8d88037f29e2b56c924a9ebf25154ef8ef586e013ff3ea0d171",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010855002": "fc5f71baf249f9a7fa95f13dadd45e77db10c7c72ebb3838ac3db22ba8dbc530",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000011123002": "c202d7e4917f9ce8c0702cdbbdb6d09b56e14bc2d1fb74ac5f5d9ec708fe9811",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000011124002": "0ec243dd53c5ecea28bad6b07ede4a1988e7b52e67e0335532bfc32b578ae389",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000011128002": "6ea67e804bfa1e8b4b40d008ce1cf253d36052ba250f2d37860b6e39d15d52df"
+      }
     },
     {
       "id": "previous-edition-core-stratagems",
@@ -1070,7 +1714,20 @@
         "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335011",
         "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335012"
       ],
-      "reason": "11 unscoped stratagems typed 'Core – …' (Go To Ground, Tank Shock, Grenade, and 10th-edition copies of other core stratagems). The official 11th-edition Core Rules prints exactly ten core stratagems (15.02-15.12, 15.09 being Snap Shooting), which Wahapedia carries as the ten rows typed 'Core Stratagem'; Go To Ground, Tank Shock, and Grenade are not among them. These rows are not 11th-edition core stratagems."
+      "reason": "11 unscoped stratagems typed 'Core – …' (Go To Ground, Tank Shock, Grenade, and 10th-edition copies of other core stratagems). The official 11th-edition Core Rules prints exactly ten core stratagems (15.02-15.12, 15.09 being Snap Shooting), which Wahapedia carries as the ten rows typed 'Core Stratagem'; Go To Ground, Tank Shock, and Grenade are not among them. These rows are not 11th-edition core stratagems.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335002": "487434f85646d8ffc8600e55f03bc6ef00ee91019174824c7880d686ff5619b6",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335003": "f26031788d6f0ae66244ee763cc98c7b35b7485de6365526e495afce12b8f728",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335004": "8b91a3f0618dda3760716f7402632d53e961c3a7e428fd2b9a4aa5f89c2b26ca",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335005": "202d5ec56a4710de0583c01f39707fde61c96eb7781a0462fa889367bf1ea621",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335006": "039e4dea2cfe8560dcf0bbc2e8c44dcd1245c6b2652f165c21cd0114d25cdea6",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335007": "f07127951b6f87c44d12e16e0b9def34bf06c3dd54d9c8446c2f612f2aea38fc",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335008": "0de17a946550942f508a3d99b3aa1cd795fa51da5a9979c3ded0783ee8817506",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335009": "bb1617e951b394fc4ea90b1b915a3ea76c58a05945e5853c153e3f35434db10d",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335010": "47225b0ccfda1c21987711aa55b8e75cefd576d49fff90d3feed3defe0513f68",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335011": "a831940ecb562f1de2ced81475f1bd8fd928663696c9213849823790b0a73c16",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008335012": "593e5f0076a237613f897b48f77b4cf677ec5c62c3781c136d32e9bde7d4ebab"
+      }
     },
     {
       "id": "boarding-actions-core-stratagems",
@@ -1081,7 +1738,14 @@
         "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009218005",
         "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009218006"
       ],
-      "reason": "5 unscoped stratagems typed 'Boarding Actions – …' belong to the Boarding Actions game mode, not matched play."
+      "reason": "5 unscoped stratagems typed 'Boarding Actions – …' belong to the Boarding Actions game mode, not matched play.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009218002": "416c2680dab54b0388380c05cbc0d21a937cf4aa1da4c95c32a47cd39577e81d",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009218003": "1ad6fdd3725b7cea10265537e69c8ab0ed7f2d9749889af14dd19f20a5161bc1",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009218004": "0335d209506121cabbf8a3a871c940189fd02ecdb9d3ac6561282ae63218a2e0",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009218005": "f55e0269961508f21cab6148c816a0706989843e5caa6a99951a6fb2398a02c6",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009218006": "74d1cf1f63fc138d7c4455fa87e32f1a61b0786174fcc4322ab5940adb34680a"
+      }
     },
     {
       "id": "challenger-card-stratagems",
@@ -1096,7 +1760,18 @@
         "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010254002",
         "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010255002"
       ],
-      "reason": "9 unscoped stratagems typed 'Challenger – …' come from mission-pack Challenger cards, which are drawn during a game rather than available to every army; they are not core stratagems."
+      "reason": "9 unscoped stratagems typed 'Challenger – …' come from mission-pack Challenger cards, which are drawn during a game rather than available to every army; they are not core stratagems.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010247002": "7d781ac87aec8578c754b497e203585fffcece3143f86a9549428093ebb71de0",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010248002": "67c2c96ae0304b17f92dad446a0507dcd625a43a0002ca3f5e5d46cbab0b8805",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010249002": "ab0ca9d0255f222c22bf7e9f46c1885c845f2d9b4e5ca0e5643c82ab4d748b99",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010250002": "6c097f0631712d70c7505b4c04d00a0842b9b1181b4a28d77b7fd41585130cf5",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010251002": "d6d2a2f980bd24fc82fd4be9d1e912086d36f8e40a784a85aa98967fd2c1baca",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010252002": "cf67bf83c96a89e75958892885ee574786b96fb7fd2b6db8a896c9e07bdfa531",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010253002": "751a9c484cb2339300deec66de31acb2fcf4cf138032cf0fb831d20d12eb418f",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010254002": "e5d370249e6309ef8ccbe26baa39e8045a614462e1f8c84efd08fcab75b024f2",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010255002": "c38f771a1a344aeb9fb3f9e36d0a55ec266b8ab5564389c65bcd4db927dc7ff1"
+      }
     },
     {
       "id": "unscoped-new-orders",
@@ -1105,7 +1780,12 @@
         "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009063002",
         "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010245002"
       ],
-      "reason": "3 unscoped copies of New Orders typed 'Core Stratagem – Strategic Ploy Stratagem'. New Orders is not among the ten core stratagems the official Core Rules prints (15.02-15.12), so these copies are not offered to every army."
+      "reason": "3 unscoped copies of New Orders typed 'Core Stratagem – Strategic Ploy Stratagem'. New Orders is not among the ten core stratagems the official Core Rules prints (15.02-15.12), so these copies are not offered to every army.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000008539002": "4ccb724eb97283662194fd719071f9456153a11429a84a52b3859fbaacce67c6",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000009063002": "a811db161fb8180b702ad4887ed70687672a556e3d6041cf6a1efab786685cdc",
+        "source-record:wahapedia-wh40k11e:Stratagems.csv%3A000010245002": "2e3c340c4fba5db5c0baaaa80cae300b4794d7d382a1460eff05fe9bfbd44674"
+      }
     },
     {
       "id": "designers-notes",
@@ -1119,7 +1799,17 @@
         "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004009%3A2",
         "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004010%3A2"
       ],
-      "reason": "8 Designer's Notes filed as abilities: clarifications, token-tracking advice and points commentary that explain another rule rather than grant one, so they are not reminders."
+      "reason": "8 Designer's Notes filed as abilities: clarifications, token-tracking advice and points commentary that explain another rule rather than grant one, so they are not reminders.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008536%3ATL": "016f7444c79074792af6792e3fc460eb10863119164a4b290d43d4b36ec7dbd9",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000000087%3A7": "e557da904f00830b7e7aaf1e639d1e86eb92b8151aad90ed0e1b1c56c2c4b54a",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000000745%3A2": "1cfb9e29bb415facd1e0fe5f5c51dea2fcd1651a46f70023d2536d61304a032b",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000000746%3A2": "ac64175d2677c9f93b6a0925b38c2798551277b8e0e6e5e990ff7b1116cefce4",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002098%3A3": "c8a2f1145b374dacbd70f115e4d4cbb4bce876ca6fea329c214f933f8f029841",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002202%3A4": "9bb3ee0f9b1a98a468aca73a2fd6e27e7bd37ac6f6a7cbe8a0cc1a11a4cb667e",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004009%3A2": "8c675bdaeb4f771a4a1cda7eb1a26b5c605f070e20060f4dee9e949cbdaba3ad",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004010%3A2": "63b317ba28055b070b6088e992af4366728d68bf9ed791b25148982c110395b7"
+      }
     }
   ],
   "armyFactionKeywords": [
@@ -1198,7 +1888,11 @@
       "keywords": ["NECRONS"],
       "reason": "Faction keyword on all 64 current datasheets."
     },
-    { "factionId": "ORK", "keywords": ["ORKS"], "reason": "Faction keyword on all 67 current datasheets." },
+    {
+      "factionId": "ORK",
+      "keywords": ["ORKS"],
+      "reason": "Faction keyword on all 67 current datasheets."
+    },
     {
       "factionId": "QI",
       "keywords": ["IMPERIAL KNIGHTS"],

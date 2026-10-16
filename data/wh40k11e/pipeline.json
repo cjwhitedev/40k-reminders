@@ -1,0 +1,6 @@
+{
+  "review": "data/wh40k11e/reviews/sources-2026-09-30.json",
+  "bsdataCandidate": ".cache/wh40k11e/candidates/2026-09-30-initial",
+  "wahapediaCandidate": ".cache/wh40k11e/candidates/wahapedia-exports-2",
+  "officialCandidate": ".cache/wh40k11e/candidates/official-2026-09-30"
+}

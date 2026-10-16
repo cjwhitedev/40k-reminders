@@ -67,11 +67,13 @@ If a release breaks the site, revert the bad commit on `master` (`git revert <sh
 The site never downloads rules while it runs. It loads one checked-in file, `src/wh40k11e/generated/runtime.json`, which is built by this pipeline:
 
 1. **Acquire.** Download source files into the ignored `.cache/wh40k11e/` folder: Wahapedia's CSV exports, the BSData catalogues pinned to one commit, and official Games Workshop PDFs. Each download is checksummed in a `candidate-manifest.json`.
-2. **Review.** `data/wh40k11e/reviews/sources-2026-09-30.json` is the human-reviewed decision file. It pins the exact checksums of the sources it was written against and records every judgment call: which records to exclude, the timing of rules the parser cannot read, rules that are not reminders, and each faction's Army Faction keywords.
-3. **Build rules.** The pipeline decodes and links the sources, applies the review, and parses each rule's timing.
+2. **Review.** The review file in `data/wh40k11e/reviews/` (the one named in `data/wh40k11e/pipeline.json`) is the human-reviewed decision file. It pins the exact checksums of the sources it was written against and records every judgment call: which records to exclude, the timing of rules the parser cannot read, rules that are not reminders, and each faction's Army Faction keywords.
+3. **Build rules.** The pipeline decodes and links the sources, applies the review, and parses each rule's timing. The parsers in `src/wh40k11e/normalize/` read about 98% of rules from their wording alone; the review file holds a decision for the rest.
 4. **Generate.** The result is validated and written to `runtime.json`.
 
-Which source folders the commands read is set in `WH40K_DEFAULT_PIPELINE_OPTIONS` in `src/wh40k11e/data/pipeline.ts`. Every data command also accepts `--review`, `--wahapedia-candidate`, `--bsdata-candidate`, and `--official-candidate` to point elsewhere.
+Every timing or "not a reminder" decision records a fingerprint (the source row's checksum) of the rule it was made against. If Wahapedia later rewords that rule, the review blocks until someone looks at the decision again, so an old decision never silently applies to new text.
+
+Which review file and source folders the commands read is set in `data/wh40k11e/pipeline.json`; `yarn data:wh40k11e:update` rewrites it. Every data command also accepts `--review`, `--wahapedia-candidate`, `--bsdata-candidate`, and `--official-candidate` to point elsewhere.
 
 ### Keep a backup of the source cache
 
@@ -81,12 +83,16 @@ Which source folders the commands read is set in `WH40K_DEFAULT_PIPELINE_OPTIONS
 tar -czf wh40k11e-cache-$(date +%Y-%m-%d).tgz .cache/wh40k11e
 ```
 
-To restore on a new machine, extract the archive in the repository root.
+Set `WH40K_CACHE_BACKUP_DIR` (for example in your shell profile) and `yarn data:wh40k11e:update` writes that archive there by itself. To restore on a new machine, extract the archive in the repository root.
 
 ## 6. Data commands
 
 | Command | What it does |
 | --- | --- |
+| `yarn data:wh40k11e:update` | The whole refresh in one go; see section 8. |
+| `yarn data:wh40k11e:decide` | Prompts for every rule that needs a decision (unreadable timing, or reworded since it was decided) and saves each answer to the review file. |
+| `yarn data:wh40k11e:decide --rule "<name or ID>"` | Decides one rule again; every rule with that name is offered. |
+| `yarn data:wh40k11e:decide --stamp` | Adds fingerprints to decisions that have none, against the current sources. Use after editing the review file by hand. |
 | `yarn data:wh40k11e:candidate ...` | Downloads sources into a new folder under `.cache/`. Never overwrites a folder. |
 | `yarn data:wh40k11e:review` | Applies the review file and reports any problems. Status must be `reviewed`, not `blocked`. |
 | `yarn data:wh40k11e:rules --output <new-file>` | Builds every rule and fails if any matched-play rule has no timing. |
@@ -95,73 +101,56 @@ To restore on a new machine, extract the archive in the repository root.
 | `yarn data:wh40k11e:generate:write` | Rewrites `runtime.json`. Commit the result. |
 | `yarn data:wh40k11e:compare` | Cross-checks Wahapedia datasheets against BSData. |
 | `yarn data:wh40k11e:check-exports` | Confirms the downloaded CSVs match Wahapedia's published export list. |
-| `yarn data:wh40k11e:watch --candidate <dir>` | Says whether Wahapedia has changed since the review file was written, from a fetched `Last_update.csv`. |
-| `yarn data:archive pack\|encrypt\|decrypt ...` | Packs candidate folders into one archive, and encrypts or decrypts it with `DATA_ARCHIVE_PASSPHRASE`. |
+| `yarn data:wh40k11e:watch --candidate <dir>` | Says whether Wahapedia has changed since the review, from a fetched `Last_update.csv`. The weekly workflow runs it. |
 
 Faction IDs (`AC`, `SM`, `CSM`, ...) are Wahapedia's; the full list is in `runtime.json` under `catalog.factions`.
 
 ## 7. Fix a wrong or missing rule
 
-Most reports are one of these. In every case, edit the review file, never `runtime.json`.
+Most reports are one of these. In every case, the fix goes in the review file, never `runtime.json`.
 
 1. Reproduce it: `yarn data:wh40k11e:reminders --faction <ID> --detachment "<name>" --unit "<name>"`.
-2. Find the rule's `sourceRecordId` in `src/wh40k11e/generated/runtime.json` (search for its name).
-3. Make the fix in `data/wh40k11e/reviews/sources-2026-09-30.json`:
-   - **Wrong timing:** add or edit an entry in `timingOverrides` with `kind` (`timed`, `reaction`, or `passive`), the `windows` for timed rules, and a `reason` quoting the rule text. Copy the shape of an existing entry.
-   - **Should not be a reminder** (army-building rules, designer's notes): add the ID to an `ignoredRules` entry with a reason.
-   - **Rule from another army showing up:** check `armyFactionKeywords` for the faction. Rules that say "If your Army Faction is X" only appear for armies whose keywords include X.
-4. Run `yarn data:wh40k11e:review`, then `yarn data:wh40k11e:generate:write`, then the checks in section 3.
+2. **Wrong timing, or should not be a reminder** (army-building rules, designer's notes): run `yarn data:wh40k11e:decide --rule "<rule name>"` and answer the prompt (see section 8 for the keys). It saves the decision, with its fingerprint, to the review file.
+3. **Rule from another army showing up:** check `armyFactionKeywords` for the faction in the review file. Rules that say "If your Army Faction is X" only appear for armies whose keywords include X. Edit by hand.
+4. Run `yarn data:wh40k11e:generate:write`, then the checks in section 3.
 5. Commit the review file and `runtime.json` together, saying in the message which rule changed and why.
 
-If the parser itself misreads a common phrasing, the fix belongs in `src/wh40k11e/normalize/ability.ts` or `when.ts`, with a test in `src/tests/wh40k11e/`.
+You can still edit `timingOverrides` or `ignoredRules` by hand (copy the shape of an existing entry); run `yarn data:wh40k11e:decide --stamp` afterwards to fingerprint the new entry.
+
+If the parser misreads a common phrasing, the better fix is in `src/wh40k11e/normalize/ability.ts` or `when.ts`, with a test in `src/tests/wh40k11e/`. When `decide` keeps suggesting the same answer for the same wording, that wording is a good candidate.
 
 ## 8. Refresh the rules data (new codex, balance update)
 
-`.github/workflows/data-watch.yml` checks Wahapedia every Monday and opens a **Wahapedia data changed** issue when its exports have moved on from the ones the review file was written against. That issue is the usual signal to start here. To check now, run **Actions > Watch Wahapedia for changes > Run workflow**.
+`.github/workflows/data-watch.yml` checks Wahapedia every Monday. When its exports have moved on from the ones the review was written against, it opens a **Rules data sources changed** issue assigned to the repository owner, which GitHub emails to you. (Check that **Settings > Notifications** on GitHub emails you for issues you are assigned.) To check now: **Actions > Watch rules sources for changes > Run workflow**.
 
-1. **Download new sources** into new candidate folders. The usual way is on GitHub's network, which also gets around Wahapedia blocking yours:
+To refresh, on any machine that can reach Wahapedia:
 
-   1. Run **Actions > Fetch rules sources > Run workflow**. Tick what to fetch; for BSData, paste the full commit SHA you want from [BSData/wh40k-11e](https://github.com/BSData/wh40k-11e/commits).
-   2. When it finishes, its summary page shows the exact commands. From the repository root:
+```bash
+git checkout master && git pull
+yarn install --frozen-lockfile
+yarn data:wh40k11e:update
+```
 
-      ```bash
-      gh run download <run-id> -n wh40k11e-sources-<stamp>
-      read -rs DATA_ARCHIVE_PASSPHRASE && export DATA_ARCHIVE_PASSPHRASE   # paste it; nothing is shown
-      yarn data:archive decrypt wh40k11e-sources-<stamp>.tgz.enc wh40k11e-sources-<stamp>.tgz
-      tar -xzf wh40k11e-sources-<stamp>.tgz
-      rm wh40k11e-sources-<stamp>.tgz wh40k11e-sources-<stamp>.tgz.enc
-      ```
+It walks through every step and stops for you only where a person has to decide:
 
-      The sources land in `.cache/wh40k11e/` as new candidate folders named after the run, such as `.cache/wh40k11e/candidates/wahapedia-exports-<stamp>`. GitHub keeps the encrypted download for 3 days.
+1. **Checks git**: refuses to run unless you are on an up-to-date, clean `master`.
+2. **Downloads** Wahapedia's exports (pausing a second between files). It reuses the official PDFs unless `data/wh40k11e/official-urls.json` changed (add new PDF links there first), and stops with "Nothing to do" if Wahapedia and the PDFs are unchanged. It then takes BSData's latest commit for the cross-check.
+3. **Starts a new review**: a dated copy of the review file bound to the new checksums, with every earlier decision carried over, and `data/wh40k11e/pipeline.json` pointed at it.
+4. **Reviews.** It offers to drop decisions for rules Wahapedia removed, and asks for the Army Faction keywords of any new faction. Anything else the review reports needs a hand edit; it waits while you make it, then checks again. Then it prompts for each rule that needs a decision:
+   - rules the parsers cannot read, with a **suggested** answer when the wording or an earlier same-named rule gives one;
+   - rules reworded since they were decided, showing the text the decision was made against.
 
-   You can also download on your own machine with the same commands the workflow runs:
+   For each, press **Enter** to accept the suggestion (or keep the old decision), or choose **t** timed (type the timing the way a WHEN: line reads, such as `start of your Command phase` or `before the battle: Deploy Armies step`), **r** reaction, **p** always active, **n** not a reminder, **s** skip, **q** save and quit. Every answer is saved as you go.
+5. **Generates** `runtime.json`.
+6. **Reports what changed** by faction, and saves the list and a ready commit message under `.cache/wh40k11e/reports/`.
+7. **Runs the checks** from section 3.
+8. **Waits while you spot-check** the listed armies with `yarn start`, backs up the cache if `WH40K_CACHE_BACKUP_DIR` is set, and offers to **commit**.
 
-   ```bash
-   yarn data:wh40k11e:candidate \
-     --wahapedia-urls-file data/wh40k11e/wahapedia-export-urls.json \
-     --pause-ms 1000 \
-     --output .cache/wh40k11e/candidates/wahapedia-exports-<date>
-   ```
+Then `git push origin master`; GitHub builds and publishes the site, and you can close the issue.
 
-   Official PDFs use `--official-urls-file data/wh40k11e/official-urls.json` (add new PDF links to that list first). BSData uses `--bsdata-ref <40-character commit> --bsdata-paths-file data/wh40k11e/bsdata-paths.json`.
+If you quit or a step fails, fix what it says and continue with `yarn data:wh40k11e:update --no-fetch`, which picks up from the review with the sources already downloaded. `--force` refreshes even when nothing changed, and `--no-commit` stops before committing.
 
-   If Wahapedia blocks both GitHub and your network, follow [docs/data/wh40k11e-wahapedia-handoff.md](docs/data/wh40k11e-wahapedia-handoff.md) to fetch on another network and carry the files back.
-
-2. **Copy the review file** to a new dated name, update its `revision`, and update its `inputs` section with the new checksums. Each checksum is in the new folder's `candidate-manifest.json`.
-3. **Point the pipeline at the new inputs** by updating `WH40K_DEFAULT_PIPELINE_OPTIONS` in `src/wh40k11e/data/pipeline.ts`.
-4. **Run `yarn data:wh40k11e:review`** and work through every reported problem until the status is `reviewed`. New errors usually mean new or renamed records that need an exclusion or decision.
-5. **Run `yarn data:wh40k11e:rules --output .cache/wh40k11e/rules/<date>.json`** and give every rule it lists a `timingOverrides` or `ignoredRules` decision.
-6. **Run `yarn data:wh40k11e:generate:write`**, the checks in section 3, and spot-check a few armies in the browser.
-7. **Commit** the review file, `pipeline.ts`, any URL-list changes, and `runtime.json`. Back up the cache (section 5). Close the **Wahapedia data changed** issue, if there is one.
-
-### One-time setup for the data workflows
-
-The fetch workflow only uploads sources encrypted, because downloads from a public repository's workflows can be fetched by anyone signed in to GitHub. It needs a passphrase, stored in two places:
-
-1. Make one: `openssl rand -base64 32`. Save it in your password manager; it cannot be read back out of GitHub.
-2. Store it as the repository secret `DATA_ARCHIVE_PASSPHRASE`: run `gh secret set DATA_ARCHIVE_PASSPHRASE` and paste it, or use **Settings > Secrets and variables > Actions > New repository secret**.
-
-To change it, repeat both steps. Archives made with the old passphrase only decrypt with the old one.
+If no machine you have can reach Wahapedia, [docs/data/wh40k11e-wahapedia-handoff.md](docs/data/wh40k11e-wahapedia-handoff.md) describes fetching on someone else's network and carrying the files back.
 
 ## 9. Dependencies
 

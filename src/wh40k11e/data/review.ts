@@ -49,6 +49,8 @@ export interface Wh40kTimingOverride {
   usage?: Wh40kTiming['usage']
   reason: string
   officialEvidence?: Wh40kOfficialEvidence[]
+  /** Each record's `recordChecksum` when the decision was made; a different checksum means its text changed. */
+  fingerprints?: Record<string, string>
 }
 
 /** Records that are not reminders, e.g. the Core Rules move and shoot types Wahapedia files as stratagems. */
@@ -56,6 +58,7 @@ export interface Wh40kIgnoredRules {
   id: string
   sourceRecordIds: SourceRecordId[]
   reason: string
+  fingerprints?: Record<string, string>
 }
 
 /** The Army Faction keywords a faction's army declares, which "If your Army Faction is X" rules test. */
@@ -100,10 +103,19 @@ export type Wh40kReviewFindingCode =
   | 'duplicate-rule-decision'
   | 'invalid-army-faction-keywords'
   | 'invalid-timing-override'
+  | 'stale-rule-decision'
 
 export interface Wh40kReviewFinding {
   code: Wh40kReviewFindingCode
   message: string
+}
+
+/** A timing or ignore decision whose record is not the one it was made against. */
+export interface Wh40kDecisionCheck {
+  ownerId: string
+  sourceRecordId: SourceRecordId
+  /** `changed`: the record's text moved on since the decision. `unstamped`: no fingerprint to compare. */
+  status: 'changed' | 'unstamped'
 }
 
 export interface Wh40kReviewedSources {
@@ -121,6 +133,7 @@ export interface Wh40kReviewedSources {
   datasheetContexts: Map<SourceRecordId, Wh40kReviewContext>
   armyFactionKeywords: Map<string, string[]>
   contexts: Record<Wh40kReviewContext, number>
+  decisionChecks: Wh40kDecisionCheck[]
 }
 
 export const normalizeEvidenceText = (text: string): string => text.replace(/\s+/g, ' ').trim()
@@ -204,6 +217,7 @@ export const applyWh40kSourceReview = (input: {
     | 'ignoredSourceRecordIds'
     | 'datasheetContexts'
     | 'armyFactionKeywords'
+    | 'decisionChecks'
   > = {
     dispositions: [],
     excludedSourceRecordIds: [],
@@ -290,14 +304,27 @@ export const applyWh40kSourceReview = (input: {
     finding('missing-classification-policy', `No context policy covers ${classification} datasheets`)
   }
 
-  const knownRecords = new Set(
-    Object.values(decoded.records).flatMap(records => records.map(record => record.sourceRecordId))
+  const knownRecords = new Map(
+    Object.values(decoded.records).flatMap(records =>
+      records.map(record => [record.sourceRecordId, record.recordChecksum] as const)
+    )
   )
   const decidedBy = new Map<SourceRecordId, string>()
-  const decide = (ownerId: string, sourceRecordIds: SourceRecordId[]) => {
+  const decisionChecks: Wh40kDecisionCheck[] = []
+  const decide = (
+    ownerId: string,
+    sourceRecordIds: SourceRecordId[],
+    fingerprints: Record<string, string> | undefined
+  ) => {
     for (const sourceRecordId of sourceRecordIds) {
-      if (!knownRecords.has(sourceRecordId))
-        finding('unknown-record', `${ownerId} names unknown ${sourceRecordId}`)
+      const checksum = knownRecords.get(sourceRecordId)
+      if (checksum === undefined) finding('unknown-record', `${ownerId} names unknown ${sourceRecordId}`)
+      else if (!fingerprints?.[sourceRecordId]) {
+        decisionChecks.push({ ownerId, sourceRecordId, status: 'unstamped' })
+      } else if (fingerprints[sourceRecordId] !== checksum) {
+        decisionChecks.push({ ownerId, sourceRecordId, status: 'changed' })
+        finding('stale-rule-decision', `${ownerId} was decided against different text for ${sourceRecordId}`)
+      }
       const earlier = decidedBy.get(sourceRecordId)
       if (earlier)
         finding('duplicate-rule-decision', `${sourceRecordId} is decided by ${earlier} and ${ownerId}`)
@@ -306,7 +333,7 @@ export const applyWh40kSourceReview = (input: {
   }
   const timingOverrides = new Map<SourceRecordId, Wh40kTimingOverride>()
   for (const override of review.timingOverrides ?? []) {
-    decide(override.id, override.sourceRecordIds)
+    decide(override.id, override.sourceRecordIds, override.fingerprints)
     verifyEvidence(override.id, override.officialEvidence)
     if ((override.kind === 'timed') !== Boolean(override.windows?.length)) {
       finding('invalid-timing-override', `${override.id} lists windows exactly when its kind is timed`)
@@ -315,7 +342,7 @@ export const applyWh40kSourceReview = (input: {
   }
   const ignoredSourceRecordIds: SourceRecordId[] = []
   for (const ignored of review.ignoredRules ?? []) {
-    decide(ignored.id, ignored.sourceRecordIds)
+    decide(ignored.id, ignored.sourceRecordIds, ignored.fingerprints)
     ignoredSourceRecordIds.push(...ignored.sourceRecordIds)
   }
 
@@ -355,5 +382,6 @@ export const applyWh40kSourceReview = (input: {
     datasheetContexts,
     armyFactionKeywords,
     contexts,
+    decisionChecks,
   }
 }

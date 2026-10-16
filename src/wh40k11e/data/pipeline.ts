@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { extractGamesWorkshopPdfText } from '../../aos4/data/gamesWorkshop/pdfText'
+import pipelineConfig from '../../../data/wh40k11e/pipeline.json'
 import {
   WH40K_BSDATA_ADAPTER_VERSION,
   WH40K_GAMES_WORKSHOP_ADAPTER_VERSION,
@@ -27,13 +28,11 @@ export interface Wh40kPipelineOptions {
   officialCandidate: string
 }
 
+/** Where the reviewed inputs are named; `yarn data:wh40k11e:update` rewrites it on every refresh. */
+export const WH40K_PIPELINE_CONFIG_PATH = 'data/wh40k11e/pipeline.json'
+
 /** The reviewed inputs the 40K commands default to; each is a checksum-bound candidate or review. */
-export const WH40K_DEFAULT_PIPELINE_OPTIONS: Wh40kPipelineOptions = {
-  review: 'data/wh40k11e/reviews/sources-2026-09-30.json',
-  bsdataCandidate: '.cache/wh40k11e/candidates/2026-09-30-initial',
-  wahapediaCandidate: '.cache/wh40k11e/candidates/wahapedia-exports-2',
-  officialCandidate: '.cache/wh40k11e/candidates/official-2026-09-30',
-}
+export const WH40K_DEFAULT_PIPELINE_OPTIONS: Wh40kPipelineOptions = { ...pipelineConfig }
 
 export interface Wh40kPipelineResult {
   review: Wh40kSourceReview

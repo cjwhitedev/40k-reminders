@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { checkWh40kWahapediaUpdate, WH40K_LAST_UPDATE_URL } from '../../wh40k11e/data/watchCommand'
+import {
+  changedWh40kBsDataFiles,
+  checkWh40kWahapediaUpdate,
+  WH40K_LAST_UPDATE_URL,
+} from '../../wh40k11e/data/watchCommand'
 
 const review = (checksum: string) => ({
   inputs: { wahapediaExports: [{ url: WH40K_LAST_UPDATE_URL, checksum }] },
@@ -24,5 +28,13 @@ describe('Wahapedia update watch', () => {
       /review file does not pin/
     )
     expect(() => checkWh40kWahapediaUpdate(review('a'), { artifacts: [] })).toThrow(/candidate has no/)
+  })
+
+  it('counts BSData changes only in the catalogues the pipeline reads', () => {
+    const files = [{ filename: 'Imperium - Adeptus Custodes.cat' }, { filename: 'README.md' }, { other: 1 }]
+    expect(
+      changedWh40kBsDataFiles(files, ['Imperium - Adeptus Custodes.cat', 'Chaos - Daemons.cat'])
+    ).toEqual(['Imperium - Adeptus Custodes.cat'])
+    expect(changedWh40kBsDataFiles(undefined, ['x'])).toEqual([])
   })
 })

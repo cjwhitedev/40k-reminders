@@ -185,4 +185,37 @@ describe('applyWh40kSourceReview', () => {
       'unknown-record',
     ])
   })
+
+  it('blocks on a decision whose record text changed, and lists ones with no fingerprint', () => {
+    const known = sourceRecordId('test', 'ability')
+    const records = {
+      'Abilities.csv': [{ ...sheet('ability', 'current').record, sourceRecordId: known }],
+    } as unknown as Wh40kWahapediaDecodeResult['records']
+    const decided = (fingerprints?: Record<string, string>) =>
+      review({
+        timingOverrides: [
+          {
+            id: 'core',
+            sourceRecordIds: [known],
+            kind: 'passive',
+            reason: 'standing',
+            ...(fingerprints ? { fingerprints } : {}),
+          },
+        ],
+      })
+
+    const current = run(decided({ [known]: '0'.repeat(64) }), undefined, undefined, records)
+    expect(current.status).toBe('reviewed')
+    expect(current.decisionChecks).toEqual([])
+
+    const changed = run(decided({ [known]: 'f'.repeat(64) }), undefined, undefined, records)
+    expect(changed.findings.map(item => item.code)).toEqual(['stale-rule-decision'])
+    expect(changed.decisionChecks).toEqual([{ ownerId: 'core', sourceRecordId: known, status: 'changed' }])
+
+    const unstamped = run(decided(), undefined, undefined, records)
+    expect(unstamped.status).toBe('reviewed')
+    expect(unstamped.decisionChecks).toEqual([
+      { ownerId: 'core', sourceRecordId: known, status: 'unstamped' },
+    ])
+  })
 })

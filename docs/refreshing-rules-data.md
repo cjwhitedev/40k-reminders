@@ -64,6 +64,8 @@ Each prompt shows the rule's name, where it comes from, and its text. Rules come
 - **Needs a timing**: the parser cannot tell when the rule happens. A suggested answer is shown when the wording or an earlier rule of the same name gives one.
 - **Its text changed since it was decided**: Wahapedia reworded a rule that already had a decision. The old text is shown under the new one.
 
+Before the prompts start, rules whose wording changed only in spacing or capital letters are listed with their decisions, and one yes keeps them all. When the same rule (same name and wording) is on several datasheets or factions, the prompt lists where else it appears and your answer covers every copy.
+
 | Key | Meaning |
 | --- | --- |
 | Enter | Accept the suggestion, or keep the existing decision. |

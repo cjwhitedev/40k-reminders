@@ -11,6 +11,7 @@ import {
   describeWh40kWindow,
   findWh40kDecisionEntry,
   parseWh40kWindowsInput,
+  sameWh40kWording,
   stampWh40kDecisions,
   suggestWh40kDecision,
   WH40K_IGNORE_GROUPS,
@@ -194,6 +195,7 @@ export const runWh40kDecisionSession = async (input: {
   let review = input.review
   let decided = 0
   const skipped: SourceRecordId[] = []
+  const settled = new Set<SourceRecordId>()
 
   const askDecision = async (
     candidate: Wh40kDecisionCandidate,
@@ -237,6 +239,16 @@ export const runWh40kDecisionSession = async (input: {
 
   for (let index = 0; index < candidates.length; index += 1) {
     const candidate = candidates[index]
+    if (settled.has(candidate.sourceRecordId)) continue
+    const copies = candidates
+      .slice(index + 1)
+      .filter(
+        other =>
+          !settled.has(other.sourceRecordId) &&
+          other.current?.summary === candidate.current?.summary &&
+          other.name.trim().toLowerCase() === candidate.name.trim().toLowerCase() &&
+          sameWh40kWording(other.text, candidate.text)
+      )
     const suggestion =
       candidate.why === 'unresolved' ? suggestWh40kDecision(candidate, input.earlierByName) : undefined
     const heading =
@@ -258,6 +270,8 @@ export const runWh40kDecisionSession = async (input: {
     }
     if (suggestion)
       io.print(`  Suggested: ${describeWh40kDecision(suggestion.decision)}, because ${suggestion.because}`)
+    if (copies.length)
+      io.print(`  Your answer also covers the same rule on: ${copies.map(other => other.where).join('; ')}`)
 
     const keepable = Boolean(candidate.current)
     const options = [
@@ -274,30 +288,36 @@ export const runWh40kDecisionSession = async (input: {
     for (;;) {
       const choice = (await io.ask(`  ${options.join(' · ')}\n  > `)).trim().toLowerCase()
       if (choice === 'q') return { review, decided, skipped, quit: true }
+      const group = [candidate, ...copies]
       if (choice === 's') {
-        skipped.push(candidate.sourceRecordId)
+        group.forEach(item => {
+          skipped.push(item.sourceRecordId)
+          settled.add(item.sourceRecordId)
+        })
         break
       }
       if ((choice === '' && !suggestion && keepable) || (choice === 'k' && keepable)) {
         review = stampWh40kDecisions(
           review,
-          new Map([[candidate.sourceRecordId, candidate.recordChecksum]]),
+          new Map(group.map(item => [item.sourceRecordId, item.recordChecksum])),
           {
             onlyMissing: false,
-            sourceRecordIds: new Set([candidate.sourceRecordId]),
+            sourceRecordIds: new Set(group.map(item => item.sourceRecordId)),
           }
         ).review
         await save(input.reviewPath, review)
-        decided += 1
+        group.forEach(item => settled.add(item.sourceRecordId))
+        decided += group.length
         io.print('  Kept.')
         break
       }
       const decision =
         choice === '' && suggestion ? suggestion.decision : await askDecision(candidate, choice)
       if (!decision) continue
-      review = addWh40kDecision(review, candidate, decision, date)
+      review = addWh40kDecision(review, group, decision, date)
       await save(input.reviewPath, review)
-      decided += 1
+      group.forEach(item => settled.add(item.sourceRecordId))
+      decided += group.length
       io.print(`  Saved: ${describeWh40kDecision(decision)}`)
       break
     }

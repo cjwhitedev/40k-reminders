@@ -4,7 +4,7 @@ import { createInterface } from 'node:readline'
 import { fileURLToPath } from 'node:url'
 import { WH40K_RUNTIME_PATH } from '../generate/runtime'
 import type { Wh40kDecisionCandidate } from './decisions'
-import { stampWh40kDecisions } from './decisions'
+import { sameWh40kWording, stampWh40kDecisions } from './decisions'
 import {
   buildWh40kDecisionContext,
   readWh40kReview,
@@ -93,7 +93,30 @@ export const decideWh40kPending = async (
 ): Promise<boolean> => {
   const result = await runWh40kSourcePipeline(options)
   const context = buildWh40kDecisionContext(result, await readWh40kPreviousRuleText())
-  const candidates = pick ? pick(context) : context.pending
+  let candidates = pick ? pick(context) : context.pending
+  let review = await readWh40kReview(options.review)
+  const reformatted = pick
+    ? []
+    : candidates.filter(
+        item =>
+          item.why === 'changed' &&
+          item.current?.text !== undefined &&
+          sameWh40kWording(item.current.text, item.text)
+      )
+  if (reformatted.length) {
+    io.print(`${reformatted.length} decided rule(s) changed only in spacing or capital letters:`)
+    reformatted.forEach(item => io.print(`  ${item.name} (${item.where}): ${item.current?.summary}`))
+    const answer = (await io.ask('Keep those decisions? [Y/n] ')).trim().toLowerCase()
+    if (!answer || answer.startsWith('y')) {
+      const ids = new Set(reformatted.map(item => item.sourceRecordId))
+      review = stampWh40kDecisions(review, context.checksums, {
+        onlyMissing: false,
+        sourceRecordIds: ids,
+      }).review
+      await saveWh40kReview(options.review, review)
+      candidates = candidates.filter(item => !ids.has(item.sourceRecordId))
+    }
+  }
   if (!candidates.length) {
     io.print('Nothing to decide.')
     return true
@@ -101,7 +124,7 @@ export const decideWh40kPending = async (
   io.print(`${candidates.length} rule(s) to decide. Answers are saved to ${options.review} as you go.`)
   const session = await runWh40kDecisionSession({
     reviewPath: options.review,
-    review: await readWh40kReview(options.review),
+    review,
     candidates,
     earlierByName: context.earlierByName,
     date: today(),

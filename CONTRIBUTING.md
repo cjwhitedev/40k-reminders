@@ -144,9 +144,9 @@ It walks through every step and stops for you only where a person has to decide:
 3. **Starts a new review**: a dated copy of the review file bound to the new checksums, with every earlier decision carried over, and `data/wh40k11e/pipeline.json` pointed at it.
 4. **Reviews.** When Wahapedia renumbers a rule, it moves the decision to the rule's new ID by name, and asks you to confirm it again with the rest. It offers to drop decisions for rules that are really gone, listing them by name. It offers to update exclusion counts that changed because Wahapedia fixed its data, and asks for the Army Faction keywords of any new faction. Anything else the review reports needs a hand edit; it waits while you make it, then checks again. Then it prompts for each rule that needs a decision:
    - rules the parsers cannot read, with a **suggested** answer when the wording or an earlier same-named rule gives one;
-   - rules reworded since they were decided, showing the text the decision was made against.
+   - rules reworded since they were decided, showing the text the decision was made against. Rules that changed only in spacing or capital letters are listed first and kept with one yes.
 
-   For each, press **Enter** to accept the suggestion (or keep the old decision), or choose **t** timed (type the timing the way a WHEN: line reads, such as `start of your Command phase` or `before the battle: Deploy Armies step`), **r** reaction, **p** always active, **n** not a reminder, **s** skip, **q** save and quit. Every answer is saved as you go.
+   For each, press **Enter** to accept the suggestion (or keep the old decision), or choose **t** timed (type the timing the way a WHEN: line reads, such as `start of your Command phase` or `before the battle: Deploy Armies step`), **r** reaction, **p** always active, **n** not a reminder, **s** skip, **q** save and quit. An answer covers every copy of the same rule on other datasheets or factions. Every answer is saved as you go.
 5. **Generates** `runtime.json`.
 6. **Reports what changed** by faction, and saves the list and a ready commit message under `.cache/wh40k11e/reports/`.
 7. **Runs the checks** from section 3.

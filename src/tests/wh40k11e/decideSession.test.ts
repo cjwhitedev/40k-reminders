@@ -126,4 +126,28 @@ describe('runWh40kDecisionSession', () => {
     expect(outcome.quit).toBe(true)
     expect(save).toHaveBeenCalledTimes(1)
   })
+
+  it('applies one answer to every copy of the same rule, in one entry', async () => {
+    const copy = (key: string, where: string, text = 'Keep a tally of destroyed models.') =>
+      candidate(key, text, { name: 'Inviolable Transport', where })
+    const { result, io } = session(
+      [
+        copy('SM', 'Space Marines › Mastodon'),
+        copy('CSM', 'Chaos Space Marines › Mastodon', 'Keep a  tally of DESTROYED models.'),
+        copy('DG', 'Death Guard › Mastodon', 'Different wording.'),
+      ],
+      ['p', '', 's']
+    )
+    const outcome = await result
+
+    expect(io.printed.join('\n')).toContain('also covers the same rule on: Chaos Space Marines › Mastodon')
+    expect(outcome.decided).toBe(2)
+    expect(outcome.skipped).toEqual([copy('DG', '').sourceRecordId])
+    expect(outcome.review.timingOverrides).toHaveLength(1)
+    expect(outcome.review.timingOverrides?.[0]).toMatchObject({
+      id: 'inviolable-transport',
+      kind: 'passive',
+      sourceRecordIds: [copy('SM', '').sourceRecordId, copy('CSM', '').sourceRecordId],
+    })
+  })
 })

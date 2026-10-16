@@ -256,16 +256,26 @@ const slug = (value: string): string =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '') || 'rule'
 
-/** Records a decision for one rule, stamped with the record checksum it was made against. */
+type DecisionRecord = Pick<Wh40kDecisionCandidate, 'sourceRecordId' | 'recordChecksum' | 'name'>
+
+/** Wording compared without spacing or capital letters, which Wahapedia reformats without changing a rule. */
+export const sameWh40kWording = (left: string, right: string): boolean => {
+  const words = (text: string) => text.replace(/\s+/g, ' ').trim().toLowerCase()
+  return words(left) === words(right)
+}
+
+/** Records a decision for one rule (or identical copies of it), stamped with the record checksums it was made against. */
 export const addWh40kDecision = (
   review: Wh40kSourceReview,
-  candidate: Pick<Wh40kDecisionCandidate, 'sourceRecordId' | 'recordChecksum' | 'name'>,
+  rule: DecisionRecord | DecisionRecord[],
   decision: Wh40kDecision,
   date: string
 ): Wh40kSourceReview => {
-  const base = removeWh40kDecision(review, candidate.sourceRecordId)
-  const fingerprint = { [candidate.sourceRecordId]: candidate.recordChecksum }
-  const name = { [candidate.sourceRecordId]: candidate.name }
+  const rules = Array.isArray(rule) ? rule : [rule]
+  const base = rules.reduce((current, item) => removeWh40kDecision(current, item.sourceRecordId), review)
+  const ids = rules.map(item => item.sourceRecordId)
+  const fingerprint = Object.fromEntries(rules.map(item => [item.sourceRecordId, item.recordChecksum]))
+  const name = Object.fromEntries(rules.map(item => [item.sourceRecordId, item.name]))
   if (decision.kind === 'ignore') {
     const ignoredRules = [...(base.ignoredRules ?? [])]
     const preset = WH40K_IGNORE_GROUPS.some(group => group.key === decision.groupId)
@@ -275,14 +285,14 @@ export const addWh40kDecision = (
       const entry = ignoredRules[index]
       ignoredRules[index] = {
         ...entry,
-        sourceRecordIds: [...entry.sourceRecordIds, candidate.sourceRecordId],
+        sourceRecordIds: [...entry.sourceRecordIds, ...ids],
         fingerprints: { ...entry.fingerprints, ...fingerprint },
         names: { ...entry.names, ...name },
       }
     } else {
       ignoredRules.push({
         id: groupId,
-        sourceRecordIds: [candidate.sourceRecordId],
+        sourceRecordIds: ids,
         reason: decision.reason,
         fingerprints: fingerprint,
         names: name,
@@ -293,11 +303,11 @@ export const addWh40kDecision = (
   const taken = new Set(
     [...(base.timingOverrides ?? []), ...(base.ignoredRules ?? [])].map(entry => entry.id)
   )
-  let id = slug(candidate.name)
-  for (let suffix = 2; taken.has(id); suffix += 1) id = `${slug(candidate.name)}-${suffix}`
+  let id = slug(rules[0].name)
+  for (let suffix = 2; taken.has(id); suffix += 1) id = `${slug(rules[0].name)}-${suffix}`
   const override: Wh40kTimingOverride = {
     id,
-    sourceRecordIds: [candidate.sourceRecordId],
+    sourceRecordIds: ids,
     kind: decision.kind,
     ...(decision.kind === 'timed' ? { windows: decision.windows } : {}),
     ...(decision.kind === 'reaction' ? { trigger: decision.trigger } : {}),

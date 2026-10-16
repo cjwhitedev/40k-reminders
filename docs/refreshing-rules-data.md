@@ -90,6 +90,8 @@ GitHub builds and publishes the site. Close the **Rules data sources changed** i
 | --- | --- |
 | `Switch to master first`, `Commit or stash your changes first`, `run git pull first` | Do that, then run the command again. |
 | `yarn: command not found` | Yarn is not installed on this machine; see **First time on a machine** above. |
+| `npm error code EBADENGINE` | `npm install` was run. This project refuses npm on purpose; use `yarn install --frozen-lockfile`. |
+| `Invalid value type` in `yarn.lock` during `yarn install` | Something other than Yarn (an older checkout's `npm install`) rewrote `yarn.lock`. Run `git restore yarn.lock && rm -rf node_modules && yarn install --frozen-lockfile`. |
 | A download error such as `Request timed out` | Wahapedia is unreachable from this network. Nothing was changed. Try another network, or see [docs/data/wh40k11e-wahapedia-handoff.md](data/wh40k11e-wahapedia-handoff.md). |
 | You quit, skipped rules, or the checks failed | Fix what it says, then `yarn data:wh40k11e:update --no-fetch`. It picks up from step 4 with the sources already downloaded. |
 | You want to refresh even though nothing changed | `yarn data:wh40k11e:update --force` |

@@ -4,6 +4,9 @@
   "private": true,
   "type": "module",
   "packageManager": "yarn@1.22.22",
+  "engines": {
+    "npm": "please-use-yarn"
+  },
   "dependencies": {
     "@hello-pangea/dnd": "18.0.1",
     "bootstrap": "5.3.8",

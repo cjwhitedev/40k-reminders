@@ -11,9 +11,11 @@ git clone https://github.com/cjwhitedev/40k-reminders.git
 cd 40k-reminders
 nvm install        # reads .nvmrc (Node 22.23.2)
 nvm use
-npm install --global yarn@1.22.22
+corepack enable    # or: npm install --global yarn@1.22.22
 yarn install --frozen-lockfile
 ```
+
+Yarn does not come with Node, so `yarn: command not found` means the `corepack enable` (or `npm install --global yarn@1.22.22`) line was skipped. Use `yarn` rather than `npm install` here: npm writes a `package-lock.json` and resolves different versions than `yarn.lock`.
 
 If `yarn` complains that a module needs a different Node version, you are on the wrong Node. Run `nvm use` in that terminal first.
 

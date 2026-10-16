@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "packageManager": "yarn@1.22.22",
   "dependencies": {
     "@hello-pangea/dnd": "18.0.1",
     "bootstrap": "5.3.8",

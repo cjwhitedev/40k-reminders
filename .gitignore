@@ -107,3 +107,6 @@ dev-dist/
 
 # Owner drop folder for sharing files (screenshots, feedback) with assistants; never committed
 input/
+
+# This project uses Yarn; a stray npm install must not dirty the tree the update command checks
+package-lock.json

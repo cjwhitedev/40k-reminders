@@ -11,9 +11,26 @@ A checklist for updating 40K Reminders when Games Workshop or Wahapedia publish 
 ## Before you start
 
 - A machine that can reach `wahapedia.ru` (it blocks some networks).
-- Node from `.nvmrc` and Yarn Classic (CONTRIBUTING.md section 1).
 - About 20 minutes, more if many rules changed.
 - Optional: `export WH40K_CACHE_BACKUP_DIR=/path/to/backups` so the downloaded sources are backed up for you.
+
+### First time on a machine
+
+The project needs Node 22 (pinned in `.nvmrc`) and Yarn Classic. Yarn does not come with Node; `yarn: command not found` means this step was skipped.
+
+```bash
+# Node, through nvm (https://github.com/nvm-sh/nvm) if the machine does not have Node 22
+nvm install          # run in the repository folder; reads .nvmrc
+nvm use
+
+# Yarn: either of these
+corepack enable                       # uses the Yarn version package.json names
+npm install --global yarn@1.22.22     # if corepack is missing or not allowed
+
+yarn --version       # should print 1.22.22
+```
+
+Use `yarn`, never `npm install`, in this repository: npm writes a `package-lock.json` and installs different versions than the committed `yarn.lock`.
 
 ## Run it
 
@@ -72,6 +89,7 @@ GitHub builds and publishes the site. Close the **Rules data sources changed** i
 | What you see | What to do |
 | --- | --- |
 | `Switch to master first`, `Commit or stash your changes first`, `run git pull first` | Do that, then run the command again. |
+| `yarn: command not found` | Yarn is not installed on this machine; see **First time on a machine** above. |
 | A download error such as `Request timed out` | Wahapedia is unreachable from this network. Nothing was changed. Try another network, or see [docs/data/wh40k11e-wahapedia-handoff.md](data/wh40k11e-wahapedia-handoff.md). |
 | You quit, skipped rules, or the checks failed | Fix what it says, then `yarn data:wh40k11e:update --no-fetch`. It picks up from step 4 with the sources already downloaded. |
 | You want to refresh even though nothing changed | `yarn data:wh40k11e:update --force` |

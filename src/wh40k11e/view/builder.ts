@@ -20,6 +20,8 @@ export interface Wh40kBuilderGroup {
 
 export interface Wh40kBuilderViewModel {
   factions: Array<{ label: string; value: string }>
+  /** The faction's sub-faction filter, e.g. Chapters; absent when it has none. */
+  subFactions?: { label: string; options: Array<{ label: string; value: string }> }
   groups: Wh40kBuilderGroup[]
 }
 
@@ -33,9 +35,18 @@ export const createWh40kBuilderViewModel = (
 ): Wh40kBuilderViewModel => {
   const datasheetIds = new Set(document.datasheetIds)
   const enhancementIds = new Set(document.enhancementIds)
+  const faction = catalog.factions.find(item => item.id === document.factionId)
 
+  // A sub-faction shows its own units and the ones open to every sub-faction; picked units always stay.
   const datasheets = catalog.datasheets
     .filter(sheet => sheet.factionId === document.factionId)
+    .filter(
+      sheet =>
+        !document.subFaction ||
+        !sheet.subFactionKeywords?.length ||
+        sheet.subFactionKeywords.includes(document.subFaction) ||
+        datasheetIds.has(sheet.sourceRecordId)
+    )
     .map(sheet => ({
       id: sheet.sourceRecordId as string,
       name: sheet.name,
@@ -75,6 +86,14 @@ export const createWh40kBuilderViewModel = (
 
   return {
     factions: [...catalog.factions].sort(byName).map(faction => ({ label: faction.name, value: faction.id })),
+    ...(faction?.subFactions
+      ? {
+          subFactions: {
+            label: faction.subFactions.label,
+            options: faction.subFactions.keywords.map(keyword => ({ label: keyword, value: keyword })),
+          },
+        }
+      : {}),
     groups: [
       { key: 'datasheet', title: 'Units', options: datasheets },
       { key: 'detachment', title: 'Detachment', options: detachments },

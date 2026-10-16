@@ -39,6 +39,12 @@ export const validateWh40kCatalog = (catalog: Wh40kCatalog): string[] => {
   for (const datasheet of catalog.datasheets) {
     if (!factions.has(datasheet.factionId))
       problems.push(`datasheet ${datasheet.sourceRecordId} names unknown faction ${datasheet.factionId}`)
+    const groups =
+      catalog.factions.find(faction => faction.id === datasheet.factionId)?.subFactions?.keywords ?? []
+    for (const keyword of datasheet.subFactionKeywords ?? []) {
+      if (!groups.includes(keyword))
+        problems.push(`datasheet ${datasheet.sourceRecordId} names unknown sub-faction ${keyword}`)
+    }
     for (const shared of datasheet.sharedRules) {
       if (!rules.has(shared.ruleId))
         problems.push(`datasheet ${datasheet.sourceRecordId} carries unknown rule ${shared.ruleId}`)

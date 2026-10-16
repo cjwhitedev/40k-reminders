@@ -48,6 +48,13 @@ interface HeaderProps<FactionId extends string> {
    * row's precedent — masthead controls that do not apply are absent, not disabled.
    */
   seasonalRulesChecked: boolean | null
+  /** A filter under the faction select, e.g. a Space Marine Chapter; `null` value means all of them. */
+  subFaction?: {
+    label: string
+    options: Array<{ label: string; value: string }>
+    value: string | null
+    onChange: (value: string | null) => void
+  }
   title?: string
   /** Replaces the AoS Reminders author line under the title. */
   byline?: ReactNode
@@ -68,6 +75,7 @@ export const Header = <FactionId extends string = CanonicalId<'faction'>>({
   onToggleGameMode,
   onToggleSeasonalRules,
   seasonalRulesChecked,
+  subFaction,
   title = 'Age of Sigmar Reminders',
   byline,
 }: HeaderProps<FactionId>) => {
@@ -208,6 +216,32 @@ export const Header = <FactionId extends string = CanonicalId<'faction'>>({
                         value={armyOfRenownOption}
                         options={armyOfRenownOptions}
                         onChange={selected => onArmyOfRenownChange(selected?.value ?? null)}
+                        isClearable={false}
+                        className={theme.text}
+                        theme={selectColors}
+                      />
+                    </div>
+                  </div>
+                </>
+              ) : null}
+              {subFaction ? (
+                <>
+                  <span className="text-white">{subFaction.label}:</span>
+                  <div className="d-flex pt-3 pb-2 justify-content-center">
+                    <div className="col-12 col-sm-9 col-md-6 col-lg-4 text-start">
+                      <Select
+                        aria-label={subFaction.label}
+                        value={
+                          subFaction.options.find(item => item.value === subFaction.value) ?? {
+                            label: `Any ${subFaction.label.toLowerCase()}`,
+                            value: null,
+                          }
+                        }
+                        options={[
+                          { label: `Any ${subFaction.label.toLowerCase()}`, value: null },
+                          ...subFaction.options,
+                        ]}
+                        onChange={selected => subFaction.onChange(selected?.value ?? null)}
                         isClearable={false}
                         className={theme.text}
                         theme={selectColors}

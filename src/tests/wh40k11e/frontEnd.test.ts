@@ -118,6 +118,51 @@ describe('40K builder view model', () => {
     )
     expect(builder.groups[0].options.some(option => option.overlay === 'legends')).toBe(true)
   })
+
+  it('narrows Space Marine units to one Chapter plus the units open to every Chapter', () => {
+    const units = (subFaction?: string, datasheetIds: string[] = []) => {
+      const document = { ...createWh40kArmyDocument(WH40K_CATALOG, 'SM'), datasheetIds }
+      const builder = createWh40kBuilderViewModel(
+        WH40K_CATALOG,
+        subFaction ? { ...document, subFaction } : document
+      )
+      return { builder, names: builder.groups[0].options.map(option => option.name) }
+    }
+    const all = units()
+    expect(all.builder.subFactions?.label).toBe('Chapter')
+    expect(all.builder.subFactions?.options.map(option => option.value)).toContain('Space Wolves')
+
+    const chapterOf = (keyword: string) =>
+      WH40K_CATALOG.datasheets
+        .filter(sheet => sheet.subFactionKeywords?.includes(keyword))
+        .map(sheet => sheet.name)
+    const wolves = units('Space Wolves').names
+    expect(wolves.length).toBeLessThan(all.names.length)
+    expect(wolves).toEqual(expect.arrayContaining(chapterOf('Space Wolves')))
+    expect(
+      wolves.some(
+        name => chapterOf('Blood Angels').includes(name) && !chapterOf('Space Wolves').includes(name)
+      )
+    ).toBe(false)
+    expect(wolves).toContain('Captain')
+
+    const angel = WH40K_CATALOG.datasheets.find(sheet => sheet.subFactionKeywords?.includes('Blood Angels'))!
+    expect(units('Space Wolves', [angel.sourceRecordId]).names).toContain(angel.name)
+    expect(createWh40kBuilderViewModel(WH40K_CATALOG, custodes()).subFactions).toBeUndefined()
+  })
+
+  it('keeps a stored Chapter, and drops one the catalog does not list without losing the army', () => {
+    const marines = { ...createWh40kArmyDocument(WH40K_CATALOG, 'SM'), subFaction: 'Blood Angels' }
+    expect(deserializeWh40kArmyDocument(JSON.stringify(marines), WH40K_CATALOG)?.subFaction).toBe(
+      'Blood Angels'
+    )
+    const restored = deserializeWh40kArmyDocument(
+      JSON.stringify({ ...marines, subFaction: 'Lamenters' }),
+      WH40K_CATALOG
+    )
+    expect(restored).not.toBeNull()
+    expect(restored?.subFaction).toBeUndefined()
+  })
 })
 
 describe('40K reminder view models', () => {

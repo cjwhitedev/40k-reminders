@@ -13,6 +13,8 @@ export interface Wh40kArmyDocument {
   schemaVersion: typeof WH40K_ARMY_DOCUMENT_SCHEMA_VERSION
   name: string
   factionId: string
+  /** Narrows the Units list to one sub-faction (e.g. a Chapter); it never changes which rules apply. */
+  subFaction?: string
   detachmentId?: string
   datasheetIds: string[]
   enhancementIds: string[]
@@ -92,10 +94,17 @@ export const deserializeWh40kArmyDocument = (
       return scope?.kind === 'detachment' && scope.detachmentId === detachmentId
     })
   if (!valid) return null
+  // A sub-faction the catalog no longer lists only widens the Units list, so it is dropped, not fatal.
+  const subFactions = catalog.factions.find(faction => faction.id === factionId)?.subFactions?.keywords ?? []
+  const subFaction =
+    typeof value.subFaction === 'string' && subFactions.includes(value.subFaction)
+      ? value.subFaction
+      : undefined
   return {
     schemaVersion: WH40K_ARMY_DOCUMENT_SCHEMA_VERSION,
     name: value.name,
     factionId,
+    ...(subFaction ? { subFaction } : {}),
     ...(typeof detachmentId === 'string' ? { detachmentId } : {}),
     datasheetIds,
     enhancementIds,

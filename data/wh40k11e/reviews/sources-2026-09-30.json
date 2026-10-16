@@ -1938,5 +1938,25 @@
       "keywords": ["WORLD EATERS"],
       "reason": "Faction keyword on 53 of 58 current datasheets (the rest are BLOOD LEGIONS daemons)."
     }
+  ],
+  "subFactionKeywords": [
+    {
+      "factionId": "SM",
+      "label": "Chapter",
+      "keywords": [
+        "Black Templars",
+        "Blood Angels",
+        "Dark Angels",
+        "Deathwatch",
+        "Imperial Fists",
+        "Iron Hands",
+        "Raven Guard",
+        "Salamanders",
+        "Space Wolves",
+        "Ultramarines",
+        "White Scars"
+      ],
+      "reason": "Chapter faction keywords on current Space Marines datasheets; ADEPTUS ASTARTES units without one are open to every Chapter. AGENTS OF THE IMPERIUM is an ally keyword, not a Chapter."
+    }
   ]
 }

@@ -54,6 +54,8 @@ export interface Wh40kDatasheet {
   context: Wh40kDatasheetContext
   /** Shared core and army rules this datasheet carries, with any printed parameter. */
   sharedRules: Array<{ ruleId: SourceRecordId; parameter?: string }>
+  /** Which of its faction's sub-factions (e.g. Chapters) the datasheet belongs to; absent for all of them. */
+  subFactionKeywords?: string[]
 }
 
 export interface Wh40kDetachment {
@@ -68,6 +70,8 @@ export interface Wh40kFaction {
   name: string
   /** Reviewed Army Faction keywords this faction's army declares. */
   armyFactionKeywords: string[]
+  /** Reviewed groups a player can narrow the faction's units to, e.g. Space Marine Chapters. */
+  subFactions?: { label: string; keywords: string[] }
 }
 
 /** Everything army selection and reminder projection need, independent of any source format. */

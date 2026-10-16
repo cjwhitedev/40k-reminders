@@ -115,11 +115,15 @@ Most reports are one of these. In every case, the fix goes in the review file, n
 4. Run `yarn data:wh40k11e:generate:write`, then the checks in section 3.
 5. Commit the review file and `runtime.json` together, saying in the message which rule changed and why.
 
+The Chapter filter for Space Marines comes from `subFactionKeywords` in the review file: a faction ID, a label, and the faction keywords (as Wahapedia prints them on datasheets) that split its units into groups. Units carrying none of them are offered for every group. To give another faction a filter, add an entry; `yarn data:wh40k11e:review` reports any keyword no datasheet of that faction carries.
+
 You can still edit `timingOverrides` or `ignoredRules` by hand (copy the shape of an existing entry); run `yarn data:wh40k11e:decide --stamp` afterwards to fingerprint the new entry.
 
 If the parser misreads a common phrasing, the better fix is in `src/wh40k11e/normalize/ability.ts` or `when.ts`, with a test in `src/tests/wh40k11e/`. When `decide` keeps suggesting the same answer for the same wording, that wording is a good candidate.
 
 ## 8. Refresh the rules data (new codex, balance update)
+
+The step-by-step checklist, with every prompt and what to do when something stops, is [docs/refreshing-rules-data.md](docs/refreshing-rules-data.md). In short:
 
 `.github/workflows/data-watch.yml` checks Wahapedia every Monday. When its exports have moved on from the ones the review was written against, it opens a **Rules data sources changed** issue assigned to the repository owner, which GitHub emails to you. (Check that **Settings > Notifications** on GitHub emails you for issues you are assigned.) To check now: **Actions > Watch rules sources for changes > Run workflow**.
 

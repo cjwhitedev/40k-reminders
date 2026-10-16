@@ -263,11 +263,19 @@ export const buildWh40kCatalog = (
   for (const sheet of linked.datasheets) {
     const context = reviewed.datasheetContexts.get(sheet.record.sourceRecordId)
     if (context !== 'current' && context !== 'legends') continue
+    const groups = reviewed.subFactions.get(sheet.record.values.faction_id)?.keywords ?? []
+    const printed = new Set(
+      sheet.keywords
+        .filter(keyword => keyword.values.is_faction_keyword === 'true')
+        .map(keyword => keyword.values.keyword.toLowerCase())
+    )
+    const subFactionKeywords = groups.filter(keyword => printed.has(keyword.toLowerCase()))
     datasheets.push({
       sourceRecordId: sheet.record.sourceRecordId,
       name: sheet.record.values.name,
       factionId: sheet.record.values.faction_id,
       context,
+      ...(subFactionKeywords.length ? { subFactionKeywords } : {}),
       sharedRules: sheet.abilities.flatMap(({ record, shared }) =>
         shared && ruleIds.has(shared.sourceRecordId)
           ? [
@@ -288,11 +296,15 @@ export const buildWh40kCatalog = (
   }))
   return {
     factions: records['Factions.csv']
-      .map(record => ({
-        id: record.values.id,
-        name: record.values.name,
-        armyFactionKeywords: reviewed.armyFactionKeywords.get(record.values.id) ?? [],
-      }))
+      .map(record => {
+        const subFactions = reviewed.subFactions.get(record.values.id)
+        return {
+          id: record.values.id,
+          name: record.values.name,
+          armyFactionKeywords: reviewed.armyFactionKeywords.get(record.values.id) ?? [],
+          ...(subFactions ? { subFactions } : {}),
+        }
+      })
       .sort((left, right) => compareCodeUnits(left.id, right.id)),
     detachments: detachments.sort((left, right) => compareCodeUnits(left.id, right.id)),
     datasheets: datasheets.sort((left, right) => compareCodeUnits(left.sourceRecordId, right.sourceRecordId)),

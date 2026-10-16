@@ -49,7 +49,15 @@ const Byline = () => (
 )
 
 /** Names the army at the top of a printed sheet; hidden on screen by print.scss. */
-const PrintHeader = ({ armyName, groups }: { armyName: string; groups: Wh40kBuilderGroup[] }) => {
+const PrintHeader = ({
+  armyName,
+  subFaction,
+  groups,
+}: {
+  armyName: string
+  subFaction?: string
+  groups: Wh40kBuilderGroup[]
+}) => {
   const picked = (key: Wh40kBuilderGroupKey) =>
     groups
       .find(group => group.key === key)
@@ -62,7 +70,9 @@ const PrintHeader = ({ armyName, groups }: { armyName: string; groups: Wh40kBuil
   return (
     <header className="PrintHeader container">
       <h1>{armyName}</h1>
-      {detachment && <p className="PrintStrap">{detachment}</p>}
+      {(subFaction || detachment) && (
+        <p className="PrintStrap">{[subFaction, detachment].filter(Boolean).join(' · ')}</p>
+      )}
       {enhancements.length > 0 && (
         <p className="PrintRoster">
           <strong>Enhancements:</strong> {enhancements.join(', ')}
@@ -123,6 +133,14 @@ const Wh40kHome = () => {
   const selectFaction = (factionId: string) => {
     if (factionId !== document.factionId) setDocument(createWh40kArmyDocument(WH40K_CATALOG, factionId))
   }
+
+  const selectSubFaction = (subFaction: string | null) =>
+    setDocument(current => {
+      const next = { ...current }
+      if (subFaction) next.subFaction = subFaction
+      else delete next.subFaction
+      return next
+    })
 
   const setSelections = (groupIds: string[], selectedIds: string[]) => {
     const key = groupIds.map(id => groupByOptionId.get(id)).find(Boolean)
@@ -192,11 +210,20 @@ const Wh40kHome = () => {
         onToggleGameMode={() => setIsGameMode(current => !current)}
         onToggleSeasonalRules={noop}
         seasonalRulesChecked={null}
+        {...(builder.subFactions
+          ? {
+              subFaction: {
+                ...builder.subFactions,
+                value: document.subFaction ?? null,
+                onChange: selectSubFaction,
+              },
+            }
+          : {})}
         title="40K Reminders"
         byline={<Byline />}
       />
 
-      <PrintHeader armyName={document.name} groups={builder.groups} />
+      <PrintHeader armyName={document.name} subFaction={document.subFaction} groups={builder.groups} />
 
       {!isGameMode && <SelectionCards groups={builder.groups} onSetGroupSelections={setSelections} />}
 

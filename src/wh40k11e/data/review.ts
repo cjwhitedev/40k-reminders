@@ -68,6 +68,16 @@ export interface Wh40kArmyFactionKeywords {
   reason: string
 }
 
+/** Faction keywords that split one faction's units into groups a player picks from, e.g. Chapters. */
+export interface Wh40kSubFactionKeywords {
+  factionId: string
+  /** What one group is called, e.g. "Chapter". */
+  label: string
+  /** As Wahapedia prints them on datasheets, e.g. "Blood Angels". */
+  keywords: string[]
+  reason: string
+}
+
 export interface Wh40kSourceReview {
   schemaVersion: 1
   revision: string
@@ -86,6 +96,7 @@ export interface Wh40kSourceReview {
   timingOverrides?: Wh40kTimingOverride[]
   ignoredRules?: Wh40kIgnoredRules[]
   armyFactionKeywords?: Wh40kArmyFactionKeywords[]
+  subFactionKeywords?: Wh40kSubFactionKeywords[]
 }
 
 export type Wh40kReviewFindingCode =
@@ -102,6 +113,7 @@ export type Wh40kReviewFindingCode =
   | 'unknown-record'
   | 'duplicate-rule-decision'
   | 'invalid-army-faction-keywords'
+  | 'invalid-sub-faction-keywords'
   | 'invalid-timing-override'
   | 'stale-rule-decision'
 
@@ -132,6 +144,7 @@ export interface Wh40kReviewedSources {
   ignoredSourceRecordIds: SourceRecordId[]
   datasheetContexts: Map<SourceRecordId, Wh40kReviewContext>
   armyFactionKeywords: Map<string, string[]>
+  subFactions: Map<string, { label: string; keywords: string[] }>
   contexts: Record<Wh40kReviewContext, number>
   decisionChecks: Wh40kDecisionCheck[]
 }
@@ -217,6 +230,7 @@ export const applyWh40kSourceReview = (input: {
     | 'ignoredSourceRecordIds'
     | 'datasheetContexts'
     | 'armyFactionKeywords'
+    | 'subFactions'
     | 'decisionChecks'
   > = {
     dispositions: [],
@@ -364,6 +378,34 @@ export const applyWh40kSourceReview = (input: {
       finding('invalid-army-faction-keywords', `No Army Faction keywords are reviewed for ${factionId}`)
   }
 
+  // A listed keyword no datasheet of the faction carries is a typo or a removed group.
+  const printedKeywords = new Map<string, Set<string>>()
+  for (const sheet of linked.datasheets) {
+    const keywords = printedKeywords.get(sheet.record.values.faction_id) ?? new Set<string>()
+    for (const keyword of sheet.keywords) {
+      if (keyword.values.is_faction_keyword === 'true') keywords.add(keyword.values.keyword.toLowerCase())
+    }
+    printedKeywords.set(sheet.record.values.faction_id, keywords)
+  }
+  const subFactions = new Map<string, { label: string; keywords: string[] }>()
+  for (const entry of review.subFactionKeywords ?? []) {
+    if (!factionIds.has(entry.factionId) || subFactions.has(entry.factionId)) {
+      finding(
+        'invalid-sub-faction-keywords',
+        `Sub-faction keywords name unknown or repeated faction ${entry.factionId}`
+      )
+      continue
+    }
+    for (const keyword of entry.keywords) {
+      if (!printedKeywords.get(entry.factionId)?.has(keyword.toLowerCase()))
+        finding(
+          'invalid-sub-faction-keywords',
+          `No ${entry.factionId} datasheet carries the faction keyword ${keyword}`
+        )
+    }
+    subFactions.set(entry.factionId, { label: entry.label, keywords: entry.keywords })
+  }
+
   const sortIds = (ids: SourceRecordId[]) => Array.from(new Set(ids)).sort(compareCodeUnits)
   findings.sort(
     (left, right) => compareCodeUnits(left.code, right.code) || compareCodeUnits(left.message, right.message)
@@ -381,6 +423,7 @@ export const applyWh40kSourceReview = (input: {
     ignoredSourceRecordIds: sortIds(ignoredSourceRecordIds),
     datasheetContexts,
     armyFactionKeywords,
+    subFactions,
     contexts,
     decisionChecks,
   }

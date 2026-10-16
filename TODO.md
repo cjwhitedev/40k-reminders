@@ -24,6 +24,8 @@ Follow-ups for 40K Reminders. Tick items off or delete them as they are done.
 
 ## Data
 
+- [ ] Deathwatch shows only one unit under the Chapter filter: its other datasheets come from GW's 10th-edition Deathwatch pack, which the review excludes as previous-edition. Revisit when an 11th-edition Deathwatch pack is published.
+- [ ] Decide whether other factions want a sub-faction filter (`subFactionKeywords` in the review file): Aeldari (Ynnari, Harlequins), and the Chaos god legions' daemon allies.
 - [ ] Run `yarn data:wh40k11e:update` for real on a machine that can reach Wahapedia, the first time Wahapedia changes. Every step has been tested here except the live Wahapedia download, which this network blocks.
 - [ ] Check that GitHub emails you for issues assigned to you (**Settings > Notifications**), so the weekly **Rules data sources changed** issue reaches your inbox.
 - [ ] Rule timing overrides rest on Wahapedia text except for the Core Rules and four faction packs. Revisit them as more official Games Workshop PDFs are added.

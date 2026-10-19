@@ -53,7 +53,12 @@ const USES_STRATAGEM =
 
 const NAMED_PHASE =
   /\b(until )?(?:the )?(?:(start|end) of )?(?:the [a-z-]+ step of )?(your opponent's|your|either player's|the|each|that)? ?(?:(?:first|second|third|next)(?:,? (?:or )?(?:first|second|third))* )?(command|movement|shooting|charge|fight) phase\b/gi
-const MAKES_ATTACK = /([^.]*?\b(?:each|every) time\b[^.]*?)\bmakes? an? (ranged |melee )?attack\b/i
+const MAKES_ATTACK =
+  /([^.]*?\b(?:each|every) time\b[^.]*?)\b(?:makes? an?|targets? [^.,]*? with an?) (ranged |melee )?attack\b/i
+// "Each time a ranged attack targets a unit from your army": the attacker is whoever does not own the target.
+const ATTACK_TARGETS = /\b(?:an?|that) (ranged |melee )?attack targets ([^.,]*)/i
+const MAKING_ATTACKS = /\b(?:when|while) making (ranged|melee) attacks\b/i
+const OWN_ATTACKS = /\b(?:this (?:unit|model)|the bearer|that unit|its)(?:['’]s)? (ranged|melee) attacks\b/i
 const SELECTED_TO =
   /([^.]*?\b(?:each|every) time\b[^.]*?)\bis selected to (shoot|fight)(?: or (shoot|fight))?\b/i
 const CHARGED_THIS_TURN = /\b(?:made a charge move|charged) this turn\b/i
@@ -73,13 +78,20 @@ const MOMENT_ORDER = ['start', 'during', 'end']
 /**
  * The phases a standing rule names anywhere in its text, for rules that open like a standing effect
  * ("While ...", "The bearer ...") but matter at set moments. Durations ("until the end of your next
- * Command phase") are not moments. A rule of more than one sentence keeps an Always active window
- * too, since the rest of it may be a standing effect.
+ * Command phase") are not moments. A rule with a sentence or list item that names no moment keeps
+ * an Always active window too, since that part is a standing effect, unless `standing` is false.
  */
 export const namedWh40kMoments = (
   text: string,
-  printed = text
+  printed = text,
+  standing = true
 ): { windows: Wh40kGameWindow[]; clue: string } | undefined => {
+  const found = findMoments(text)
+  if (!found.length) return undefined
+  return finishMoments(found, CHARGED_THIS_TURN.test(text), standing && hasStandingPart(printed))
+}
+
+const findMoments = (text: string): Array<{ window: Wh40kGameWindow; clue: string }> => {
   const found: Array<{ window: Wh40kGameWindow; clue: string }> = []
   // "each time an enemy model ..." or "While an enemy unit is ..., each time that unit ...".
   const enemyIn = (prefix: string) => {
@@ -98,12 +110,35 @@ export const namedWh40kMoments = (
     )
     parsed?.windows.forEach(window => found.push({ window, clue: match[0].trim() }))
   }
-  const attack = text.match(MAKES_ATTACK)
+  // "Selected to fight ... each time a model makes an attack": the activation decides the phase.
+  const attack = SELECTED_TO.test(text) ? null : text.match(MAKES_ATTACK)
   if (attack) {
     const side = enemyIn(attack[1]) ? 'opponent' : 'your'
     const kind = attack[2]?.trim().toLowerCase()
     if (kind !== 'melee') found.push({ window: phaseWindow('shooting', side), clue: attack[0] })
     if (kind !== 'ranged') found.push({ window: phaseWindow('fight', 'either'), clue: attack[0] })
+  }
+  const targeted = text.match(ATTACK_TARGETS)
+  if (targeted) {
+    const target = targeted[2]
+    const mine = /\b(?:from your army|this (?:unit|model)|the bearer|friendly)\b/i.test(target)
+    const theirs = /\benemy\b/i.test(target)
+    if (mine !== theirs) {
+      const kind = targeted[1]?.trim().toLowerCase()
+      if (kind !== 'melee')
+        found.push({ window: phaseWindow('shooting', mine ? 'opponent' : 'your'), clue: targeted[0] })
+      if (kind !== 'ranged') found.push({ window: phaseWindow('fight', 'either'), clue: targeted[0] })
+    }
+  }
+  const making = text.match(MAKING_ATTACKS) ?? text.match(OWN_ATTACKS)
+  if (making) {
+    found.push({
+      window:
+        making[1].toLowerCase() === 'ranged'
+          ? phaseWindow('shooting', 'your')
+          : phaseWindow('fight', 'either'),
+      clue: making[0],
+    })
   }
   const selected = text.match(SELECTED_TO)
   if (selected) {
@@ -128,12 +163,44 @@ export const namedWh40kMoments = (
       clue: shock[0].trim(),
     })
   }
-  if (!found.length) return undefined
+  return found
+}
+
+const hasStandingPart = (printed: string): boolean => {
+  const named = (part: string) => findMoments(part.replace(/[‘’`]/g, "'")).length > 0
+  const lines = printed.split('\n')
+  const parts: string[] = []
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index]
+    // A list under an intro that names the moment ("If it charged, its attacks have:") belongs to it.
+    if (/:\s*$/.test(line) && named(line)) {
+      while (lines[index + 1]?.startsWith('•')) index += 1
+      parts.push(line)
+      continue
+    }
+    parts.push(...line.replace(/^•\s*/, '').split(/[.!?]\s+/))
+  }
+  return parts.filter(part => /[a-z]/i.test(part)).some(part => !named(part))
+}
+
+const finishMoments = (
+  found: Array<{ window: Wh40kGameWindow; clue: string }>,
+  charged: boolean,
+  standingPart: boolean
+): { windows: Wh40kGameWindow[]; clue: string } => {
   const key = (window: Wh40kGameWindow) => JSON.stringify(window)
+  // Having charged this turn means fighting in your own turn.
+  const fightsInYourTurn = charged
   const coveredByEither = (window: Wh40kGameWindow) =>
     window.kind === 'turn-phase' &&
     window.perspective !== 'either' &&
+    !(fightsInYourTurn && window.phase === 'fight') &&
     found.some(({ window: other }) => key(other) === key({ ...window, perspective: 'either' }))
+  const ruledOut = (window: Wh40kGameWindow) =>
+    fightsInYourTurn &&
+    window.kind === 'turn-phase' &&
+    window.phase === 'fight' &&
+    window.perspective === 'either'
   const rank = (window: Wh40kGameWindow) =>
     window.kind === 'turn-phase'
       ? PHASE_ORDER.indexOf(window.phase) * 3 + MOMENT_ORDER.indexOf(window.moment)
@@ -142,13 +209,23 @@ export const namedWh40kMoments = (
     .map(item => item.window)
     .filter((window, index, all) => all.findIndex(other => key(other) === key(window)) === index)
     .filter(window => !coveredByEither(window))
+    .filter(window => !ruledOut(window))
     .sort((left, right) => rank(left) - rank(right))
-  // A list introduced by "... have:" belongs to that sentence.
-  const sentences = printed
-    .replace(/:[ \t]*(?:\n•[^\n]*)+/g, '.')
-    .split(/[.!?]\s+|\n+/)
-    .filter(sentence => /[a-z]/i.test(sentence)).length
-  return { windows: sentences > 1 ? [{ kind: 'always' }, ...windows] : windows, clue: found[0].clue }
+  return { windows: standingPart ? [{ kind: 'always' }, ...windows] : windows, clue: found[0].clue }
+}
+
+/** A reaction that names when it happens ("each time a model in this unit makes a melee attack") is timed there. */
+export const timeWh40kReactionByMoments = (
+  parsed: Pick<Wh40kAbilityTimingResult, 'text' | 'usage'>
+): Wh40kTiming | undefined => {
+  const named = namedWh40kMoments(parsed.text.replace(/[‘’`]/g, "'"), parsed.text, false)
+  return named
+    ? {
+        windows: named.windows,
+        raw: `Names a moment: ${named.clue}`,
+        ...(parsed.usage ? { usage: parsed.usage } : {}),
+      }
+    : undefined
 }
 
 const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')

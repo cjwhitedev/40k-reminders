@@ -10,7 +10,11 @@ import type {
   Wh40kTimingKind,
 } from '../domain/rules'
 import type { Wh40kTiming } from '../domain/timing'
-import { borrowWh40kStratagemTiming, parseWh40kAbilityTiming } from '../normalize/ability'
+import {
+  borrowWh40kStratagemTiming,
+  parseWh40kAbilityTiming,
+  timeWh40kReactionByMoments,
+} from '../normalize/ability'
 import { WH40K_SOURCE_TEXT_OPTIONS } from '../normalize/sourceText'
 import { parseWh40kRuleTiming } from '../normalize/when'
 import type { Wh40kReviewedSources } from './review'
@@ -95,7 +99,8 @@ export const buildWh40kRules = (
     const parsed = parseWh40kAbilityTiming(html, { eligibilityLine })
     const borrowed =
       parsed.kind === 'reaction'
-        ? borrowWh40kStratagemTiming(parsed.opening, coreStratagems, parsed.usage)
+        ? (borrowWh40kStratagemTiming(parsed.opening, coreStratagems, parsed.usage) ??
+          timeWh40kReactionByMoments(parsed))
         : undefined
     return {
       parsed: borrowed

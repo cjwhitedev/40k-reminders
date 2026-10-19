@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import type { Wh40kTiming } from '../../wh40k11e/domain/timing'
-import { borrowWh40kStratagemTiming, parseWh40kAbilityTiming } from '../../wh40k11e/normalize/ability'
+import {
+  borrowWh40kStratagemTiming,
+  parseWh40kAbilityTiming,
+  timeWh40kReactionByMoments,
+} from '../../wh40k11e/normalize/ability'
 
 describe('borrowWh40kStratagemTiming', () => {
   const endOf = (phase: 'movement' | 'charge'): Wh40kTiming => ({
@@ -296,6 +300,60 @@ describe('parseWh40kAbilityTiming', () => {
       parseWh40kAbilityTiming('The bearer has the Stealth ability until the end of your next Command phase.')
         .kind
     ).toBe('passive')
+    expect(windows('This unit’s melee attacks have +1 to hit rolls.')).toEqual([phase('fight', 'either')])
+    expect(
+      windows('This unit’s ranged attacks that target a visible enemy unit have [IGNORES COVER].')
+    ).toEqual([phase('shooting')])
+    expect(windows('This unit has:\n• +1 T.\n• 4+ Sv.\n• This unit’s melee attacks have +1 S.')).toEqual([
+      { kind: 'always' },
+      phase('fight', 'either'),
+    ])
+  })
+
+  it('times a reaction by the moments it names, without an Always active copy', () => {
+    const phase = (name: string, perspective = 'your', moment = 'during') => ({
+      kind: 'turn-phase',
+      phase: name,
+      moment,
+      perspective,
+    })
+    const windows = (text: string) => timeWh40kReactionByMoments(parseWh40kAbilityTiming(text))?.windows
+    expect(
+      windows(
+        'If your Army Faction is HERETIC ASTARTES, each time a unit with this ability is selected to shoot or fight, it can make a Dark Pact. Then, select one ability.'
+      )
+    ).toEqual([phase('shooting'), phase('fight', 'either')])
+    expect(
+      windows(
+        'Each time a ranged attack targets a HERETIC ASTARTES unit from your army (excluding DAMNED units), subtract 1 from the Wound roll.'
+      )
+    ).toEqual([phase('shooting', 'opponent')])
+    expect(
+      windows(
+        'Each time a model in this unit makes a melee attack, if this unit made a Charge move this turn, improve the Strength characteristic of that attack by 1.'
+      )
+    ).toEqual([phase('fight')])
+    expect(
+      windows(
+        'When making ranged attacks with its demolisher cannon, this model can target enemy units within Engagement Range of it.'
+      )
+    ).toEqual([phase('shooting')])
+    expect(
+      windows(
+        'Each time a model in this unit targets an enemy unit with a melee attack, re-roll a Wound roll of 1. If that enemy unit is within range of an objective marker, re-roll the Wound roll instead.'
+      )
+    ).toEqual([phase('fight', 'either')])
+    expect(
+      windows(
+        'Each time this unit is selected to fight, it can call upon daemonic patrons. If it does, until the end of the phase, each time a model in this unit makes an attack, add 1 to the Wound roll.'
+      )
+    ).toEqual([phase('fight', 'either')])
+    expect(
+      windows(
+        'Each time an enemy unit is selected to shoot or fight, if it does, each time a model in that unit makes an attack, subtract 1.'
+      )
+    ).toEqual([phase('shooting', 'opponent'), phase('fight', 'either')])
+    expect(windows('Each time this model is destroyed, roll one D6.')).toBeUndefined()
   })
 
   it('leaves unfamiliar openers unclassified for review', () => {

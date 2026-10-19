@@ -143,4 +143,27 @@ describe('tester feedback, 2026-10-19 timing issues', () => {
         { kind: 'turn-phase', phase: 'charge', moment: 'during', perspective: 'your' },
       ])
   })
+
+  it('times reactions that name when they happen', () => {
+    const phase = (name: string, perspective: string) => ({
+      kind: 'turn-phase',
+      phase: name,
+      moment: 'during',
+      perspective,
+    })
+    const windowsOf = (name: string, wording: RegExp) => {
+      const rules = WH40K_CATALOG.rules.filter(rule => rule.name === name && wording.test(rule.text))
+      expect(rules.length).toBeGreaterThan(0)
+      return Array.from(new Set(rules.map(rule => JSON.stringify(rule.timing?.windows)))).map(text =>
+        JSON.parse(text)
+      )
+    }
+    expect(windowsOf('Dark Pacts', /selected to shoot or fight/)).toEqual([
+      [phase('shooting', 'your'), phase('fight', 'either')],
+    ])
+    expect(windowsOf('Iron Fortitude', /ranged attack targets/)).toEqual([[phase('shooting', 'opponent')]])
+    expect(windowsOf('Rapid Assault', /made a Charge move this turn/)).toEqual([[phase('fight', 'your')]])
+    expect(windowsOf('Siege Shield', /When making ranged attacks/)).toEqual([[phase('shooting', 'your')]])
+    expect(windowsOf('Veterans of the Long War', /with a melee attack/)).toEqual([[phase('fight', 'either')]])
+  })
 })

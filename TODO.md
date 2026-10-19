@@ -16,6 +16,9 @@ Follow-ups for 40K Reminders. Tick items off or delete them as they are done.
   - [x] Title-bar colours, section by section: each section's title bar has a palette button that offers the site's teal (the default) and four more (crimson, forest, purple, bronze). A "Print in colour" switch sits under the toolbar; printing stays black and white unless it is on. The colours are kept apart from the army, so clearing or switching armies keeps them. (The Core Rules do not colour-code phases.)
   - [x] Legends units carry an [L] after their name in the list and on the picked chips, with a note under the list when any are offered.
   - [x] Allies: an Allies card adds other factions' units, listed under "Allies: <faction>" after the army's own. The army's own faction still decides the detachment, army rules, and Army Faction keyword checks; removing an ally removes its units.
+- [ ] 2026-10-19 later feedback. Ask the testers to look again after the next `yarn data:update`:
+  - [x] Unit tags sit beside the rule name, so you can see at a glance which unit a rule belongs to; the timing tags stay on the right (ArbitraryNerd).
+  - [x] A rule that uses a named Core stratagem, such as the Lictor's Pheromone Trail (Rapid Ingress for 0CP), is listed where that stratagem is used instead of under Reactions. That moves 53 rules; "any phase" stratagems such as Command Re-roll stay under Reactions (Gutskitter). The rules file picks this up on the next `yarn data:update`.
 
 ## Print sheet
 

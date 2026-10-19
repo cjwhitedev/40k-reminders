@@ -45,6 +45,36 @@ const ONLY_ASSAULT =
   /^(?:(?:while|whilst|if)\b[^.]*?,\s*)?(?:(?!\band\b)[^.,\n])*\b(?:ranged (?:attacks|weapons)|weapons)\b(?:(?!\band\b)[^.\n])*\b(?:have|has)\s+(?:the\s+)?\[assault\](?:\s+ability)?\.?$/i
 const PASSIVE_SUBJECT =
   /^[^,.:;]{1,80}? (?:units?|models?) (?:from your army|with this ability) (?:have|has|gain|gains|are eligible|is eligible|can ignore)\b/i
+const USES_STRATAGEM =
+  /^(?:(?:when|each time|every time|whenever) (?:you (?:target|select)|this [a-z]+ is (?:targeted|selected))|you can (?:target|use))\b/i
+
+const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+/**
+ * A rule whose opening sentence uses a named Core stratagem ("you can target this unit with the
+ * Rapid Ingress Stratagem for 0CP") is remembered when that stratagem is, so it borrows the
+ * stratagem's windows. "Any phase" stratagems stay reactions: they would show in every phase.
+ */
+export const borrowWh40kStratagemTiming = (
+  opening: string,
+  stratagems: ReadonlyMap<string, Wh40kTiming>,
+  usage?: Wh40kTiming['usage']
+): Wh40kTiming | undefined => {
+  if (!stratagems.size || !USES_STRATAGEM.test(opening)) return undefined
+  const names = Array.from(stratagems.keys()).map(escapeRegExp).join('|')
+  const sentence = opening.split(/\.(?:\s|$)/)[0]
+  const named = sentence.match(new RegExp(`\\bthe ((?:${names})(?:/(?:${names}))*) stratagem\\b`, 'i'))
+  if (!named) return undefined
+  const borrowed = named[1].split('/').map(name => stratagems.get(name.toLowerCase()) as Wh40kTiming)
+  if (borrowed.some(timing => timing.windows.some(window => window.kind === 'any-phase'))) return undefined
+  const trigger = borrowed.length === 1 ? borrowed[0].trigger : undefined
+  return {
+    windows: borrowed.flatMap(timing => timing.windows),
+    raw: `Used with the ${named[1]} Stratagem`,
+    ...(trigger ? { trigger } : {}),
+    ...(usage ? { usage } : {}),
+  }
+}
 
 const timedWindow = (clause: string): Wh40kTiming | undefined => {
   const timed = clause.match(TIMED)

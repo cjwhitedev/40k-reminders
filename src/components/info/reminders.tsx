@@ -116,7 +116,7 @@ const RuleList = ({ items, compact = false }: { items: string[]; compact?: boole
  * mouse hover, `aria-label` covers assistive tech, and tapping toggles the expansion inline because
  * a touch device never fires hover.
  */
-export const ReminderTags = ({ tags }: { tags: ReminderCardModel['tags'] }) => {
+export const ReminderTags = ({ tags, lead = false }: { tags: ReminderCardModel['tags']; lead?: boolean }) => {
   const { theme } = useTheme()
   const [explained, setExplained] = useState<string | null>(null)
 
@@ -128,7 +128,7 @@ export const ReminderTags = ({ tags }: { tags: ReminderCardModel['tags'] }) => {
   // flex container and drags the right-aligned tags out of alignment when it opens.
   return (
     <>
-      <span className={`ReminderTags ${theme.reminderTags}`}>
+      <span className={`ReminderTags ${lead ? 'ReminderTags--lead' : ''} ${theme.reminderTags}`}>
         {tags.map(tag => {
           const key = `${tag.tone}:${tag.label}`
           return (
@@ -313,6 +313,9 @@ const ReminderEntry = <R extends ReminderCardModel>({
    */
   // Keyed on the indexes alone, deliberately: re-running on the resolution state too would turn
   // every arrival of links into another resolution.
+  const unitTags = reminder.tags.filter(tag => tag.tone === 'source')
+  const timingTags = reminder.tags.filter(tag => tag.tone !== 'source')
+
   const sourceKey = reminder.sourceRecordIndexes.join()
   useEffect(() => {
     if (sources.status === 'idle') return
@@ -330,9 +333,10 @@ const ReminderEntry = <R extends ReminderCardModel>({
           <span className="ReminderHeadingRow">
             <strong className={theme.text}>{reminder.name}</strong>
             {reminder.hidden && <MdVisibilityOff className={`${theme.text} ms-2`} />}
-            {!isMobile && <ReminderTags tags={reminder.tags} />}
+            <ReminderTags tags={unitTags} lead />
+            {!isMobile && <ReminderTags tags={timingTags} />}
           </span>
-          {isMobile && <ReminderTags tags={reminder.tags} />}
+          {isMobile && <ReminderTags tags={timingTags} />}
         </div>
         <div className="flex-shrink-0 ReminderOptions d-print-none">
           <span role="status" className={`${theme.text} ${theme.textMuted} small me-2`}>

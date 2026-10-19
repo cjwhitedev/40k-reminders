@@ -67,6 +67,12 @@ const records = {
       type: 'Movement Ability',
       description: 'MAXIMUM DISTANCE: M.',
     }),
+    record('Stratagems.csv', 'ingress', {
+      id: 'S6',
+      name: 'RAPID INGRESS',
+      cp_cost: '1',
+      description: when('End of your opponent’s Movement phase.'),
+    }),
   ],
   'Detachments.csv': [
     record('Detachments.csv', 'd1', { id: 'D1', name: 'Gladius', faction_id: 'SM' }),
@@ -86,6 +92,12 @@ const records = {
         'If your Army Faction is ADEPTUS ASTARTES, at the start of your Command phase, select one enemy unit.',
     }),
     record('Abilities.csv', 'fnp', { id: 'A2', name: 'Feel No Pain', description: 'FEEL NO PAIN 24.12' }),
+    record('Abilities.csv', 'trail', {
+      id: 'A3',
+      name: 'Pheromone Trail',
+      faction_id: 'TYR',
+      description: 'Once per battle round, you can target one unit with the Rapid Ingress Stratagem for 0CP.',
+    }),
   ],
   'Enhancements.csv': [
     record('Enhancements.csv', 'e1', {
@@ -182,6 +194,17 @@ describe('buildWh40kRules', () => {
       kind: 'core-ability',
       timingKind: 'reaction',
       timingSource: 'reviewed',
+    })
+  })
+
+  it('times a rule that discounts a Core stratagem with that stratagem', () => {
+    expect(byName('Pheromone Trail')).toMatchObject({
+      timingKind: 'timed',
+      timingSource: 'printed',
+      timing: {
+        windows: [{ kind: 'turn-phase', phase: 'movement', moment: 'end', perspective: 'opponent' }],
+        usage: { limit: 1, period: 'battle-round' },
+      },
     })
   })
 

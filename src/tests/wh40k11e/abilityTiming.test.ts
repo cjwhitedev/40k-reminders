@@ -1,5 +1,57 @@
 import { describe, expect, it } from 'vitest'
-import { parseWh40kAbilityTiming } from '../../wh40k11e/normalize/ability'
+import type { Wh40kTiming } from '../../wh40k11e/domain/timing'
+import { borrowWh40kStratagemTiming, parseWh40kAbilityTiming } from '../../wh40k11e/normalize/ability'
+
+describe('borrowWh40kStratagemTiming', () => {
+  const endOf = (phase: 'movement' | 'charge'): Wh40kTiming => ({
+    raw: `End of your opponent's ${phase} phase.`,
+    windows: [{ kind: 'turn-phase', phase, moment: 'end', perspective: 'opponent' }],
+  })
+  const stratagems = new Map<string, Wh40kTiming>([
+    ['rapid ingress', endOf('movement')],
+    ['heroic intervention', endOf('charge')],
+    [
+      'command re-roll',
+      { raw: 'Any phase.', windows: [{ kind: 'any-phase', moments: ['during'], perspective: 'either' }] },
+    ],
+  ])
+  const borrow = (text: string) => {
+    const parsed = parseWh40kAbilityTiming(text)
+    return borrowWh40kStratagemTiming(parsed.opening, stratagems, parsed.usage)
+  }
+
+  it('times a rule that uses a named Core stratagem when that stratagem is used', () => {
+    expect(
+      borrow(
+        'Once per battle round, you can target one model with this ability with the Rapid Ingress Stratagem for 0CP.'
+      )
+    ).toEqual({
+      windows: endOf('movement').windows,
+      raw: 'Used with the Rapid Ingress Stratagem',
+      usage: { limit: 1, period: 'battle-round' },
+    })
+    expect(
+      borrow(
+        'You can target this unit with the Rapid Ingress/Heroic Intervention stratagem, regardless of any other uses of that stratagem this phase.'
+      )?.windows
+    ).toEqual([...endOf('movement').windows, ...endOf('charge').windows])
+    expect(
+      borrow('When you target this unit with the Heroic Intervention stratagem, that use is -1 CP.')?.windows
+    ).toEqual(endOf('charge').windows)
+  })
+
+  it('leaves other reactions, unknown stratagems and any-phase stratagems alone', () => {
+    expect(
+      borrow(
+        'Each time an enemy unit ends a charge move, you can target this unit with the Heroic Intervention stratagem.'
+      )
+    ).toBeUndefined()
+    expect(borrow('You can target this unit with the Go To Ground stratagem for 0CP.')).toBeUndefined()
+    expect(
+      borrow('Once per battle, you can target this unit with the Command Re-roll Stratagem for 0CP.')
+    ).toBeUndefined()
+  })
+})
 
 describe('parseWh40kAbilityTiming', () => {
   it('records an army faction condition and classifies the rule that follows it', () => {

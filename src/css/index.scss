@@ -517,7 +517,7 @@ small {
 .ReminderHeadingRow > .ReminderTags {
   display: contents;
 
-  > .ReminderTag:first-child {
+  &:not(.ReminderTags--lead) > .ReminderTag:first-child {
     margin-inline-start: auto;
   }
 }

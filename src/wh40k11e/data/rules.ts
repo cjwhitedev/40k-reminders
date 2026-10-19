@@ -10,7 +10,7 @@ import type {
   Wh40kTimingKind,
 } from '../domain/rules'
 import type { Wh40kTiming } from '../domain/timing'
-import { parseWh40kAbilityTiming } from '../normalize/ability'
+import { borrowWh40kStratagemTiming, parseWh40kAbilityTiming } from '../normalize/ability'
 import { WH40K_SOURCE_TEXT_OPTIONS } from '../normalize/sourceText'
 import { parseWh40kRuleTiming } from '../normalize/when'
 import type { Wh40kReviewedSources } from './review'
@@ -90,14 +90,21 @@ export const buildWh40kRules = (
     })
   }
 
+  const coreStratagems = new Map<string, Wh40kTiming>()
   const prose = (html: string, eligibilityLine = false) => {
     const parsed = parseWh40kAbilityTiming(html, { eligibilityLine })
+    const borrowed =
+      parsed.kind === 'reaction'
+        ? borrowWh40kStratagemTiming(parsed.opening, coreStratagems, parsed.usage)
+        : undefined
     return {
-      parsed: {
-        kind: parsed.kind,
-        ...(parsed.timing ? { timing: parsed.timing } : {}),
-        ...(parsed.diagnostics[0] ? { reason: parsed.diagnostics[0].message } : {}),
-      },
+      parsed: borrowed
+        ? { kind: 'timed' as const, timing: borrowed }
+        : {
+            kind: parsed.kind,
+            ...(parsed.timing ? { timing: parsed.timing } : {}),
+            ...(parsed.diagnostics[0] ? { reason: parsed.diagnostics[0].message } : {}),
+          },
       text: parsed.text,
       gates: {
         ...(parsed.eligibility ? { condition: parsed.eligibility } : {}),
@@ -150,6 +157,10 @@ export const buildWh40kRules = (
         : { kind: 'unclassified', reason: parsed.diagnostics[0]?.message ?? 'no timing' },
       values.detachment_id ? detachmentMode(values.detachment_id) : 'matched-play'
     )
+  }
+  for (const rule of rules) {
+    if (rule.kind === 'core-stratagem' && rule.timing)
+      coreStratagems.set(rule.name.toLowerCase(), rule.timing)
   }
 
   for (const record of records['Abilities.csv']) {

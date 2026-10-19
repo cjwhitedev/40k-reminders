@@ -174,14 +174,29 @@ const checkGit = async (io: Wh40kPromptIo): Promise<'fresh' | 'resume' | 'restar
   }
   if (run('git', ['fetch', '-q', 'origin']) !== 0) throw new Error('git fetch failed.')
   const behind = Number(capture('git', ['rev-list', '--count', 'HEAD..origin/master']))
+  const ahead = Number(capture('git', ['rev-list', '--count', 'origin/master..HEAD']))
   if (behind > 0) {
     if (!(await yes(io, `master is ${behind} commit(s) behind GitHub. Pull them now?`)))
-      throw new Error('Run git pull first.')
-    if (run('git', ['pull', '-q', '--ff-only', 'origin', 'master']) !== 0) throw new Error('git pull failed.')
+      throw new Error('Run git pull --rebase first.')
+    // Local commits (an unpushed refresh or decide) only touch data files, so they rebase cleanly onto code.
+    if (run('git', ['pull', '-q', '--rebase', 'origin', 'master']) !== 0) {
+      run('git', ['rebase', '--abort'])
+      throw new Error(
+        'git pull --rebase hit a conflict and was undone. See which commits are only here with git log origin/master..HEAD.'
+      )
+    }
     if (run('yarn', ['install', '--frozen-lockfile', '--silent']) !== 0)
       throw new Error('yarn install failed.')
     io.print('Pulled. Restarting with the updated code...')
     return 'restart'
+  }
+  if (ahead > 0) {
+    io.print(`${ahead} commit(s) here are not on GitHub yet:`)
+    io.print(capture('git', ['log', '--oneline', 'origin/master..HEAD']))
+    if (await yes(io, 'Push them now?')) {
+      if (run('git', ['push', '-q', 'origin', 'master']) !== 0) throw new Error('git push failed.')
+      io.print('Pushed.')
+    }
   }
   console.log('On an up-to-date, clean master.')
   return 'fresh'

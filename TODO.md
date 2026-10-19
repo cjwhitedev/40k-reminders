@@ -32,7 +32,7 @@ Follow-ups for 40K Reminders. Tick items off or delete them as they are done.
 
 - [ ] Deathwatch shows only one unit under the Chapter filter: its other datasheets come from GW's 10th-edition Deathwatch pack, which the review excludes as previous-edition. Revisit when an 11th-edition Deathwatch pack is published.
 - [ ] Decide whether other factions want a sub-faction filter (`subFactionKeywords` in the review file): Aeldari (Ynnari, Harlequins), and the Chaos god legions' daemon allies.
-- [ ] Run `yarn data:update` for real on a machine that can reach Wahapedia. The 2026-10-16 export (new Space Marines and Custodes codexes) was replayed here from a bundle: pressing Enter throughout drops 21 removed rules, keeps 12 reformatted ones, settles 22 prompts, and passes every check.
+- [x] Run `yarn data:update` for real on a machine that can reach Wahapedia. Done 2026-10-19 (`2939c0a5`), on the new Space Marines and Custodes codexes. The 2026-10-16 export (new Space Marines and Custodes codexes) was replayed here from a bundle: pressing Enter throughout drops 21 removed rules, keeps 12 reformatted ones, settles 22 prompts, and passes every check.
 - [ ] After that refresh, relink the Chapter filter's army rules: the old Blood Angels, Dark Angels and Deathwatch rules are gone, and the new codex adds The Ravenwing, The Deathwing, Kill Team and Curse of the Wulfen.
 - [ ] Check that GitHub emails you for issues assigned to you (**Settings > Notifications**), so the weekly **Rules data sources changed** issue reaches your inbox.
 - [ ] Rule timing overrides rest on Wahapedia text except for the Core Rules and four faction packs. Revisit them as more official Games Workshop PDFs are added.

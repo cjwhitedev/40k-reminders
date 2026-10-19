@@ -1,3 +1,4 @@
+import type { SourceRecordId } from '../../aos4/domain'
 import { describe, expect, it } from 'vitest'
 import { WH40K_CATALOG } from '../../wh40k11e/generated/catalog'
 import { groupWh40kReminders, projectWh40kReminders } from '../../wh40k11e/reminders/projectReminders'
@@ -10,6 +11,7 @@ import {
 } from '../../wh40k11e/view/builder'
 import type { Wh40kReminderViewModel } from '../../wh40k11e/view/reminders'
 import { formatWh40kRemindersCsv } from '../../wh40k11e/view/remindersCsv'
+import { typicalSpaceMarineArmy } from '../support/spaceMarineArmy'
 
 const marines = () => createWh40kArmyDocument(WH40K_CATALOG, 'SM')
 const sheet = (name: string) =>
@@ -169,22 +171,24 @@ describe('tester feedback, 2026-10-19 timing issues', () => {
   })
 })
 
-describe('tester feedback, 2026-10-16 section order', () => {
+describe('a typical 2000-point Space Marines army', () => {
+  const army = typicalSpaceMarineArmy(WH40K_CATALOG)
+  const selection = selectWh40kRules(WH40K_CATALOG, {
+    factionId: army.factionId,
+    detachmentId: army.detachmentId,
+    datasheetIds: army.datasheetIds as SourceRecordId[],
+    enhancementIds: army.enhancementIds as SourceRecordId[],
+  })
+  const groups = groupWh40kReminders(projectWh40kReminders(selection.selected))
+
+  it('builds without warnings and with every rule timed', () => {
+    expect(selection.diagnostics).toEqual([])
+    expect(groups.map(group => group.label)).not.toContain('Timing needs review')
+    expect(groups.find(group => group.label === 'Always active')).toBeDefined()
+  })
+
   it('lists army rules first in each section, then detachment rules, then everything else', () => {
     const rank = (kind: string) => (kind === 'army-rule' ? 0 : kind === 'detachment-rule' ? 1 : 2)
-    const detachment = WH40K_CATALOG.detachments.find(
-      item => item.factionId === 'SM' && item.gameMode === 'matched-play'
-    )!
-    const units = WH40K_CATALOG.datasheets
-      .filter(item => item.factionId === 'SM' && item.context === 'current')
-      .slice(0, 12)
-      .map(item => item.sourceRecordId)
-    const groups = groupWh40kReminders(
-      projectWh40kReminders(
-        selectWh40kRules(WH40K_CATALOG, { factionId: 'SM', detachmentId: detachment.id, datasheetIds: units })
-          .selected
-      )
-    )
     for (const group of groups) {
       const ranks = group.reminders.map(reminder => rank(reminder.kind))
       expect(ranks).toEqual([...ranks].sort((left, right) => left - right))

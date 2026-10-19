@@ -69,7 +69,7 @@ The checklist a human follows is [docs/refreshing-rules-data.md](../../../docs/r
 - `yarn data:update` and `yarn data:decide` both end by running the checks and offering to commit only `data/wh40k11e` and `runtime.json` and push (`gitSteps.ts`).
 - Every decision keeps `fingerprints` and `names`. Use the helpers in `decisions.ts`, never hand-written entries; after a hand edit run `yarn data:decide --stamp`.
 - Keep the strict WHEN grammar untouched; add new spellings to the lenient pass so every clause that parsed before parses the same way.
-- Tests that pick real units or detachments from the generated catalog must use names that survive a codex change (for example `/^Custodian Guard(?: Sodality)?$/` and the "Lions of the Emperor" detachment), or a refresh fails at step 7.
+- Tests that pick real units, detachments or rules from the generated catalog must use ones that survive a codex change or a review decision (for example `/^Custodian Guard(?: Sodality)?$/` and the "Lions of the Emperor" detachment), or a refresh or `data:decide` fails at the checks. A test once required the "Space Marine Chapters" army rule, which broke when it was marked not a reminder.
 - Do not trim `git status --porcelain` output: a leading space is part of the status code.
 - vite-node sets `NODE_ENV=development` and `VITE_*`; child processes get them stripped (`childEnv`) so `vite build` works.
 - Sort with `compareCodeUnits`, never `localeCompare`. The TS target forbids iterating a `Set`, `Map`, or `matchAll` directly.

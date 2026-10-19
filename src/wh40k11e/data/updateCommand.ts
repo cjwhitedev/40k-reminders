@@ -126,6 +126,13 @@ const sameSet = (left: Wh40kPinnedArtifact[], right: Wh40kPinnedArtifact[]): boo
 /** Files a refresh changes; anything else uncommitted stops the update. */
 const REFRESH_PATHS = ['data/wh40k11e/', 'src/wh40k11e/generated/']
 
+/** Paths from `git status --porcelain`, whose lines start with a two-character code that may begin with a space. */
+export const changedWh40kFiles = (porcelain: string): string[] =>
+  porcelain
+    .split('\n')
+    .filter(line => line.length > 3)
+    .map(line => line.slice(3).split(' -> ').pop() as string)
+
 /**
  * 1. Start from an up-to-date master: offers to continue or start over an unfinished refresh, and to
  * pull when behind. Returns 'resume' to pick up the unfinished refresh, 'restart' when a pull
@@ -135,10 +142,9 @@ const checkGit = async (io: Wh40kPromptIo): Promise<'fresh' | 'resume' | 'restar
   step('1. Checking git')
   const branch = capture('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
   if (branch !== 'master') throw new Error(`Switch to master first (on ${branch}).`)
-  const dirty = capture('git', ['status', '--porcelain'])
-    .split('\n')
-    .filter(Boolean)
-    .map(line => line.slice(3).split(' -> ').pop() as string)
+  const dirty = changedWh40kFiles(
+    spawnSync('git', ['status', '--porcelain'], { encoding: 'utf8', env: childEnv }).stdout ?? ''
+  )
   if (dirty.length) {
     const other = dirty.filter(file => !REFRESH_PATHS.some(prefix => file.startsWith(prefix)))
     if (other.length) throw new Error(`Commit or stash these changes first: ${other.join(', ')}`)
@@ -458,7 +464,7 @@ const main = async (): Promise<void> => {
       if (start === 'stop') return
       if (start === 'restart') {
         io.close()
-        process.exitCode = run('yarn', ['-s', 'data:wh40k11e:update', ...process.argv.slice(2)])
+        process.exitCode = run('yarn', ['-s', 'data:update', ...process.argv.slice(2)])
         return
       }
       if (start === 'resume') flags.fetch = false
@@ -470,9 +476,7 @@ const main = async (): Promise<void> => {
     } else step('2–3. Using the sources already named in data/wh40k11e/pipeline.json')
 
     if (!(await settleReview(options, io))) {
-      io.print(
-        '\nStopped; your answers so far are saved. Continue with: yarn data:wh40k11e:update --no-fetch'
-      )
+      io.print('\nStopped; your answers so far are saved. Run yarn data:update again to continue.')
       process.exitCode = 1
       return
     }
@@ -480,7 +484,7 @@ const main = async (): Promise<void> => {
 
     step('7. Checking the site (lint, types, build, tests)')
     if (run('yarn', ['prepush']) !== 0) {
-      io.print('\nThe checks failed; fix them, then continue with: yarn data:wh40k11e:update --no-fetch')
+      io.print('\nThe checks failed; fix them, then run yarn data:update again to continue.')
       process.exitCode = 1
       return
     }

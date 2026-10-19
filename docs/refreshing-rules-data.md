@@ -38,7 +38,7 @@ Use `yarn`, never `npm install`, in this repository: npm writes a `package-lock.
 ```bash
 cd 40k-reminders
 nvm use
-yarn data:wh40k11e:update
+yarn data:update
 ```
 
 ## What it asks you
@@ -90,6 +90,6 @@ The command offers to push at the end; GitHub then builds and publishes the site
 | `npm error code EBADENGINE` | `npm install` was run. This project refuses npm on purpose; use `yarn install --frozen-lockfile`. |
 | `Invalid value type` in `yarn.lock` during `yarn install` | Something other than Yarn (an older checkout's `npm install`) rewrote `yarn.lock`. Run `git restore yarn.lock && rm -rf node_modules && yarn install --frozen-lockfile`. |
 | A download error such as `Request timed out` | Wahapedia is unreachable from this network. Nothing was changed. Try another network, or see [docs/data/wh40k11e-wahapedia-handoff.md](data/wh40k11e-wahapedia-handoff.md). |
-| You quit, skipped rules, or the checks failed | Fix what it says, then run `yarn data:wh40k11e:update` again and press Enter to continue (or `--no-fetch`, which goes straight to step 4). |
-| You want to refresh even though nothing changed | `yarn data:wh40k11e:update --force` |
-| You want to stop before committing | `yarn data:wh40k11e:update --no-commit`; the commit message is still written under `.cache/wh40k11e/reports/`. |
+| You quit, skipped rules, or the checks failed | Fix what it says, then run `yarn data:update` again and press Enter to continue (or `--no-fetch`, which goes straight to step 4). |
+| You want to refresh even though nothing changed | `yarn data:update --force` |
+| You want to stop before committing | `yarn data:update --no-commit`; the commit message is still written under `.cache/wh40k11e/reports/`. |

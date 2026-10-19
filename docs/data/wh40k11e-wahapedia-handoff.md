@@ -1,6 +1,6 @@
 # 40K 11th Edition: fetching Wahapedia on another network
 
-Wahapedia blocks the network the main development machine is on. The usual way round that is to run the whole refresh, `yarn data:wh40k11e:update`, on a machine that can reach Wahapedia (CONTRIBUTING.md section 8). These steps are the fallback when you cannot run the project there: fetch the Wahapedia sources on another machine, then carry the result back as one archive.
+Wahapedia blocks the network the main development machine is on. The usual way round that is to run the whole refresh, `yarn data:update`, on a machine that can reach Wahapedia (CONTRIBUTING.md section 8). These steps are the fallback when you cannot run the project there: fetch the Wahapedia sources on another machine, then carry the result back as one archive.
 
 The fetch only saves source files to the ignored `.cache/` tree and writes a checksum manifest. It does not change accepted data, generated files, or the app. Raw Wahapedia pages and exports must never be committed; move them only as the archive described below.
 
@@ -140,7 +140,7 @@ yarn data:wh40k11e:candidate \
 Every replay should end with `40K candidate manifest: .../candidate-manifest.json`. `Offline manifest has no compatible artifact for <url>` means the URL list changed after the fetch: replay with the list exactly as it was when the archive was made. Then run the refresh with the replayed exports instead of downloading them:
 
 ```bash
-yarn data:wh40k11e:update --wahapedia-candidate .cache/wh40k11e/candidates/wahapedia-exports-replay
+yarn data:update --wahapedia-candidate .cache/wh40k11e/candidates/wahapedia-exports-replay
 ```
 
 ## Follow-up: fetch the export specification

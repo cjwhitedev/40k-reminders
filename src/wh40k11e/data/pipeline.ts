@@ -28,7 +28,7 @@ export interface Wh40kPipelineOptions {
   officialCandidate: string
 }
 
-/** Where the reviewed inputs are named; `yarn data:wh40k11e:update` rewrites it on every refresh. */
+/** Where the reviewed inputs are named; `yarn data:update` rewrites it on every refresh. */
 export const WH40K_PIPELINE_CONFIG_PATH = 'data/wh40k11e/pipeline.json'
 
 /** The reviewed inputs the 40K commands default to; each is a checksum-bound candidate or review. */

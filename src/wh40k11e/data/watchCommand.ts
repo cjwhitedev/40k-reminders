@@ -106,7 +106,7 @@ const run = async (): Promise<void> => {
     await writeFile(
       summary,
       `The rules data sources have changed since \`${review.revision}\` was reviewed:\n\n${lines.join('\n')}\n\n` +
-        'On a machine on the latest `master`, run `yarn data:wh40k11e:update` (CONTRIBUTING.md section 8), then push. ' +
+        'On a machine on the latest `master`, run `yarn data:update` (CONTRIBUTING.md section 8), then push. ' +
         'Close this issue once the refreshed data is on `master`.\n',
       'utf8'
     )

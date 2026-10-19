@@ -75,7 +75,7 @@ The site never downloads rules while it runs. It loads one checked-in file, `src
 
 Every timing or "not a reminder" decision records a fingerprint (the source row's checksum) of the rule it was made against. If Wahapedia later rewords that rule, the review blocks until someone looks at the decision again, so an old decision never silently applies to new text.
 
-Which review file and source folders the commands read is set in `data/wh40k11e/pipeline.json`; `yarn data:wh40k11e:update` rewrites it. Every data command also accepts `--review`, `--wahapedia-candidate`, `--bsdata-candidate`, and `--official-candidate` to point elsewhere.
+Which review file and source folders the commands read is set in `data/wh40k11e/pipeline.json`; `yarn data:update` rewrites it. Every data command also accepts `--review`, `--wahapedia-candidate`, `--bsdata-candidate`, and `--official-candidate` to point elsewhere.
 
 ### Keep a backup of the source cache
 
@@ -85,13 +85,13 @@ Which review file and source folders the commands read is set in `data/wh40k11e/
 tar -czf wh40k11e-cache-$(date +%Y-%m-%d).tgz .cache/wh40k11e
 ```
 
-Set `WH40K_CACHE_BACKUP_DIR` (for example in your shell profile) and `yarn data:wh40k11e:update` writes that archive there by itself. To restore on a new machine, extract the archive in the repository root.
+Set `WH40K_CACHE_BACKUP_DIR` (for example in your shell profile) and `yarn data:update` writes that archive there by itself. To restore on a new machine, extract the archive in the repository root.
 
 ## 6. Data commands
 
 | Command | What it does |
 | --- | --- |
-| `yarn data:wh40k11e:update` | The whole refresh in one go; see section 8. |
+| `yarn data:update` | The whole refresh in one go; see section 8. (`yarn data:wh40k11e:update` is the same command.) |
 | `yarn data:wh40k11e:decide` | Prompts for every rule that needs a decision (unreadable timing, or reworded since it was decided) and saves each answer to the review file. |
 | `yarn data:wh40k11e:decide --rule "<name or ID>"` | Decides one rule again; every rule with that name is offered. |
 | `yarn data:wh40k11e:decide --stamp` | Adds fingerprints to decisions that have none, against the current sources. Use after editing the review file by hand. |
@@ -133,7 +133,7 @@ To refresh, on any machine that can reach Wahapedia:
 
 ```bash
 git checkout master
-yarn data:wh40k11e:update
+yarn data:update
 ```
 
 Every prompt has a default that is normally right, so pressing Enter throughout usually completes a refresh; read the rules as they go by. The steps:

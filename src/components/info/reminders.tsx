@@ -2,7 +2,7 @@ import { CollapsibleCardHeader } from 'components/helpers/collapsibleCardHeader'
 import { REMINDERS_ANCHOR_ID } from 'components/info/remindersAnchor'
 import { useIsMobile } from 'utils/hooks/useIsMobile'
 import { useTheme } from 'context/useTheme'
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 /*
  * @hello-pangea/dnd is the maintained fork of react-beautiful-dnd, which Atlassian deprecated in
  * October 2024 at 13.1.1 — a release whose peer range stops at React 18. The fork keeps the same
@@ -11,7 +11,7 @@ import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { DragDropContext, Draggable, Droppable, type DropResult } from '@hello-pangea/dnd'
 import { Dropdown } from 'react-bootstrap'
 import { FaEllipsisH } from 'react-icons/fa'
-import { MdVisibilityOff } from 'react-icons/md'
+import { MdPalette, MdVisibilityOff } from 'react-icons/md'
 
 /** The skip link's destination. Re-exported so the anchor and its target cannot drift apart. */
 export { REMINDERS_ANCHOR_ID }
@@ -55,6 +55,15 @@ interface RemindersProps<R extends ReminderCardModel> {
   onNote: (reminder: R, note: string) => void
   onReorder: (reminders: R[]) => void
   reminders: R[]
+  /**
+   * Title-bar colours a player can pick per section, and the picks so far by section key. Without
+   * them the sections keep the theme colour and offer no picker.
+   */
+  sectionColours?: {
+    choices: ReadonlyArray<{ name: string; value: string }>
+    picked: Readonly<Record<string, string>>
+    onPick: (sectionKey: string, colour: string) => void
+  }
 }
 
 interface ReminderGroup<R extends ReminderCardModel> {
@@ -396,6 +405,38 @@ const ReminderEntry = <R extends ReminderCardModel>({
   )
 }
 
+const SectionColourPicker = ({
+  choices,
+  label,
+  onPick,
+  picked,
+}: {
+  choices: ReadonlyArray<{ name: string; value: string }>
+  label: string
+  onPick: (colour: string) => void
+  picked: string
+}) => (
+  <div
+    className="d-flex justify-content-center py-2 d-print-none"
+    role="radiogroup"
+    aria-label={`${label} colour`}
+  >
+    {choices.map(colour => (
+      <button
+        key={colour.value}
+        type="button"
+        role="radio"
+        aria-checked={picked === colour.value}
+        aria-label={colour.name}
+        title={colour.name}
+        className={`ColourSwatch${picked === colour.value ? ' ColourSwatch--selected' : ''}`}
+        style={{ backgroundColor: colour.value }}
+        onClick={() => onPick(colour.value)}
+      />
+    ))}
+  </div>
+)
+
 const ReminderCard = <R extends ReminderCardModel>({
   getSources,
   group,
@@ -403,10 +444,12 @@ const ReminderCard = <R extends ReminderCardModel>({
   onHide,
   onNote,
   onReorder,
+  sectionColours,
 }: Omit<RemindersProps<R>, 'reminders'> & { group: ReminderGroup<R> }) => {
   const { theme } = useTheme()
   const isMobile = useIsMobile()
   const [isExpanded, setIsExpanded] = useState(!isMobile)
+  const [isPicking, setIsPicking] = useState(false)
 
   useEffect(() => {
     setIsExpanded(!isMobile)
@@ -423,6 +466,8 @@ const ReminderCard = <R extends ReminderCardModel>({
   const toggleExpanded = () => setIsExpanded(current => !current)
   const printable = group.reminders.some(reminder => !reminder.hidden)
   const bodyId = `aos4-reminders-${group.key}`
+  const colour = sectionColours?.picked[group.key] ?? sectionColours?.choices[0]?.value
+  const canPick = Boolean(sectionColours) && !isGameMode
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
@@ -438,13 +483,43 @@ const ReminderCard = <R extends ReminderCardModel>({
               row is `d-block`, so the card is a block box: the injected `width: 100%` would fight
               its own `mx-1` margins and push the card past the row.
             */}
-            <div className="card border-dark my-2 mx-1 px-0 w-auto">
+            <div
+              className="card border-dark my-2 mx-1 px-0 w-auto"
+              style={colour ? ({ '--title-bar-colour': colour } as CSSProperties) : undefined}
+            >
               <CollapsibleCardHeader
                 bodyId={bodyId}
                 isExpanded={isExpanded}
                 onToggle={toggleExpanded}
                 title={group.label}
+                {...(canPick
+                  ? {
+                      accessory: (
+                        <button
+                          type="button"
+                          className="SectionColourToggle"
+                          aria-label={`Colour for ${group.label}`}
+                          aria-expanded={isPicking}
+                          title="Section colour"
+                          onClick={() => setIsPicking(current => !current)}
+                        >
+                          <MdPalette aria-hidden />
+                        </button>
+                      ),
+                    }
+                  : {})}
               />
+              {canPick && isPicking && sectionColours && colour && (
+                <SectionColourPicker
+                  choices={sectionColours.choices}
+                  label={group.label}
+                  picked={colour}
+                  onPick={value => {
+                    sectionColours.onPick(group.key, value)
+                    setIsPicking(false)
+                  }}
+                />
+              )}
               <div
                 className={`${theme.cardBody} ${isExpanded ? '' : 'd-none d-print-block'} ReminderCardBody`}
                 id={bodyId}

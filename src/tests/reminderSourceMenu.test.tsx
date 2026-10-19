@@ -311,4 +311,51 @@ describe('reminder source menu', () => {
       Reflect.deleteProperty(navigator, 'clipboard')
     }
   })
+
+  it('lets each section pick its own title-bar colour from a palette on its header', () => {
+    const onPick = vi.fn()
+    const shooting = {
+      ...reminder('reminder:two'),
+      windowKey: 'turn-phase:shooting',
+      windowLabel: 'Shooting Phase',
+    }
+    act(() => {
+      render(
+        <Reminders
+          getSources={async () => []}
+          isGameMode={false}
+          onHide={() => {}}
+          onNote={() => {}}
+          onReorder={() => {}}
+          reminders={[reminder('reminder:one'), shooting]}
+          sectionColours={{
+            choices: [
+              { name: 'Teal', value: '#1c7595' },
+              { name: 'Crimson', value: '#a3262a' },
+            ],
+            picked: { 'turn-phase:shooting': '#a3262a' },
+            onPick,
+          }}
+        />,
+        container
+      )
+    })
+    const cards = Array.from(container.querySelectorAll<HTMLElement>('.card'))
+    expect(cards.map(card => card.style.getPropertyValue('--title-bar-colour'))).toEqual([
+      '#1c7595',
+      '#a3262a',
+    ])
+    expect(container.querySelectorAll('[role="radiogroup"]')).toHaveLength(0)
+
+    act(() => {
+      Simulate.click(container.querySelector('[aria-label="Colour for Combat Phase"]') as HTMLElement)
+    })
+    const swatches = container.querySelectorAll('[aria-label="Combat Phase colour"] [role="radio"]')
+    expect(swatches).toHaveLength(2)
+    act(() => {
+      Simulate.click(swatches[1] as HTMLElement)
+    })
+    expect(onPick).toHaveBeenCalledWith('turn-phase:combat', '#a3262a')
+    expect(container.querySelectorAll('[role="radiogroup"]')).toHaveLength(0)
+  })
 })

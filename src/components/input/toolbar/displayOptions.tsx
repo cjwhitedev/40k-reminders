@@ -1,6 +1,6 @@
-import { WH40K_TITLE_BAR_COLOURS, type Wh40kDisplaySettings } from '../../../wh40k11e/runtime/displaySettings'
+import type { Wh40kDisplaySettings } from '../../../wh40k11e/runtime/displaySettings'
 
-/** Swatches for the title-bar colour, and whether printing keeps it or stays black and white. */
+/** Whether printing keeps the sections' title-bar colours or stays black and white. */
 const DisplayOptions = ({
   settings,
   onChange,
@@ -10,23 +10,8 @@ const DisplayOptions = ({
 }) => (
   <div className="container d-print-none">
     <div className="row justify-content-center align-items-center pb-2 DisplayOptions">
-      <div className="col-auto d-flex align-items-center px-2" role="radiogroup" aria-label="Title colour">
-        <span className="me-2 small">Title colour</span>
-        {WH40K_TITLE_BAR_COLOURS.map(colour => (
-          <button
-            key={colour.value}
-            type="button"
-            role="radio"
-            aria-checked={settings.titleBarColour === colour.value}
-            aria-label={colour.name}
-            title={colour.name}
-            className={`ColourSwatch${settings.titleBarColour === colour.value ? ' ColourSwatch--selected' : ''}`}
-            style={{ backgroundColor: colour.value }}
-            onClick={() => onChange({ ...settings, titleBarColour: colour.value })}
-          />
-        ))}
-      </div>
-      <div className="col-auto form-check form-switch px-2 ms-3 mb-0">
+      <div className="col-auto small px-2">Colour a section with the palette on its title bar.</div>
+      <div className="col-auto form-check form-switch px-2 ms-2 mb-0">
         <input
           className="form-check-input ms-0 me-2"
           type="checkbox"

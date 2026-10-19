@@ -1,5 +1,6 @@
 import { useIsMobile } from 'utils/hooks/useIsMobile'
 import { useTheme } from 'context/useTheme'
+import type { ReactNode } from 'react'
 import { MdExpandMore, MdRemove } from 'react-icons/md'
 
 interface CollapsibleCardHeaderProps {
@@ -8,6 +9,8 @@ interface CollapsibleCardHeaderProps {
   isExpanded: boolean
   onToggle: () => void
   title: string
+  /** A control pinned to the header's left edge, outside the toggle button. */
+  accessory?: ReactNode
 }
 
 /**
@@ -23,12 +26,13 @@ export const CollapsibleCardHeader = ({
   isExpanded,
   onToggle,
   title,
+  accessory,
 }: CollapsibleCardHeaderProps) => {
   const { theme } = useTheme()
   const isMobile = useIsMobile()
 
   return (
-    <div className={`${theme.cardHeader} p-0`}>
+    <div className={`${theme.cardHeader} p-0${accessory ? ' position-relative' : ''}`}>
       <button
         aria-controls={bodyId}
         aria-expanded={isExpanded}
@@ -37,7 +41,7 @@ export const CollapsibleCardHeader = ({
         type="button"
       >
         <div className={`d-flex justify-content-${isMobile ? 'end' : 'center'} align-items-center`}>
-          <div className={`flex-grow-1 text-center ${isMobile ? '' : 'ps-5'}`}>
+          <div className={`flex-grow-1 text-center ${isMobile && !accessory ? '' : 'ps-5'}`}>
             <h2 className="CardHeaderTitle">{title}</h2>
           </div>
           <div className={`${isMobile ? 'pe-0' : 'px-3'} d-print-none`}>
@@ -45,6 +49,11 @@ export const CollapsibleCardHeader = ({
           </div>
         </div>
       </button>
+      {accessory && (
+        <div className="position-absolute top-50 start-0 translate-middle-y ms-1 d-print-none">
+          {accessory}
+        </div>
+      )}
     </div>
   )
 }

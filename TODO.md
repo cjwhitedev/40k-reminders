@@ -13,7 +13,7 @@ Follow-ups for 40K Reminders. Tick items off or delete them as they are done.
   - [ ] Within each section, order Army rules first, then Detachment rules, then everything else.
   - [ ] Still no Deathwatch units under the Chapter filter (see Data below); recheck after the refresh, which brings the new Deathwatch detachments.
 - [x] 2026-10-19 consolidated feedback. Ask the testers to look again:
-  - [x] Title-bar colours: the site's teal stays the default, with four more swatches (crimson, forest, purple, bronze) under the toolbar and a "Print in colour" switch; printing stays black and white unless it is on. The choice is kept apart from the army, so clearing or switching armies keeps it. (The Core Rules do not colour-code phases.)
+  - [x] Title-bar colours, section by section: each section's title bar has a palette button that offers the site's teal (the default) and four more (crimson, forest, purple, bronze). A "Print in colour" switch sits under the toolbar; printing stays black and white unless it is on. The colours are kept apart from the army, so clearing or switching armies keeps them. (The Core Rules do not colour-code phases.)
   - [x] Legends units carry an [L] after their name in the list and on the picked chips, with a note under the list when any are offered.
   - [x] Allies: an Allies card adds other factions' units, listed under "Allies: <faction>" after the army's own. The army's own faction still decides the detachment, army rules, and Army Faction keyword checks; removing an ally removes its units.
 

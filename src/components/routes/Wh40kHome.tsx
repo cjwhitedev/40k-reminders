@@ -5,14 +5,16 @@ import DisplayOptions from 'components/input/toolbar/displayOptions'
 import Toolbar from 'components/input/toolbar/toolbar'
 import Footer from 'components/page/footer'
 import { Header } from 'components/page/homeHeader'
-import { lazy, Suspense, useEffect, useMemo, useState, type CSSProperties } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { AOS_REMINDERS_AUTHOR_URL, AOS_REMINDERS_URL, WH40K_AUTHOR_URL, WH40K_GITHUB_URL } from 'utils/env'
 import { WH40K_CATALOG } from '../../wh40k11e/generated/catalog'
 import { loadWh40kArmyDocument, saveWh40kArmyDocument } from '../../wh40k11e/runtime/armyStorage'
 import {
   loadWh40kDisplaySettings,
+  pickWh40kSectionColour,
   saveWh40kDisplaySettings,
   WH40K_DEFAULT_DISPLAY_SETTINGS,
+  WH40K_TITLE_BAR_COLOURS,
 } from '../../wh40k11e/runtime/displaySettings'
 import {
   createWh40kArmyDocument,
@@ -260,10 +262,7 @@ const Wh40kHome = () => {
     )
 
   return (
-    <div
-      className={display.printInColour ? 'PrintInColour' : undefined}
-      style={{ '--title-bar-colour': display.titleBarColour } as CSSProperties}
-    >
+    <div className={display.printInColour ? 'PrintInColour' : undefined}>
       <a
         className="SkipLink visually-hidden-focusable bg-light text-dark d-print-none"
         href={`#${REMINDERS_ANCHOR_ID}`}
@@ -321,6 +320,12 @@ const Wh40kHome = () => {
         onNote={setReminderNote}
         onReorder={reorderReminders}
         reminders={reminders}
+        sectionColours={{
+          choices: WH40K_TITLE_BAR_COLOURS,
+          picked: display.sectionColours,
+          onPick: (sectionKey, colour) =>
+            setDisplay(current => pickWh40kSectionColour(current, sectionKey, colour)),
+        }}
       />
 
       {clearArmyModalIsOpen && (

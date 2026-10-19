@@ -392,6 +392,25 @@ small {
 .ColourSwatch--selected {
   box-shadow: 0 0 0 3px #212529;
 }
+
+/* The palette button on a reminder section's title bar; it opens that section's swatches. */
+.SectionColourToggle {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: white;
+  font-size: 1.25rem;
+  opacity: 0.8;
+
+  &:hover,
+  &:focus-visible,
+  &[aria-expanded='true'] {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
 .bg-profileHeader {
   background-color: rgba(28, 117, 149, 0.15);
 }

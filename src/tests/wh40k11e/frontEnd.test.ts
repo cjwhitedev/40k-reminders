@@ -7,6 +7,7 @@ import {
 } from '../../wh40k11e/runtime/armyStorage'
 import {
   loadWh40kDisplaySettings,
+  pickWh40kSectionColour,
   saveWh40kDisplaySettings,
   WH40K_DEFAULT_DISPLAY_SETTINGS,
   WH40K_DISPLAY_STORAGE_KEY,
@@ -148,25 +149,31 @@ describe('40K allies', () => {
 })
 
 describe('40K display settings', () => {
-  it('defaults to the site colour and black-and-white print, and keeps only listed colours', () => {
+  it('colours each section on its own, defaulting to the site colour, and keeps only listed colours', () => {
     const storage = memoryStorage()
     expect(loadWh40kDisplaySettings(storage)).toEqual(WH40K_DEFAULT_DISPLAY_SETTINGS)
-    expect(WH40K_DEFAULT_DISPLAY_SETTINGS.titleBarColour).toBe('#1c7595')
+    expect(WH40K_TITLE_BAR_COLOURS[0].value).toBe('#1c7595')
     expect(new Set(WH40K_TITLE_BAR_COLOURS.map(colour => colour.value)).size).toBe(5)
 
-    saveWh40kDisplaySettings(storage, {
-      titleBarColour: WH40K_TITLE_BAR_COLOURS[2].value,
-      printInColour: true,
-    })
+    const crimson = WH40K_TITLE_BAR_COLOURS[1].value
+    let settings = pickWh40kSectionColour(WH40K_DEFAULT_DISPLAY_SETTINGS, 'command', crimson)
+    settings = pickWh40kSectionColour(settings, 'fight', WH40K_TITLE_BAR_COLOURS[2].value)
+    settings = pickWh40kSectionColour(settings, 'fight', WH40K_TITLE_BAR_COLOURS[0].value)
+    expect(settings.sectionColours).toEqual({ command: crimson })
+
+    saveWh40kDisplaySettings(storage, { ...settings, printInColour: true })
     expect(loadWh40kDisplaySettings(storage)).toEqual({
-      titleBarColour: WH40K_TITLE_BAR_COLOURS[2].value,
+      sectionColours: { command: crimson },
       printInColour: true,
     })
     storage.setItem(
       WH40K_DISPLAY_STORAGE_KEY,
-      JSON.stringify({ titleBarColour: 'url(evil)', printInColour: 'yes' })
+      JSON.stringify({ sectionColours: { command: 'url(evil)', fight: crimson }, printInColour: 'yes' })
     )
-    expect(loadWh40kDisplaySettings(storage)).toEqual(WH40K_DEFAULT_DISPLAY_SETTINGS)
+    expect(loadWh40kDisplaySettings(storage)).toEqual({
+      sectionColours: { fight: crimson },
+      printInColour: false,
+    })
   })
 })
 

@@ -294,14 +294,28 @@
     {
       "id": "core-deep-strike",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008343%3A"],
-      "kind": "reaction",
+      "kind": "timed",
+      "windows": [
+        { "kind": "turn-phase", "phase": "movement", "moment": "during", "perspective": "your" },
+        { "kind": "turn-phase", "phase": "movement", "moment": "end", "perspective": "opponent" }
+      ],
       "trigger": "Each time this unit makes an ingress move",
-      "reason": "Core Rules 24.09: applies each time the unit makes an ingress move.",
+      "reason": "Core Rules 24.09, 09.02 and 15.07: an ingress move is made when the unit is selected to move in your Movement phase, or with Rapid Ingress at the end of your opponent's Movement phase (issue #3).",
       "officialEvidence": [
         {
           "url": "https://assets.warhammer-community.com/eng_01-06_warhammer40k_new40k_core_rules-was6fbu1ix-hfewhmxyiy.pdf",
           "page": 80,
           "quote": "Each time this unit makes an ingress move"
+        },
+        {
+          "url": "https://assets.warhammer-community.com/eng_01-06_warhammer40k_new40k_core_rules-was6fbu1ix-hfewhmxyiy.pdf",
+          "page": 32,
+          "quote": "You can select a unit on the battlefield, in strategic reserves , or embarked within a TRANSPORT ."
+        },
+        {
+          "url": "https://assets.warhammer-community.com/eng_01-06_warhammer40k_new40k_core_rules-was6fbu1ix-hfewhmxyiy.pdf",
+          "page": 57,
+          "quote": "End of your opponent’s Movement phase. TARGET: One friendly unit that is in strategic reserves"
         }
       ],
       "fingerprints": {

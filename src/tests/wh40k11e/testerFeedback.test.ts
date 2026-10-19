@@ -103,3 +103,34 @@ describe('tester feedback, 2026-10-16', () => {
     expect(csv).toContain('"Re-roll one of:\n• Hit roll\n• Wound roll"')
   })
 })
+
+describe('tester feedback, 2026-10-19 timing issues', () => {
+  const coreRule = (name: string) =>
+    WH40K_CATALOG.rules.find(rule => rule.name === name && rule.scope.kind === 'all-armies')!
+  const endOfOpponentMovement = {
+    kind: 'turn-phase',
+    phase: 'movement',
+    moment: 'end',
+    perspective: 'opponent',
+  }
+
+  it("lists the Lictor's Pheromone Trail with Rapid Ingress, not under Reactions (#2)", () => {
+    const lictor = WH40K_CATALOG.datasheets.find(item => item.factionId === 'TYR' && item.name === 'Lictor')!
+    const trail = WH40K_CATALOG.rules.find(
+      rule =>
+        rule.name === 'Pheromone Trail' &&
+        rule.scope.kind === 'datasheet' &&
+        rule.scope.datasheetId === lictor.sourceRecordId
+    )!
+    expect(trail.timingKind).toBe('timed')
+    expect(trail.timing?.windows).toEqual(coreRule('Rapid Ingress').timing?.windows)
+    expect(trail.timing?.windows).toEqual([endOfOpponentMovement])
+  })
+
+  it('lists Deep Strike in your Movement phase and with Rapid Ingress (#3)', () => {
+    expect(coreRule('Deep Strike').timing?.windows).toEqual([
+      { kind: 'turn-phase', phase: 'movement', moment: 'during', perspective: 'your' },
+      endOfOpponentMovement,
+    ])
+  })
+})

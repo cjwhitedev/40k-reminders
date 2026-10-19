@@ -15,11 +15,6 @@ $print-mono: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
   text-transform: uppercase;
 }
 
-/* Shown only on paper: the army the sheet was printed for. */
-.PrintHeader {
-  display: none;
-}
-
 @media print {
   @page {
     margin: 12mm 12mm 14mm;
@@ -68,51 +63,6 @@ $print-mono: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
     max-width: none !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
-  }
-
-  /* The faction-pack title block: a big condensed title over a hairline, then a monospace strapline. */
-  .PrintHeader {
-    display: block;
-    margin: 0 0 5mm;
-    break-after: avoid;
-
-    h1 {
-      @include print-display-type;
-      border-bottom: 0.75pt solid black;
-      font-size: 24pt;
-      line-height: 1;
-      margin: 0;
-      padding-bottom: 1.5mm;
-    }
-
-    p {
-      margin: 1.25mm 0 0;
-    }
-
-    strong {
-      text-transform: uppercase;
-    }
-  }
-
-  .PrintStrap,
-  .PrintSite {
-    font-family: $print-mono;
-    font-size: 8pt;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .PrintStrap {
-    font-weight: 700;
-  }
-
-  .PrintRoster {
-    font-size: 9pt;
-  }
-
-  .PrintSite {
-    font-size: 6.5pt;
-    margin-top: 2mm !important;
   }
 
   .ReminderContainer {

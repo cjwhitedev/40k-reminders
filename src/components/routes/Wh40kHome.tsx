@@ -24,7 +24,6 @@ import {
 import {
   createWh40kBuilderViewModel,
   WH40K_ALLY_OPTION_PREFIX,
-  type Wh40kBuilderGroup,
   type Wh40kBuilderGroupKey,
 } from '../../wh40k11e/view/builder'
 import {
@@ -61,52 +60,6 @@ const Byline = () => (
     </p>
   </div>
 )
-
-/** Names the army at the top of a printed sheet; hidden on screen by print.scss. */
-const PrintHeader = ({
-  armyName,
-  subFaction,
-  groups,
-}: {
-  armyName: string
-  subFaction?: string
-  groups: Wh40kBuilderGroup[]
-}) => {
-  const picked = (key: Wh40kBuilderGroupKey) =>
-    groups
-      .find(group => group.key === key)
-      ?.options.filter(option => option.selected)
-      .map(option => option.name) ?? []
-  const detachment = picked('detachment')[0]
-  const enhancements = picked('enhancement')
-  const units = picked('datasheet')
-  const allies = picked('ally')
-
-  return (
-    <header className="PrintHeader container">
-      <h1>{armyName}</h1>
-      {(subFaction || detachment) && (
-        <p className="PrintStrap">{[subFaction, detachment].filter(Boolean).join(' · ')}</p>
-      )}
-      {allies.length > 0 && (
-        <p className="PrintRoster">
-          <strong>Allies:</strong> {allies.join(', ')}
-        </p>
-      )}
-      {enhancements.length > 0 && (
-        <p className="PrintRoster">
-          <strong>Enhancements:</strong> {enhancements.join(', ')}
-        </p>
-      )}
-      {units.length > 0 && (
-        <p className="PrintRoster">
-          <strong>Units:</strong> {units.join(', ')}
-        </p>
-      )}
-      <p className="PrintSite">40K Reminders - cjwhitedev.github.io/40k-reminders</p>
-    </header>
-  )
-}
 
 const loadDocument = (): Wh40kArmyDocument => {
   try {
@@ -294,8 +247,6 @@ const Wh40kHome = () => {
         title="40K Reminders"
         byline={<Byline />}
       />
-
-      <PrintHeader armyName={document.name} subFaction={document.subFaction} groups={builder.groups} />
 
       {!isGameMode && <SelectionCards groups={builder.groups} onSetGroupSelections={setSelections} />}
 

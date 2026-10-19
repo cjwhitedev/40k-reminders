@@ -1,10 +1,10 @@
-import type { Wh40kCatalog } from '../../wh40k11e/domain/rules'
-import { createWh40kArmyDocument, type Wh40kArmyDocument } from '../../wh40k11e/state/armyDocument'
+import type { Wh40kCatalog } from '../domain/rules'
+import { createWh40kArmyDocument, type Wh40kArmyDocument } from '../state/armyDocument'
 
 /**
  * A typical 2000-point Gladius Task Force list, priced from Wahapedia's 2026-10-16 points (first
- * unit of each kind; 1980 points plus a 20-point enhancement). After a codex change, swap any unit
- * the helper reports missing for a similar one.
+ * unit of each kind; 1975 points plus a 20-point enhancement). Tests use it, and the /sm-test page
+ * opens it. After a codex change, swap any unit reported missing for a similar one.
  */
 export const WH40K_TYPICAL_SPACE_MARINES = {
   detachment: 'Gladius Task Force',

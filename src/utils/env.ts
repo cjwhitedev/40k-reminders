@@ -21,6 +21,7 @@ export const ROUTES = {
   JOIN: '/join',
   PROFILE: '/profile',
   REDEEM: '/redeem',
+  SM_TEST: '/sm-test',
   SUBSCRIBE: '/subscribe',
   WH40K: '/40k',
 } as const

@@ -6,7 +6,14 @@ import Toolbar from 'components/input/toolbar/toolbar'
 import Footer from 'components/page/footer'
 import { Header } from 'components/page/homeHeader'
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
-import { AOS_REMINDERS_AUTHOR_URL, AOS_REMINDERS_URL, WH40K_AUTHOR_URL, WH40K_GITHUB_URL } from 'utils/env'
+import { Link } from 'react-router'
+import {
+  AOS_REMINDERS_AUTHOR_URL,
+  AOS_REMINDERS_URL,
+  ROUTES,
+  WH40K_AUTHOR_URL,
+  WH40K_GITHUB_URL,
+} from 'utils/env'
 import { WH40K_CATALOG } from '../../wh40k11e/generated/catalog'
 import { loadWh40kArmyDocument, saveWh40kArmyDocument } from '../../wh40k11e/runtime/armyStorage'
 import {
@@ -78,8 +85,8 @@ const loadDisplaySettings = () => {
   }
 }
 
-const Wh40kHome = () => {
-  const [document, setDocument] = useState(loadDocument)
+const Wh40kHome = ({ sample }: { sample?: () => Wh40kArmyDocument }) => {
+  const [document, setDocument] = useState(() => sample?.() ?? loadDocument())
   const [display, setDisplay] = useState(loadDisplaySettings)
   const [isGameMode, setIsGameMode] = useState(false)
   const [clearArmyModalIsOpen, setClearArmyModalIsOpen] = useState(false)
@@ -93,6 +100,8 @@ const Wh40kHome = () => {
   }, [display])
 
   useEffect(() => {
+    // A sample army must not replace the army the visitor has saved.
+    if (sample) return
     try {
       saveWh40kArmyDocument(window.localStorage, document)
     } catch {
@@ -247,6 +256,13 @@ const Wh40kHome = () => {
         title="40K Reminders"
         byline={<Byline />}
       />
+
+      {sample && (
+        <p className="SampleArmyNote container text-center small my-2 d-print-none" role="note">
+          A typical 2000-point Space Marines list, for reviewing. Changes here are not saved.{' '}
+          <Link to={ROUTES.HOME}>Back to your army</Link>
+        </p>
+      )}
 
       {!isGameMode && <SelectionCards groups={builder.groups} onSetGroupSelections={setSelections} />}
 

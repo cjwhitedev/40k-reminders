@@ -11,7 +11,7 @@ import {
 } from '../../wh40k11e/view/builder'
 import type { Wh40kReminderViewModel } from '../../wh40k11e/view/reminders'
 import { formatWh40kRemindersCsv } from '../../wh40k11e/view/remindersCsv'
-import { typicalSpaceMarineArmy } from '../support/spaceMarineArmy'
+import { typicalSpaceMarineArmy } from '../../wh40k11e/samples/typicalSpaceMarines'
 
 const marines = () => createWh40kArmyDocument(WH40K_CATALOG, 'SM')
 const sheet = (name: string) =>

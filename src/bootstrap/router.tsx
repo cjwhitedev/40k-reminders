@@ -7,6 +7,7 @@ import { ROUTES } from 'utils/env'
 const Faq = lazy(() => import('components/routes/Faq'))
 const ForwardToAosReminders = lazy(() => import('components/routes/ForwardToAosReminders'))
 const Wh40kHome = lazy(() => import('components/routes/Wh40kHome'))
+const Wh40kSampleArmy = lazy(() => import('components/routes/Wh40kSampleArmy'))
 
 /*
  * React Router v5 wrapped the whole <Switch> in one <Suspense>; a data router renders each route
@@ -27,6 +28,7 @@ export const router = createBrowserRouter(
   [
     { path: ROUTES.HOME, element: lazyScreen(Wh40kHome) },
     { path: ROUTES.FAQ, element: lazyScreen(Faq) },
+    { path: ROUTES.SM_TEST, element: lazyScreen(Wh40kSampleArmy) },
     // Accounts and subscriptions belong to AoS Reminders; those links keep working by forwarding there.
     { path: ROUTES.JOIN, element: lazyScreen(ForwardToAosReminders) },
     { path: ROUTES.REDEEM, element: lazyScreen(ForwardToAosReminders) },

@@ -1816,6 +1816,26 @@
       "names": {
         "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000011219": "Tactical Mastery"
       }
+    },
+    {
+      "id": "devastator-doctrine",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000011160%3ASM"],
+      "kind": "timed",
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "shooting",
+          "moment": "during",
+          "perspective": "your"
+        }
+      ],
+      "reason": "Wahapedia text: 'This unit’s ranged attacks have [ASSAULT].'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011160%3ASM": "f0fa71bf21671140e3ff1994fcfb1b92d513877531d4f5e97a8496a05b670914"
+      },
+      "names": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011160%3ASM": "Devastator Doctrine"
+      }
     }
   ],
   "ignoredRules": [
@@ -2157,13 +2177,18 @@
     },
     {
       "id": "army-building-2026-10-19",
-      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000011231%3AAC"],
+      "sourceRecordIds": [
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011231%3AAC",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008351%3ASM"
+      ],
       "reason": "Only decides what an army may include or which keywords units carry at muster; nothing to remind in play.",
       "fingerprints": {
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011231%3AAC": "1431733362cb8347206e239d0b11f85a50705d1a65da8754373f88572e4b08d2"
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011231%3AAC": "1431733362cb8347206e239d0b11f85a50705d1a65da8754373f88572e4b08d2",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008351%3ASM": "f8a4d0427885fd292ed7764ffc7f9f1a9be81dd68f30e8e79416d3a0c000aa73"
       },
       "names": {
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011231%3AAC": "Anathema Psykana"
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011231%3AAC": "Anathema Psykana",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008351%3ASM": "Space Marine Chapters"
       }
     }
   ],

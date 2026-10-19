@@ -201,11 +201,18 @@ describe('parseWh40kAbilityTiming', () => {
     }
     for (const text of [
       'While this model is leading a unit, add 3" to the Move characteristic of models in that unit and ranged weapons equipped by models in that unit have the [ASSAULT] ability.',
-      'The bearer’s ranged weapons have the [ASSAULT] ability. In addition, once per battle, in the Fight phase, the bearer can fight first.',
       'While a friendly unit is within 6" of this model, ranged weapons equipped by models in that unit have the [ASSAULT] and [LETHAL HITS] abilities.',
     ]) {
       expect(parseWh40kAbilityTiming(text).kind).toBe('passive')
     }
+    expect(
+      parseWh40kAbilityTiming(
+        'The bearer’s ranged weapons have the [ASSAULT] ability. In addition, once per battle, in the Fight phase, the bearer can fight first.'
+      ).timing?.windows
+    ).toEqual([
+      { kind: 'always' },
+      { kind: 'turn-phase', phase: 'fight', moment: 'during', perspective: 'either' },
+    ])
   })
 
   it('times shooting or charging after Advancing or Falling Back in those phases of your turn', () => {
@@ -231,6 +238,64 @@ describe('parseWh40kAbilityTiming', () => {
       ).timing?.raw
     ).toBe('Is eligible to declare a charge in a turn in which it Fell Back')
     expect(parseWh40kAbilityTiming('This unit is eligible to shoot while engaged.').kind).toBe('passive')
+  })
+
+  it('times a standing rule by the moments it names, keeping Always active for a rule with more to it', () => {
+    const phase = (name: string, perspective = 'your', moment = 'during') => ({
+      kind: 'turn-phase',
+      phase: name,
+      moment,
+      perspective,
+    })
+    const windows = (text: string) => parseWh40kAbilityTiming(text).timing?.windows
+    expect(
+      windows(
+        'While this model is leading a unit, each time a model in that unit makes an attack, add 1 to the Hit roll.'
+      )
+    ).toEqual([phase('shooting'), phase('fight', 'either')])
+    expect(
+      windows('Each time a model in this unit makes a ranged attack, re-roll a Hit roll of 1.')
+    ).toBeUndefined()
+    expect(
+      windows(
+        'While a friendly unit is within 6" of this model, each time a model in that unit makes a ranged attack, re-roll a Hit roll of 1.'
+      )
+    ).toEqual([phase('shooting')])
+    expect(
+      windows(
+        'While this model is leading a unit, each time a model in that unit makes a melee attack, add 1 to the Wound roll.'
+      )
+    ).toEqual([phase('fight', 'either')])
+    expect(
+      windows(
+        'While a model is affected by this ability, each time that model is selected to shoot or fight, it can re-roll one Hit roll.'
+      )
+    ).toEqual([phase('shooting'), phase('fight', 'either')])
+    expect(
+      windows(
+        'This model can be set up in the Reinforcements step of your first, second or third Movement phase, regardless of any mission rules.'
+      )
+    ).toEqual([phase('movement')])
+    expect(
+      windows('If this unit made a charge move this turn, this model’s melee weapons have +1 Strength.')
+    ).toEqual([phase('fight')])
+    expect(
+      windows('If this unit made a charge move this turn, its melee attacks have:\n• +3 A.\n• +2 S.')
+    ).toEqual([phase('fight')])
+    expect(
+      windows(
+        'While an enemy unit is within 6" of this model, each time that unit takes a Battle-shock test, subtract 1 from that test.'
+      )
+    ).toEqual([phase('command', 'opponent')])
+    expect(
+      windows(
+        'While an enemy unit is within 6" of this model, worsen the Leadership characteristic of models in that unit by 1. In addition, in the Battle-shock step of your opponent’s Command phase, that unit must take a Battle-shock test.'
+      )
+    ).toEqual([{ kind: 'always' }, phase('command', 'opponent')])
+    expect(
+      parseWh40kAbilityTiming('The bearer has the Stealth ability until the end of your next Command phase.')
+        .kind
+    ).toBe('passive')
   })
 
   it('leaves unfamiliar openers unclassified for review', () => {

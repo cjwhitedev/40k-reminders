@@ -1,6 +1,6 @@
 import { normalizeSourceText } from '../../aos4/normalize/text'
 import { WH40K_SOURCE_TEXT_OPTIONS, withoutListMarkers } from './sourceText'
-import type { Wh40kTiming, Wh40kUsagePeriod } from '../domain/timing'
+import type { Wh40kGameWindow, Wh40kTiming, Wh40kUsagePeriod } from '../domain/timing'
 import { expandWh40kPhaseLists, parseWh40kWhen } from './when'
 
 export type Wh40kAbilityTimingKind = 'timed' | 'reaction' | 'passive' | 'unclassified'
@@ -50,6 +50,106 @@ const AFTER_MOVING =
   /\beligible to (shoot|declare a charge)(?: and (shoot|declare a charge))? in a turn in which (?:it|they|that unit|this unit) (?:advanced|fell back)\b(?: or (?:advanced|fell back)\b)?/i
 const USES_STRATAGEM =
   /^(?:(?:when|each time|every time|whenever) (?:you (?:target|select)|this [a-z]+ is (?:targeted|selected))|you can (?:target|use))\b/i
+
+const NAMED_PHASE =
+  /\b(until )?(?:the )?(?:(start|end) of )?(?:the [a-z-]+ step of )?(your opponent's|your|either player's|the|each|that)? ?(?:(?:first|second|third|next)(?:,? (?:or )?(?:first|second|third))* )?(command|movement|shooting|charge|fight) phase\b/gi
+const MAKES_ATTACK = /([^.]*?\b(?:each|every) time\b[^.]*?)\bmakes? an? (ranged |melee )?attack\b/i
+const SELECTED_TO =
+  /([^.]*?\b(?:each|every) time\b[^.]*?)\bis selected to (shoot|fight)(?: or (shoot|fight))?\b/i
+const CHARGED_THIS_TURN = /\b(?:made a charge move|charged) this turn\b/i
+const CHARGE_MOVE = /\b(?:makes?|making) a charge move\b/i
+const BATTLE_SHOCK =
+  /([^.]*?\b(?:each|every) time\b[^.,]*?)\b(?:takes?|fails?|passes?) an? battle-shock test\b/i
+
+const phaseWindow = (
+  phase: 'command' | 'movement' | 'shooting' | 'charge' | 'fight',
+  perspective: 'your' | 'opponent' | 'either',
+  moment: 'start' | 'during' | 'end' = 'during'
+): Wh40kGameWindow => ({ kind: 'turn-phase', phase, moment, perspective })
+
+const PHASE_ORDER = ['command', 'movement', 'shooting', 'charge', 'fight']
+const MOMENT_ORDER = ['start', 'during', 'end']
+
+/**
+ * The phases a standing rule names anywhere in its text, for rules that open like a standing effect
+ * ("While ...", "The bearer ...") but matter at set moments. Durations ("until the end of your next
+ * Command phase") are not moments. A rule of more than one sentence keeps an Always active window
+ * too, since the rest of it may be a standing effect.
+ */
+export const namedWh40kMoments = (
+  text: string,
+  printed = text
+): { windows: Wh40kGameWindow[]; clue: string } | undefined => {
+  const found: Array<{ window: Wh40kGameWindow; clue: string }> = []
+  // "each time an enemy model ..." or "While an enemy unit is ..., each time that unit ...".
+  const enemyIn = (prefix: string) => {
+    const at = prefix.search(/\b(?:each|every) time\b(?![\s\S]*\b(?:each|every) time\b)/i)
+    const before = prefix.slice(0, at)
+    const subject = prefix.slice(at).replace(/^(?:each|every) time\s*/i, '')
+    return (
+      /\benemy\b/i.test(subject) || (/^(?:that|those|such)\b/i.test(subject) && /\benemy\b/i.test(before))
+    )
+  }
+  for (const match of Array.from(text.matchAll(NAMED_PHASE))) {
+    if (match[1]) continue
+    const owner = (match[3] ?? 'the').toLowerCase()
+    const parsed = parseWh40kWhen(
+      `${match[2] ? `${match[2]} of ` : ''}${owner === 'each' || owner === 'that' ? 'the' : owner} ${match[4]} phase`
+    )
+    parsed?.windows.forEach(window => found.push({ window, clue: match[0].trim() }))
+  }
+  const attack = text.match(MAKES_ATTACK)
+  if (attack) {
+    const side = enemyIn(attack[1]) ? 'opponent' : 'your'
+    const kind = attack[2]?.trim().toLowerCase()
+    if (kind !== 'melee') found.push({ window: phaseWindow('shooting', side), clue: attack[0] })
+    if (kind !== 'ranged') found.push({ window: phaseWindow('fight', 'either'), clue: attack[0] })
+  }
+  const selected = text.match(SELECTED_TO)
+  if (selected) {
+    for (const verb of [selected[2], selected[3]].filter(Boolean).map(verb => verb.toLowerCase())) {
+      found.push({
+        window:
+          verb === 'shoot'
+            ? phaseWindow('shooting', enemyIn(selected[1]) ? 'opponent' : 'your')
+            : phaseWindow('fight', 'either'),
+        clue: selected[0],
+      })
+    }
+  }
+  const charged = text.match(CHARGED_THIS_TURN)
+  if (charged) found.push({ window: phaseWindow('fight', 'your'), clue: charged[0] })
+  const chargeMove = text.match(CHARGE_MOVE)
+  if (chargeMove) found.push({ window: phaseWindow('charge', 'your'), clue: chargeMove[0] })
+  const shock = text.match(BATTLE_SHOCK)
+  if (shock) {
+    found.push({
+      window: phaseWindow('command', enemyIn(shock[1]) ? 'opponent' : 'your'),
+      clue: shock[0].trim(),
+    })
+  }
+  if (!found.length) return undefined
+  const key = (window: Wh40kGameWindow) => JSON.stringify(window)
+  const coveredByEither = (window: Wh40kGameWindow) =>
+    window.kind === 'turn-phase' &&
+    window.perspective !== 'either' &&
+    found.some(({ window: other }) => key(other) === key({ ...window, perspective: 'either' }))
+  const rank = (window: Wh40kGameWindow) =>
+    window.kind === 'turn-phase'
+      ? PHASE_ORDER.indexOf(window.phase) * 3 + MOMENT_ORDER.indexOf(window.moment)
+      : -1
+  const windows = found
+    .map(item => item.window)
+    .filter((window, index, all) => all.findIndex(other => key(other) === key(window)) === index)
+    .filter(window => !coveredByEither(window))
+    .sort((left, right) => rank(left) - rank(right))
+  // A list introduced by "... have:" belongs to that sentence.
+  const sentences = printed
+    .replace(/:[ \t]*(?:\n•[^\n]*)+/g, '.')
+    .split(/[.!?]\s+|\n+/)
+    .filter(sentence => /[a-z]/i.test(sentence)).length
+  return { windows: sentences > 1 ? [{ kind: 'always' }, ...windows] : windows, clue: found[0].clue }
+}
 
 const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
@@ -192,6 +292,15 @@ export const parseWh40kAbilityTiming = (
             perspective: 'your',
           })),
         raw: `Is ${afterMoving[0]}`,
+        ...(usage ? { usage } : {}),
+      }
+      return { ...base, kind: 'timed', timing, diagnostics }
+    }
+    const named = namedWh40kMoments(rest, text)
+    if (named) {
+      const timing: Wh40kTiming = {
+        windows: named.windows,
+        raw: `Names a moment: ${named.clue}`,
         ...(usage ? { usage } : {}),
       }
       return { ...base, kind: 'timed', timing, diagnostics }

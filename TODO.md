@@ -4,21 +4,13 @@ Follow-ups for 40K Reminders. Tick items off or delete them as they are done.
 
 ## Feedback from testers
 
-- [ ] Collect what friends report and turn each issue into an item here or a GitHub issue. Drop screenshots in `input/` (never committed).
+- [ ] Collect what friends report and turn each issue into an item here or a GitHub issue. Drop screenshots in `input/` (never committed). Timing suggestions filed from the app are worked through with `yarn data:decide --issues`.
 - [ ] Spot-check reported rules with `yarn data:reminders --faction <ID> --detachment "<name>" --unit "<name>"` and fix them in the review file (see CONTRIBUTING.md section 7).
-- [x] 2026-10-16 Discord feedback: CSV export, Chapter filter, Units grouped by type, Heirs of Sigismund showing for every Space Marines army, and 30 abilities such as Narthecium filed as always active despite naming a phase. Ask the testers to look again.
 - [ ] 2026-10-16 second round (ArbitraryNerd), after the refresh lands:
   - [ ] Detachment picker should be multi-select: armies now take up to three detachments. Show each detachment's detachment points (Wahapedia's `Detachments.csv` has a `dp` column, and `Detachments_chapter_dp.csv` per-Chapter costs).
-  - [ ] Reactions that name a phase belong in that phase: "makes a ranged attack" (Ballistus Strike) in the Shooting phase, "selected to fight" or "melee attack" (Deeds of Heroism) in the Fight phase, both for an attack of either kind (Executioner), and Deep Strike's ingress move in the Movement phase. Fight-phase rules are usually either player's turn.
+  - [ ] Reactions that name a phase belong in that phase: "makes a ranged attack" (Ballistus Strike) in the Shooting phase, "selected to fight" or "melee attack" (Deeds of Heroism) in the Fight phase, and both for an attack of either kind (Executioner). Fight-phase rules are usually either player's turn.
   - [ ] Within each section, order Army rules first, then Detachment rules, then everything else.
   - [ ] Still no Deathwatch units under the Chapter filter (see Data below); recheck after the refresh, which brings the new Deathwatch detachments.
-- [x] 2026-10-19 consolidated feedback. Ask the testers to look again:
-  - [x] Title-bar colours, section by section: each section's title bar has a palette button that offers the site's teal (the default) and four more (crimson, forest, purple, bronze). A "Print in colour" switch sits under the toolbar; printing stays black and white unless it is on. The colours are kept apart from the army, so clearing or switching armies keeps them. (The Core Rules do not colour-code phases.)
-  - [x] Legends units carry an [L] after their name in the list and on the picked chips, with a note under the list when any are offered.
-  - [x] Allies: an Allies card adds other factions' units, listed under "Allies: <faction>" after the army's own. The army's own faction still decides the detachment, army rules, and Army Faction keyword checks; removing an ally removes its units.
-- [ ] 2026-10-19 later feedback. Ask the testers to look again after the next `yarn data:update`:
-  - [x] Unit tags sit beside the rule name, so you can see at a glance which unit a rule belongs to; the timing tags stay on the right (ArbitraryNerd).
-  - [x] A rule that uses a named Core stratagem, such as the Lictor's Pheromone Trail (Rapid Ingress for 0CP), is listed where that stratagem is used instead of under Reactions. That moves 53 rules; "any phase" stratagems such as Command Re-roll stay under Reactions (Gutskitter). The rules file picks this up on the next `yarn data:update`.
 
 ## Print sheet
 
@@ -39,8 +31,7 @@ Follow-ups for 40K Reminders. Tick items off or delete them as they are done.
 
 - [ ] Deathwatch shows only one unit under the Chapter filter: its other datasheets come from GW's 10th-edition Deathwatch pack, which the review excludes as previous-edition. Revisit when an 11th-edition Deathwatch pack is published.
 - [ ] Decide whether other factions want a sub-faction filter (`subFactionKeywords` in the review file): Aeldari (Ynnari, Harlequins), and the Chaos god legions' daemon allies.
-- [x] Run `yarn data:update` for real on a machine that can reach Wahapedia. Done 2026-10-19 (`2939c0a5`), on the new Space Marines and Custodes codexes. The 2026-10-16 export (new Space Marines and Custodes codexes) was replayed here from a bundle: pressing Enter throughout drops 21 removed rules, keeps 12 reformatted ones, settles 22 prompts, and passes every check.
-- [ ] After that refresh, relink the Chapter filter's army rules: the old Blood Angels, Dark Angels and Deathwatch rules are gone, and the new codex adds The Ravenwing, The Deathwing, Kill Team and Curse of the Wulfen.
+- [ ] Since the 2026-10-19 refresh (`2939c0a5`), relink the Chapter filter's army rules: the old Blood Angels, Dark Angels and Deathwatch rules are gone, and the new codex adds The Ravenwing, The Deathwing, Kill Team and Curse of the Wulfen.
 - [ ] Check that GitHub emails you for issues assigned to you (**Settings > Notifications**), so the weekly **Rules data sources changed** issue reaches your inbox.
 - [ ] Rule timing overrides rest on Wahapedia text except for the Core Rules and four faction packs. Revisit them as more official Games Workshop PDFs are added.
 - [ ] Back up `.cache/wh40k11e/` after any data refresh (CONTRIBUTING.md section 5).

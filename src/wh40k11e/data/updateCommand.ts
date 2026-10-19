@@ -35,6 +35,7 @@ import {
   runWh40kCommand,
   wh40kChildEnv,
 } from './gitSteps'
+import { reportWh40kTimingIssues } from './timingIssues'
 import {
   runWh40kSourcePipeline,
   WH40K_DEFAULT_PIPELINE_OPTIONS,
@@ -433,7 +434,7 @@ const settleReview = async (options: Wh40kPipelineOptions, io: Wh40kPromptIo): P
         continue
       }
     }
-    const done = await decideWh40kPending(options, io)
+    const { done } = await decideWh40kPending(options, io)
     if (!done) return false
     const after = await runWh40kSourcePipeline(options)
     if (after.reviewed.status === 'reviewed') {
@@ -465,7 +466,7 @@ const updaterImproved = async (options: Wh40kPipelineOptions): Promise<boolean> 
   )
   console.log(
     changed
-      ? 'The updater has improved since the rules file was built; rebuilding it from the same sources.'
+      ? 'The updater or the review file has changed since the rules file was built; rebuilding it from the same sources.'
       : 'The rules file is up to date with the updater too. Nothing to do.'
   )
   return changed
@@ -528,7 +529,10 @@ const main = async (): Promise<void> => {
       const refreshed = await fetchAndRefresh(options, flags)
       if (refreshed) options = refreshed
       else if (await updaterImproved(options)) rebuild = true
-      else return
+      else {
+        await reportWh40kTimingIssues(io.print)
+        return
+      }
     } else step('2–3. Using the sources already named in data/wh40k11e/pipeline.json')
 
     if (!(await settleReview(options, io))) {
@@ -572,6 +576,7 @@ const main = async (): Promise<void> => {
     ) {
       io.print(`\nNot committed. The suggested message is in ${messagePath}.`)
     }
+    await reportWh40kTimingIssues(io.print)
   } finally {
     io.close()
   }

@@ -163,8 +163,11 @@ export const buildWh40kDecisionContext = (
   return { pending, earlierByName, checksums, names, describe, matching }
 }
 
-/** The timings most rules use, offered by number when a rule is marked timed: a label, and the phrase it parses as. */
-const COMMON_TIMINGS = [
+/**
+ * The timings most rules use, offered by number when a rule is marked timed: a label, and the phrase
+ * it parses as. The labels double as the options of .github/ISSUE_TEMPLATE/timing.yml.
+ */
+export const WH40K_COMMON_TIMINGS = [
   ['Start of Your Command Phase', 'start of your Command phase'],
   ['Your Command Phase', 'your Command phase'],
   ['Your Movement Phase', 'your Movement phase'],
@@ -202,7 +205,15 @@ export interface Wh40kDecisionSessionResult {
   review: Wh40kSourceReview
   decided: number
   skipped: SourceRecordId[]
+  /** Rules given a new decision, as opposed to kept or skipped. */
+  changed: SourceRecordId[]
   quit: boolean
+}
+
+/** Shown with a rule's prompt, e.g. a tester's timing issue; its suggestion becomes the Enter default. */
+export interface Wh40kDecisionNote {
+  lines: string[]
+  suggestion?: Wh40kDecisionSuggestion
 }
 
 /**
@@ -217,12 +228,14 @@ export const runWh40kDecisionSession = async (input: {
   date: string
   io: Wh40kPromptIo
   save?: (reviewPath: string, review: Wh40kSourceReview) => Promise<void>
+  notes?: ReadonlyMap<string, Wh40kDecisionNote>
 }): Promise<Wh40kDecisionSessionResult> => {
   const { io, candidates, date } = input
   const save = input.save ?? saveWh40kReview
   let review = input.review
   let decided = 0
   const skipped: SourceRecordId[] = []
+  const changed: SourceRecordId[] = []
 
   const askDecision = async (
     candidate: Wh40kDecisionCandidate,
@@ -238,10 +251,15 @@ export const runWh40kDecisionSession = async (input: {
           ? { windows: suggested.decision.windows, because: suggested.because }
           : hint
             ? { windows: [hint.window], because: hint.because }
-            : { windows: parseWh40kWindowsInput(COMMON_TIMINGS[0][1]) ?? [], because: 'the first choice' }
+            : {
+                windows: parseWh40kWindowsInput(WH40K_COMMON_TIMINGS[0][1]) ?? [],
+                because: 'the first choice',
+              }
       const fallbackText = fallback.windows.map(describeWh40kWindow).join(' or ')
       io.print('  When?')
-      COMMON_TIMINGS.forEach(([label], index) => io.print(`    ${String(index + 1).padStart(2)}) ${label}`))
+      WH40K_COMMON_TIMINGS.forEach(([label], index) =>
+        io.print(`    ${String(index + 1).padStart(2)}) ${label}`)
+      )
       for (;;) {
         const typed = (
           await io.ask(
@@ -249,7 +267,7 @@ export const runWh40kDecisionSession = async (input: {
           )
         ).trim()
         if (typed.toLowerCase() === 'b') return undefined
-        const listed = /^\d+$/.test(typed) ? COMMON_TIMINGS[Number(typed) - 1]?.[1] : undefined
+        const listed = /^\d+$/.test(typed) ? WH40K_COMMON_TIMINGS[Number(typed) - 1]?.[1] : undefined
         const windows = !typed ? fallback.windows : parseWh40kWindowsInput(listed ?? typed)
         if (!windows?.length) {
           io.print('  Could not read that; pick a number or use the wording a WHEN: line would use.')
@@ -302,12 +320,14 @@ export const runWh40kDecisionSession = async (input: {
   for (let index = 0; index < groups.length; index += 1) {
     const group = groups[index]
     const [candidate, ...copies] = group
+    const note = group.map(item => input.notes?.get(item.sourceRecordId)).find(Boolean)
     const suggestion =
-      candidate.why === 'unresolved'
+      note?.suggestion ??
+      (candidate.why === 'unresolved'
         ? suggestWh40kDecision(candidate, input.earlierByName)
         : candidate.why === 'changed'
           ? retimed(candidate)
-          : undefined
+          : undefined)
     const heading =
       candidate.why === 'changed'
         ? 'its text changed since it was decided'
@@ -325,6 +345,7 @@ export const runWh40kDecisionSession = async (input: {
         io.print(wrap(candidate.current.text, '      '))
       }
     }
+    note?.lines.forEach(line => io.print(`  ${line}`))
     if (suggestion)
       io.print(`  Suggested: ${describeWh40kDecision(suggestion.decision)}, because ${suggestion.because}`)
     if (copies.length)
@@ -348,7 +369,7 @@ export const runWh40kDecisionSession = async (input: {
 
     for (;;) {
       const choice = (await io.ask(`  ${options.join(' · ')}\n  > `)).trim().toLowerCase()
-      if (choice === 'q') return { review, decided, skipped, quit: true }
+      if (choice === 'q') return { review, decided, skipped, changed, quit: true }
       if (choice === 's') {
         skipped.push(...group.map(item => item.sourceRecordId))
         break
@@ -373,11 +394,12 @@ export const runWh40kDecisionSession = async (input: {
       review = addWh40kDecision(review, group, decision, date)
       await save(input.reviewPath, review)
       decided += group.length
+      changed.push(...group.map(item => item.sourceRecordId))
       io.print(`  Saved: ${describeWh40kDecision(decision)}`)
       break
     }
   }
-  return { review, decided, skipped, quit: false }
+  return { review, decided, skipped, changed, quit: false }
 }
 
 /**

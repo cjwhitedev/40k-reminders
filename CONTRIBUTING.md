@@ -94,6 +94,7 @@ Set `WH40K_CACHE_BACKUP_DIR` (for example in your shell profile) and `yarn data:
 | `yarn data:update` | The whole refresh in one go; see section 8. |
 | `yarn data:decide` | Prompts for every rule that needs a decision (unreadable timing, or reworded since it was decided), saves each answer to the review file, and rewrites `runtime.json` once every rule is decided. |
 | `yarn data:decide --rule "<name or ID>"` | Decides one rule again. A name offers every rule with that name; an ID (from **Copy rule ID** in a reminder's ⋯ menu) offers that rule and its identical copies on other datasheets. |
+| `yarn data:decide --issues` | Goes through the open `timing-suggestion` issues on GitHub: each rule with the tester's pick and reason, their pick as the Enter default. The commit closes the issues whose rule changed. |
 | `yarn data:decide --stamp` | Adds fingerprints to decisions that have none, against the current sources. Use after editing the review file by hand. |
 | `yarn data:candidate ...` | Downloads sources into a new folder under `.cache/`. Never overwrites a folder. |
 | `yarn data:review` | Applies the review file and reports any problems. Status must be `reviewed`, not `blocked`. |
@@ -111,7 +112,7 @@ Faction IDs (`AC`, `SM`, `CSM`, ...) are Wahapedia's; the full list is in `runti
 
 Most reports are one of these. In every case, the fix goes in the review file, never `runtime.json`.
 
-Players report timing with **Suggest a timing change** in a reminder's ⋯ menu. It opens a `timing-suggestion` issue whose last field is the command to run, such as `yarn data:decide --rule "<rule ID>"`. Check the command is only that before pasting it: whoever opened the issue can edit it. Then answer the prompt with the timing the issue suggests; `decide` finishes by running the checks and offering to commit and push. Close the issue.
+Players report timing with **Suggest a timing change** in a reminder's ⋯ menu, which opens a `timing-suggestion` issue. Run `yarn data:decide --issues` to go through all the open ones. Each prompt shows the issue, who opened it, why, and its link, and Enter takes the tester's pick when it is one of the listed timings. Check their reason against the rule text or the Core Rules first; if they are wrong, press `k` to keep the current timing. At the end it lists the issues that changed nothing, to reply to and close on GitHub. The commit says "Fixes #n" for the rest, so pushing closes them. `data:update` mentions any open suggestions when it finishes.
 
 1. Reproduce it, if you need to: `yarn data:reminders --faction <ID> --detachment "<name>" --unit "<name>"`.
 2. **Wrong timing, or should not be a reminder** (army-building rules, designer's notes): in the app, open the reminder's ⋯ menu and choose **Copy rule ID**, then run `yarn data:decide --rule "<rule ID>"` and answer the prompt (see section 8 for the keys). A rule name works too, but offers every rule with that name. It saves the decision, with its fingerprint, to the review file.

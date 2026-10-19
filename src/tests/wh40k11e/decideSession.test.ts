@@ -170,4 +170,55 @@ describe('runWh40kDecisionSession', () => {
       sourceRecordIds: [copy('SM', '').sourceRecordId, copy('CSM', '').sourceRecordId],
     })
   })
+
+  it('shows a note, takes its suggestion on Enter, and lists only new decisions as changed', async () => {
+    const asked = candidate('Deep Strike', 'Each time this unit makes an ingress move, set it up.', {
+      why: 'requested',
+      current: { ownerId: 'deep-strike', summary: 'reaction: "Each time this unit makes an ingress move"' },
+    })
+    const kept = candidate('Scouts', 'In the Resolve Pre-battle Abilities step, move.', {
+      why: 'requested',
+      current: { ownerId: 'scouts', summary: 'timed: before the battle' },
+    })
+    const save = vi.fn(async () => undefined)
+    const io = scripted(['', 'k'])
+    const outcome = await runWh40kDecisionSession({
+      reviewPath: 'review.json',
+      review: {
+        ...review,
+        timingOverrides: [
+          { id: 'deep-strike', sourceRecordIds: [asked.sourceRecordId], kind: 'reaction', reason: 'r' },
+          { id: 'scouts', sourceRecordIds: [kept.sourceRecordId], kind: 'passive', reason: 'r' },
+        ],
+      },
+      candidates: [asked, kept],
+      earlierByName: new Map(),
+      date: '2026-10-19',
+      io,
+      save,
+      notes: new Map([
+        [
+          asked.sourceRecordId,
+          {
+            lines: ['Issue #3 from Gutskitter: Your Movement Phase'],
+            suggestion: {
+              decision: {
+                kind: 'timed',
+                windows: [{ kind: 'turn-phase', phase: 'movement', moment: 'during', perspective: 'your' }],
+                reason: 'r',
+              },
+              because: 'issue #3 asks for it',
+            },
+          },
+        ],
+      ]),
+    })
+
+    expect(io.printed.join('\n')).toContain('  Issue #3 from Gutskitter: Your Movement Phase')
+    expect(outcome.changed).toEqual([asked.sourceRecordId])
+    expect(outcome.decided).toBe(2)
+    expect(outcome.review.timingOverrides?.find(entry => entry.kind === 'timed')?.windows).toEqual([
+      { kind: 'turn-phase', phase: 'movement', moment: 'during', perspective: 'your' },
+    ])
+  })
 })

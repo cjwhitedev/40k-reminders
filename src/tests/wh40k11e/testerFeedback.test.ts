@@ -79,6 +79,8 @@ describe('tester feedback, 2026-10-16', () => {
       effect: '',
       hidden: false,
       sourceRecordIndexes: [],
+      ruleId: 'r',
+      timingIssue: { army: '', current: '' },
       ...overrides,
     })
     const csv = formatWh40kRemindersCsv([

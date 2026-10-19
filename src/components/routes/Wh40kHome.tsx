@@ -5,7 +5,7 @@ import Toolbar from 'components/input/toolbar/toolbar'
 import Footer from 'components/page/footer'
 import { Header } from 'components/page/homeHeader'
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
-import { AOS_REMINDERS_AUTHOR_URL, AOS_REMINDERS_URL, WH40K_AUTHOR_URL } from 'utils/env'
+import { AOS_REMINDERS_AUTHOR_URL, AOS_REMINDERS_URL, WH40K_AUTHOR_URL, WH40K_GITHUB_URL } from 'utils/env'
 import { WH40K_CATALOG } from '../../wh40k11e/generated/catalog'
 import { loadWh40kArmyDocument, saveWh40kArmyDocument } from '../../wh40k11e/runtime/armyStorage'
 import {
@@ -18,7 +18,11 @@ import {
   type Wh40kBuilderGroup,
   type Wh40kBuilderGroupKey,
 } from '../../wh40k11e/view/builder'
-import { createWh40kReminderViewModels, type Wh40kReminderViewModel } from '../../wh40k11e/view/reminders'
+import {
+  createWh40kReminderViewModels,
+  wh40kTimingIssueUrl,
+  type Wh40kReminderViewModel,
+} from '../../wh40k11e/view/reminders'
 import { formatWh40kRemindersCsv } from '../../wh40k11e/view/remindersCsv'
 
 const ClearArmyModal = lazy(() => import('components/modals/generic/generic_destructive_modal'))
@@ -112,7 +116,14 @@ const Wh40kHome = () => {
   }, [document])
 
   const builder = useMemo(() => createWh40kBuilderViewModel(WH40K_CATALOG, document), [document])
-  const reminders = useMemo(() => createWh40kReminderViewModels(WH40K_CATALOG, document), [document])
+  const reminders = useMemo(
+    () =>
+      createWh40kReminderViewModels(WH40K_CATALOG, document).map(reminder => ({
+        ...reminder,
+        suggestTimingUrl: wh40kTimingIssueUrl(WH40K_GITHUB_URL, reminder),
+      })),
+    [document]
+  )
   const groupByOptionId = useMemo(
     () =>
       new Map<string, Wh40kBuilderGroupKey>(

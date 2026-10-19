@@ -89,7 +89,7 @@ const freshDirectory = (name: string): string => {
 }
 
 const fetchCandidate = (directory: string, args: string[]) => {
-  if (run('yarn', ['-s', 'data:wh40k11e:candidate', ...args, '--output', directory]) !== 0) {
+  if (run('yarn', ['-s', 'data:candidate', ...args, '--output', directory]) !== 0) {
     throw new Error(`Download failed; nothing was changed. See the error above.`)
   }
 }
@@ -428,7 +428,7 @@ const settleReview = async (options: Wh40kPipelineOptions, io: Wh40kPromptIo): P
       const unstamped = after.reviewed.decisionChecks.filter(check => check.status === 'unstamped').length
       if (unstamped)
         io.print(
-          `Note: ${unstamped} decision record(s) have no fingerprint; run yarn data:wh40k11e:decide --stamp after checking them.`
+          `Note: ${unstamped} decision record(s) have no fingerprint; run yarn data:decide --stamp after checking them.`
         )
       return true
     }

@@ -6,7 +6,7 @@ A checklist for updating 40K Reminders when Games Workshop or Wahapedia publish 
 
 - **The email.** Every Monday a GitHub workflow checks Wahapedia. When it has changed since the data was last reviewed, GitHub opens a **Rules data sources changed** issue assigned to you and emails you about it. To check by hand: **Actions > Watch rules sources for changes > Run workflow**.
 - **A new official PDF** (faction pack, errata): add its link to `data/wh40k11e/official-urls.json` first, then refresh.
-- **A rule is wrong** but nothing new was published: you do not need a refresh. Use `yarn data:wh40k11e:decide --rule "<rule name>"` (CONTRIBUTING.md section 7).
+- **A rule is wrong** but nothing new was published: you do not need a refresh. Use **Copy rule ID** in the reminder's ⋯ menu, then `yarn data:decide --rule "<rule ID>"` (CONTRIBUTING.md section 7).
 
 ## Before you start
 

@@ -23,7 +23,7 @@ const run = async (): Promise<void> => {
 
   const { review, decoded, linked, reviewed } = await runWh40kSourcePipeline(options)
   if (reviewed.status === 'blocked') {
-    throw new Error(`Source review ${review.revision} is blocked; run data:wh40k11e:review for its findings`)
+    throw new Error(`Source review ${review.revision} is blocked; run data:review for its findings`)
   }
   const { rules, unresolved } = buildWh40kRules(decoded.records, linked, reviewed)
   const matched = rules.filter(rule => rule.gameMode === 'matched-play')

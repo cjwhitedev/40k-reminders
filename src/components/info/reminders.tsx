@@ -38,6 +38,10 @@ export interface ReminderCardModel {
   /** Labelled paragraphs that replace the Trigger/Declare/Effect lines when present. */
   sections?: Array<{ label?: string; text: string; items?: string[]; compact?: boolean }>
   sourceRecordIndexes: readonly number[]
+  /** The ID `yarn data:decide --rule` takes; offered as "Copy rule ID" in the menu when present. */
+  ruleId?: string
+  /** A pre-filled GitHub issue suggesting a different timing for this rule. */
+  suggestTimingUrl?: string
 }
 
 interface RemindersProps<R extends ReminderCardModel> {
@@ -232,6 +236,23 @@ const ReminderEntry = <R extends ReminderCardModel>({
   const isMobile = useIsMobile()
   const [editingNote, setEditingNote] = useState(false)
   const [sources, setSources] = useState<SourceState>({ status: 'idle' })
+  const [copied, setCopied] = useState(false)
+  const { ruleId } = reminder
+
+  const copyRuleId = (id: string) => {
+    // The clipboard needs a secure context; the prompt still lets the ID be copied by hand.
+    if (!navigator.clipboard) {
+      window.prompt('Rule ID', id)
+      return
+    }
+    navigator.clipboard.writeText(id).then(
+      () => {
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+      },
+      () => window.prompt('Rule ID', id)
+    )
+  }
 
   /*
    * The fetch outlives the card. Hiding a rule, reordering a group, switching to game mode, or
@@ -305,6 +326,9 @@ const ReminderEntry = <R extends ReminderCardModel>({
           {isMobile && <ReminderTags tags={reminder.tags} />}
         </div>
         <div className="flex-shrink-0 ReminderOptions d-print-none">
+          <span role="status" className={`${theme.text} ${theme.textMuted} small me-2`}>
+            {copied ? 'Rule ID copied' : ''}
+          </span>
           <Dropdown onToggle={handleToggle}>
             <Dropdown.Toggle
               as="button"
@@ -320,6 +344,12 @@ const ReminderEntry = <R extends ReminderCardModel>({
               {!isGameMode && (
                 <Dropdown.Item onClick={() => setEditingNote(current => !current)}>
                   {reminder.note ? 'Edit note' : 'Add note'}
+                </Dropdown.Item>
+              )}
+              {ruleId && <Dropdown.Item onClick={() => copyRuleId(ruleId)}>Copy rule ID</Dropdown.Item>}
+              {reminder.suggestTimingUrl && (
+                <Dropdown.Item href={reminder.suggestTimingUrl} target="_blank" rel="noopener noreferrer">
+                  Suggest a timing change
                 </Dropdown.Item>
               )}
               <ReminderSources state={sources} />

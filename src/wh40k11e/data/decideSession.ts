@@ -138,15 +138,24 @@ export const buildWh40kDecisionContext = (
   const names = new Map(
     Array.from(records, ([id, record]) => [id, record.values.name ?? ''] as const).filter(([, name]) => name)
   )
-  /** Rule records named by source record ID or by rule name (any case). */
+  /** Rule records named by source record ID or by rule name (any case), with their identical copies. */
   const matching = (wanted: string[]): Wh40kDecisionCandidate[] => {
     const keys = new Set(wanted.map(value => value.trim().toLowerCase()))
-    return Array.from(records.values())
-      .filter(record => FILE_LABELS[record.file] && record.values.description)
-      .filter(
-        record =>
-          keys.has(record.sourceRecordId.toLowerCase()) ||
-          keys.has((record.values.name ?? '').trim().toLowerCase())
+    const nameOf = (record: Wh40kWahapediaRecord) => (record.values.name ?? '').trim().toLowerCase()
+    const textOf = (record: Wh40kWahapediaRecord) =>
+      normalizeSourceText(record.values.description ?? '', WH40K_SOURCE_TEXT_OPTIONS).text
+    const rules = Array.from(records.values()).filter(
+      record => FILE_LABELS[record.file] && record.values.description
+    )
+    const requested = rules.filter(
+      record => keys.has(record.sourceRecordId.toLowerCase()) || keys.has(nameOf(record))
+    )
+    // The app shows identical copies on several datasheets as one reminder, so its ID stands for all of them.
+    return rules
+      .filter(record =>
+        requested.some(
+          wanted => nameOf(wanted) === nameOf(record) && sameWh40kWording(textOf(wanted), textOf(record))
+        )
       )
       .map(record => describe(record.sourceRecordId, 'requested'))
       .filter((candidate): candidate is Wh40kDecisionCandidate => Boolean(candidate))

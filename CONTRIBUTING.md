@@ -91,19 +91,19 @@ Set `WH40K_CACHE_BACKUP_DIR` (for example in your shell profile) and `yarn data:
 
 | Command | What it does |
 | --- | --- |
-| `yarn data:update` | The whole refresh in one go; see section 8. (`yarn data:wh40k11e:update` is the same command.) |
-| `yarn data:wh40k11e:decide` | Prompts for every rule that needs a decision (unreadable timing, or reworded since it was decided) and saves each answer to the review file. |
-| `yarn data:wh40k11e:decide --rule "<name or ID>"` | Decides one rule again; every rule with that name is offered. |
-| `yarn data:wh40k11e:decide --stamp` | Adds fingerprints to decisions that have none, against the current sources. Use after editing the review file by hand. |
-| `yarn data:wh40k11e:candidate ...` | Downloads sources into a new folder under `.cache/`. Never overwrites a folder. |
-| `yarn data:wh40k11e:review` | Applies the review file and reports any problems. Status must be `reviewed`, not `blocked`. |
-| `yarn data:wh40k11e:rules --output <new-file>` | Builds every rule and fails if any matched-play rule has no timing. |
-| `yarn data:wh40k11e:reminders --faction AC --detachment "Shield Host" --unit "Custodian Guard"` | Prints one army's reminders. Good for spot checks. |
-| `yarn data:wh40k11e:generate` | Checks that `runtime.json` matches the sources and review. |
-| `yarn data:wh40k11e:generate:write` | Rewrites `runtime.json`. Commit the result. |
-| `yarn data:wh40k11e:compare` | Cross-checks Wahapedia datasheets against BSData. |
-| `yarn data:wh40k11e:check-exports` | Confirms the downloaded CSVs match Wahapedia's published export list. |
-| `yarn data:wh40k11e:watch --candidate <dir>` | Says whether Wahapedia has changed since the review, from a fetched `Last_update.csv`. The weekly workflow runs it. |
+| `yarn data:update` | The whole refresh in one go; see section 8. |
+| `yarn data:decide` | Prompts for every rule that needs a decision (unreadable timing, or reworded since it was decided), saves each answer to the review file, and rewrites `runtime.json` once every rule is decided. |
+| `yarn data:decide --rule "<name or ID>"` | Decides one rule again. A name offers every rule with that name; an ID (from **Copy rule ID** in a reminder's ⋯ menu) offers that rule and its identical copies on other datasheets. |
+| `yarn data:decide --stamp` | Adds fingerprints to decisions that have none, against the current sources. Use after editing the review file by hand. |
+| `yarn data:candidate ...` | Downloads sources into a new folder under `.cache/`. Never overwrites a folder. |
+| `yarn data:review` | Applies the review file and reports any problems. Status must be `reviewed`, not `blocked`. |
+| `yarn data:rules --output <new-file>` | Builds every rule and fails if any matched-play rule has no timing. |
+| `yarn data:reminders --faction AC --detachment "Shield Host" --unit "Custodian Guard"` | Prints one army's reminders. Good for spot checks. |
+| `yarn data:generate` | Checks that `runtime.json` matches the sources and review. |
+| `yarn data:generate:write` | Rewrites `runtime.json`. Commit the result. |
+| `yarn data:compare` | Cross-checks Wahapedia datasheets against BSData. |
+| `yarn data:check-exports` | Confirms the downloaded CSVs match Wahapedia's published export list. |
+| `yarn data:watch --candidate <dir>` | Says whether Wahapedia has changed since the review, from a fetched `Last_update.csv`. The weekly workflow runs it. |
 
 Faction IDs (`AC`, `SM`, `CSM`, ...) are Wahapedia's; the full list is in `runtime.json` under `catalog.factions`.
 
@@ -111,15 +111,17 @@ Faction IDs (`AC`, `SM`, `CSM`, ...) are Wahapedia's; the full list is in `runti
 
 Most reports are one of these. In every case, the fix goes in the review file, never `runtime.json`.
 
-1. Reproduce it: `yarn data:wh40k11e:reminders --faction <ID> --detachment "<name>" --unit "<name>"`.
-2. **Wrong timing, or should not be a reminder** (army-building rules, designer's notes): run `yarn data:wh40k11e:decide --rule "<rule name>"` and answer the prompt (see section 8 for the keys). It saves the decision, with its fingerprint, to the review file.
+Players report timing with **Suggest a timing change** in a reminder's ⋯ menu. It opens a `timing-suggestion` issue whose last field is the command to run, such as `yarn data:decide --rule "<rule ID>"`. Check the command is only that before pasting it: whoever opened the issue can edit it. Then answer the prompt with the timing the issue suggests, run the checks in section 3, commit, and close the issue.
+
+1. Reproduce it, if you need to: `yarn data:reminders --faction <ID> --detachment "<name>" --unit "<name>"`.
+2. **Wrong timing, or should not be a reminder** (army-building rules, designer's notes): in the app, open the reminder's ⋯ menu and choose **Copy rule ID**, then run `yarn data:decide --rule "<rule ID>"` and answer the prompt (see section 8 for the keys). A rule name works too, but offers every rule with that name. It saves the decision, with its fingerprint, to the review file.
 3. **Rule from another army showing up:** check `armyFactionKeywords` for the faction in the review file. Rules that say "If your Army Faction is X" only appear for armies whose keywords include X. Edit by hand.
-4. Run `yarn data:wh40k11e:generate:write`, then the checks in section 3.
+4. `decide` rewrites `runtime.json` when it finishes (run `yarn data:generate:write` yourself after a hand edit). Then run the checks in section 3.
 5. Commit the review file and `runtime.json` together, saying in the message which rule changed and why.
 
-The Chapter filter for Space Marines comes from `subFactionKeywords` in the review file: a faction ID, a label, and the faction keywords (as Wahapedia prints them on datasheets) that split its units into groups. Units carrying none of them are offered for every group. To give another faction a filter, add an entry; `yarn data:wh40k11e:review` reports any keyword no datasheet of that faction carries.
+The Chapter filter for Space Marines comes from `subFactionKeywords` in the review file: a faction ID, a label, and the faction keywords (as Wahapedia prints them on datasheets) that split its units into groups. Units carrying none of them are offered for every group. To give another faction a filter, add an entry; `yarn data:review` reports any keyword no datasheet of that faction carries.
 
-You can still edit `timingOverrides` or `ignoredRules` by hand (copy the shape of an existing entry); run `yarn data:wh40k11e:decide --stamp` afterwards to fingerprint the new entry.
+You can still edit `timingOverrides` or `ignoredRules` by hand (copy the shape of an existing entry); run `yarn data:decide --stamp` afterwards to fingerprint the new entry.
 
 If the parser misreads a common phrasing, the better fix is in `src/wh40k11e/normalize/ability.ts` or `when.ts`, with a test in `src/tests/wh40k11e/`. When `decide` keeps suggesting the same answer for the same wording, that wording is a good candidate.
 

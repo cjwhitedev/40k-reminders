@@ -97,7 +97,8 @@ const FaqSections: IFaqSection[] = [
             Open the ⋯ menu on any reminder and choose <strong>Hide rule</strong>. It stays out of Play mode
             until you change your mind - <strong>Show Hidden</strong> in the toolbar keeps a count and brings
             them all back at once. The same menu has <strong>Add note</strong> for writing your own line under
-            a rule, and you can drag reminders into a different order within their phase.
+            a rule, and you can drag reminders into a different order within their phase. If a rule shows up
+            at the wrong time, choose <strong>Copy rule ID</strong> and include it when you report it.
           </>
         ),
       },
@@ -175,6 +176,11 @@ const FaqSections: IFaqSection[] = [
               Please tell me. Corrections go into the rules data and are re-checked against the sources, so
               the fix reaches everyone rather than only your army. Naming the faction, the detachment or unit,
               and the rule makes it much faster to track down.
+            </p>
+            <p>
+              If a reminder shows up at the wrong moment, open its ⋯ menu and choose{' '}
+              <strong>Suggest a timing change</strong>. It opens a GitHub issue with the rule already filled
+              in; pick where it belongs and submit. You need a free GitHub account.
             </p>
             <p className="mb-2">
               The best route is to <GithubIssuesLink />.

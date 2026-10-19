@@ -65,7 +65,7 @@ const run = async (): Promise<void> => {
   }
   const candidate = value('--candidate')
   if (!candidate) {
-    throw new Error('Usage: yarn data:wh40k11e:watch --candidate <dir> [--review <file>] [--summary <file>]')
+    throw new Error('Usage: yarn data:watch --candidate <dir> [--review <file>] [--summary <file>]')
   }
   const reviewPath = value('--review') ?? WH40K_DEFAULT_PIPELINE_OPTIONS.review
   const review = JSON.parse(await readFile(reviewPath, 'utf8')) as {

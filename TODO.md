@@ -5,7 +5,7 @@ Follow-ups for 40K Reminders. Tick items off or delete them as they are done.
 ## Feedback from testers
 
 - [ ] Collect what friends report and turn each issue into an item here or a GitHub issue. Drop screenshots in `input/` (never committed).
-- [ ] Spot-check reported rules with `yarn data:wh40k11e:reminders --faction <ID> --detachment "<name>" --unit "<name>"` and fix them in the review file (see CONTRIBUTING.md section 7).
+- [ ] Spot-check reported rules with `yarn data:reminders --faction <ID> --detachment "<name>" --unit "<name>"` and fix them in the review file (see CONTRIBUTING.md section 7).
 - [x] 2026-10-16 Discord feedback: CSV export, Chapter filter, Units grouped by type, Heirs of Sigismund showing for every Space Marines army, and 30 abilities such as Narthecium filed as always active despite naming a phase. Ask the testers to look again.
 - [ ] 2026-10-16 second round (ArbitraryNerd), after the refresh lands:
   - [ ] Detachment picker should be multi-select: armies now take up to three detachments. Show each detachment's detachment points (Wahapedia's `Detachments.csv` has a `dp` column, and `Detachments_chapter_dp.csv` per-Chapter costs).

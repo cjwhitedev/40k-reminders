@@ -1,0 +1,64 @@
+name: Wrong timing
+description: A reminder shows up at the wrong moment, or shouldn't be a reminder at all.
+title: '[TIMING] '
+labels: ['timing-suggestion']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Opened from **Suggest a timing change** in a reminder's ⋯ menu? The rule details are already filled in: pick where it belongs, say why, and submit.
+  - type: input
+    id: rule
+    attributes:
+      label: Rule
+    validations:
+      required: true
+  - type: input
+    id: army
+    attributes:
+      label: Army
+      description: Faction, detachment, and the units that carry the rule.
+  - type: input
+    id: current
+    attributes:
+      label: Where it shows now
+  - type: dropdown
+    id: suggested
+    attributes:
+      label: Where it belongs
+      options:
+        - Start of Your Command Phase
+        - Your Command Phase
+        - Your Movement Phase
+        - Opponent's Movement Phase
+        - Your Shooting Phase
+        - Opponent's Shooting Phase
+        - Your Charge Phase
+        - Opponent's Charge Phase
+        - Fight Phase (either player)
+        - Your Shooting Phase or Fight Phase
+        - End of Any Phase
+        - Start of the Battle Round
+        - Before the Battle (Declare Battle Formations)
+        - Reaction (when something happens)
+        - Always active
+        - Not a reminder (army building, designer's note)
+        - Somewhere else (explain below)
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Why
+      description: Quote the part of the rule that names the moment, if you can.
+  - type: input
+    id: rule-id
+    attributes:
+      label: Rule ID
+      description: From **Copy rule ID** in the reminder's ⋯ menu.
+  - type: textarea
+    id: command
+    attributes:
+      label: Maintainer command
+      description: Filled in by the app. Leave it as it is.
+      render: shell

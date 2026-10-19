@@ -49,7 +49,7 @@ Open <https://wahapedia.ru/robots.txt> and make sure `/wh40k11ed/` is not disall
 This fetches the two pages in `data/wh40k11e/wahapedia-urls.json`: the core rules page and the data export page.
 
 ```bash
-yarn data:wh40k11e:candidate \
+yarn data:candidate \
   --wahapedia-urls-file data/wh40k11e/wahapedia-urls.json \
   --pause-ms 1000 \
   --output .cache/wh40k11e/candidates/wahapedia-pages
@@ -74,7 +74,7 @@ AoS Reminders uses Wahapedia's CSV exports as its main secondary dataset, so 40K
 3. Fetch them:
 
 ```bash
-yarn data:wh40k11e:candidate \
+yarn data:candidate \
   --wahapedia-urls-file data/wh40k11e/wahapedia-export-urls.json \
   --pause-ms 1000 \
   --output .cache/wh40k11e/candidates/wahapedia-exports
@@ -125,12 +125,12 @@ Run this from the repository root on the development machine. Replaying offline 
 ```bash
 git pull
 tar -xzf .cache/wh40k11e/incoming/wh40k11e-wahapedia.tgz
-yarn data:wh40k11e:candidate \
+yarn data:candidate \
   --wahapedia-urls-file data/wh40k11e/wahapedia-urls.json \
   --accepted-manifest .cache/wh40k11e/candidates/wahapedia-pages/candidate-manifest.json \
   --offline \
   --output .cache/wh40k11e/candidates/wahapedia-pages-replay
-yarn data:wh40k11e:candidate \
+yarn data:candidate \
   --wahapedia-urls-file data/wh40k11e/wahapedia-export-urls.json \
   --accepted-manifest .cache/wh40k11e/candidates/wahapedia-exports/candidate-manifest.json \
   --offline \
@@ -152,10 +152,10 @@ On the machine that can reach Wahapedia, in the same clone that ran steps 4 and 
 ```bash
 git pull
 yarn install --frozen-lockfile
-yarn data:wh40k11e:candidate \
+yarn data:candidate \
   --wahapedia-url 'https://wahapedia.ru/wh40k11ed/Export%20Data%20Specs.xlsx?v=20260817b' \
   --output .cache/wh40k11e/candidates/wahapedia-spec
-yarn data:wh40k11e:check-exports \
+yarn data:check-exports \
   --spec-candidate .cache/wh40k11e/candidates/wahapedia-spec \
   --exports-candidate .cache/wh40k11e/candidates/wahapedia-exports
 ```
@@ -170,7 +170,7 @@ The check ends with one of two results:
 Either way, package and bring back the results as in steps 6 and 7, with `wahapedia-spec` added to the candidate names in the step 6 loop (and the new exports directory, if you reran step 5). Add the check's output to your notes. On the development machine, replay the spreadsheet as in step 8:
 
 ```bash
-yarn data:wh40k11e:candidate \
+yarn data:candidate \
   --wahapedia-url 'https://wahapedia.ru/wh40k11ed/Export%20Data%20Specs.xlsx?v=20260817b' \
   --accepted-manifest .cache/wh40k11e/candidates/wahapedia-spec/candidate-manifest.json \
   --offline \
@@ -181,7 +181,7 @@ Use the same `--wahapedia-url` as the fetch, if you had to change it.
 
 ## Status: rule timing (2026-10-01)
 
-`yarn data:wh40k11e:rules` gives every matched-play rule a timing, and exits non-zero if any matched-play rule is left without one. Of 6,050 matched-play rules, 5,943 take their timing from printed text and 107 from reviewed `timingOverrides` in `data/wh40k11e/reviews/sources-2026-09-30.json`. The 17 unresolved rules that remain belong to other game modes.
+`yarn data:rules` gives every matched-play rule a timing, and exits non-zero if any matched-play rule is left without one. Of 6,050 matched-play rules, 5,943 take their timing from printed text and 107 from reviewed `timingOverrides` in `data/wh40k11e/reviews/sources-2026-09-30.json`. The 17 unresolved rules that remain belong to other game modes.
 
 The review excludes 86 records through `ignoredRules`: core move and shoot types; stratagem copies from the previous edition, Boarding Actions, Challenger and unscoped New Orders; 8 Designer's Notes; 15 army-building rules; and 5 records with no playable rule of their own.
 

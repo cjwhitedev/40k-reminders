@@ -276,4 +276,37 @@ describe('reminder source menu', () => {
     expect(sourceHrefs()).toEqual(['https://example.test/a'])
     expect(itemTexts()).toEqual([])
   })
+
+  it('copies the rule ID of a reminder that has one, and offers nothing for one that does not', async () => {
+    const writeText = vi.fn(async () => {})
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true })
+    try {
+      renderReminders(
+        async () => [],
+        [{ ...reminder('reminder:one'), ruleId: 'source-record:one' }, reminder('reminder:two')]
+      )
+      const openItems = () =>
+        Array.from(container.querySelectorAll('.dropdown-menu.show .dropdown-item')).map(
+          node => node as HTMLElement
+        )
+
+      await act(async () => {
+        Simulate.click(toggles()[0])
+      })
+      const copy = openItems().find(node => node.textContent === 'Copy rule ID')
+      expect(copy).toBeDefined()
+      await act(async () => {
+        Simulate.click(copy as HTMLElement)
+      })
+      expect(writeText).toHaveBeenCalledWith('source-record:one')
+      expect(container.textContent).toContain('Rule ID copied')
+
+      await act(async () => {
+        Simulate.click(toggles()[1])
+      })
+      expect(openItems().map(node => node.textContent)).not.toContain('Copy rule ID')
+    } finally {
+      Reflect.deleteProperty(navigator, 'clipboard')
+    }
+  })
 })

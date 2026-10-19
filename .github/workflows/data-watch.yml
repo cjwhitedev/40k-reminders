@@ -28,7 +28,7 @@ jobs:
 
       - name: Fetch Last_update.csv
         run: >-
-          yarn data:wh40k11e:candidate
+          yarn data:candidate
           --wahapedia-url https://wahapedia.ru/wh40k11ed/Last_update.csv
           --output .cache/wh40k11e/candidates/watch
 
@@ -36,7 +36,7 @@ jobs:
         id: check
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: yarn data:wh40k11e:watch --candidate .cache/wh40k11e/candidates/watch --summary watch-summary.md
+        run: yarn data:watch --candidate .cache/wh40k11e/candidates/watch --summary watch-summary.md
 
       - name: Open an issue
         if: steps.check.outputs.changed == 'true'

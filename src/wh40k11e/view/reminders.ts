@@ -46,6 +46,9 @@ export interface Wh40kReminderViewModel {
   order?: number
   /** 40K reminders cite no source records yet; kept for the shared reminder card. */
   sourceRecordIndexes: number[]
+  ruleId: string
+  /** What a "Wrong timing" issue says about where the player found this reminder. */
+  timingIssue: { army: string; current: string }
 }
 
 const KIND_LABEL: Record<Wh40kRule['kind'], string> = {
@@ -153,6 +156,21 @@ const tagsFor = (reminder: Wh40kReminder, datasheetNames: Map<string, string>): 
   return tags
 }
 
+/** A new "Wrong timing" issue (.github/ISSUE_TEMPLATE/timing.yml) with the rule filled in. */
+export const wh40kTimingIssueUrl = (
+  repositoryUrl: string,
+  reminder: Pick<Wh40kReminderViewModel, 'ruleId' | 'name' | 'timingIssue'>
+): string =>
+  `${repositoryUrl}/issues/new?${new URLSearchParams({
+    template: 'timing.yml',
+    title: `[TIMING] ${reminder.name}`,
+    rule: reminder.name,
+    army: reminder.timingIssue.army,
+    current: reminder.timingIssue.current,
+    'rule-id': reminder.ruleId,
+    command: `yarn data:decide --rule "${reminder.ruleId}"`,
+  }).toString()}`
+
 /** The army's reminders in game order, with the player's hidden flags, notes, and ordering applied. */
 export const createWh40kReminderViewModels = (
   catalog: Wh40kCatalog,
@@ -169,16 +187,21 @@ export const createWh40kReminderViewModels = (
   const datasheetNames = new Map<string, string>(
     catalog.datasheets.map(sheet => [sheet.sourceRecordId, sheet.name])
   )
+  const factionName = catalog.factions.find(faction => faction.id === document.factionId)?.name
+  const detachmentName = catalog.detachments.find(item => item.id === document.detachmentId)?.name
   return groupWh40kReminders(projectWh40kReminders(selection.selected)).flatMap(group =>
     group.reminders
       .map((reminder, index) => {
         const preference = document.reminderPreferences[reminder.id] ?? {}
+        const tags = tagsFor(reminder, datasheetNames)
+        const turn = tags.find(tag => tag.tone === 'turn-your' || tag.tone === 'turn-enemy')?.label
+        const units = tags.filter(tag => tag.tone === 'source').map(tag => tag.label)
         const view: Wh40kReminderViewModel = {
           id: reminder.id,
           name: reminder.name,
           windowKey: group.key,
           windowLabel: group.label,
-          tags: tagsFor(reminder, datasheetNames),
+          tags,
           sections: [
             ...(reminder.trigger && reminder.lane === 'reaction'
               ? [{ label: 'Trigger', text: reminder.trigger }]
@@ -190,6 +213,11 @@ export const createWh40kReminderViewModels = (
           ...(preference.note ? { note: preference.note } : {}),
           ...(preference.order !== undefined ? { order: preference.order } : {}),
           sourceRecordIndexes: [],
+          ruleId: reminder.ruleId,
+          timingIssue: {
+            army: [factionName, detachmentName, units.join(', ')].filter(Boolean).join(' › '),
+            current: turn ? `${group.label} (${turn})` : group.label,
+          },
         }
         return { view, index }
       })

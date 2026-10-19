@@ -3,6 +3,7 @@ import path from 'node:path'
 import { createInterface } from 'node:readline'
 import { fileURLToPath } from 'node:url'
 import { WH40K_RUNTIME_PATH } from '../generate/runtime'
+import { writeWh40kRuntimeFile } from '../generate/runtimeCommand'
 import type { Wh40kDecisionCandidate } from './decisions'
 import { sameWh40kWording, stampWh40kDecisions } from './decisions'
 import {
@@ -167,19 +168,21 @@ const run = async (): Promise<void> => {
   }
 
   const io = createWh40kTerminalIo()
-  try {
-    const done = await decideWh40kPending(
-      options,
-      io,
-      rules.length ? context => context.matching(rules) : undefined
-    )
+  const done = await decideWh40kPending(
+    options,
+    io,
+    rules.length ? context => context.matching(rules) : undefined
+  ).finally(() => io.close())
+  // data:update regenerates in its own step, with the change report.
+  if (done) {
+    await writeWh40kRuntimeFile(options)
     console.log(
-      done
-        ? 'Next: yarn data:wh40k11e:generate:write, then the checks in CONTRIBUTING.md section 3.'
-        : 'Run yarn data:wh40k11e:decide again to finish the rest.'
+      'Next: the checks in CONTRIBUTING.md section 3, then commit the review file and runtime.json.'
     )
-  } finally {
-    io.close()
+  } else {
+    console.log(
+      'Run yarn data:decide again to finish the rest; runtime.json is regenerated when it finishes.'
+    )
   }
 }
 

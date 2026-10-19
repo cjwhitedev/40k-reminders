@@ -47,7 +47,7 @@ The checklist a human follows is [docs/refreshing-rules-data.md](../../../docs/r
 7. **Checks**: `yarn prepush` (lint, types, build, tests).
 8. **Spot-check, commit, push.** If the push is refused because GitHub moved on, it rebases and pushes again.
 
-`yarn data:wh40k11e:update` is the same command. Flags: `--no-fetch` (resume at step 4), `--force`, `--no-commit`, `--skip-git-check`, `--wahapedia-candidate <dir>`.
+`yarn data:update` flags: `--no-fetch` (resume at step 4), `--force`, `--no-commit`, `--skip-git-check`, `--wahapedia-candidate <dir>`.
 
 ## Where things live
 
@@ -57,7 +57,7 @@ The checklist a human follows is [docs/refreshing-rules-data.md](../../../docs/r
 | `src/wh40k11e/normalize/ability.ts` | Prose abilities, enhancements, detachment rules: strips the "X model only." line, "(Once per battle)" limits and leading conditions, then classifies the opening as timed, reaction, passive, or unclassified. Unclassified rules become prompts. |
 | `src/wh40k11e/data/decisions.ts` | `suggestWh40kDecision` (the Enter default for a new rule), `hintWh40kPhase`, adding/removing decisions, relinking renumbered rules, disposition counts. |
 | `src/wh40k11e/data/decideSession.ts` | The prompt loop: grouping identical rules into one prompt, `retimed` (a reworded rule's default), the numbered timing menu `COMMON_TIMINGS`. |
-| `src/wh40k11e/data/decideCommand.ts` | `yarn data:wh40k11e:decide`, and the bulk keep for rules that changed only in spacing or capitals. |
+| `src/wh40k11e/data/decideCommand.ts` | `yarn data:decide`, and the bulk keep for rules that changed only in spacing or capitals. |
 | `src/wh40k11e/data/reviewFixes.ts` | One-question fixes for review findings (unpublished rows, decoder warnings, new source kinds, duplicate decisions, moved PDF quotes, dropped factions or Chapters). |
 | `src/wh40k11e/data/review.ts` | Applies the review file and raises findings (`Wh40kReviewFindingCode`). |
 | `src/wh40k11e/data/rules.ts` | Builds rules; a review timing override always beats the parser. |
@@ -65,8 +65,8 @@ The checklist a human follows is [docs/refreshing-rules-data.md](../../../docs/r
 
 ## Invariants to keep
 
-- A decision in the review file always wins over the parser, so parser changes can only move rules that had no decision (unresolved ones). After any parser change run `yarn data:wh40k11e:generate`; if it reports a difference, run `generate:write`, diff the rules before and after, and make sure every change is an unresolved rule gaining a correct timing. Commit the regenerated `runtime.json` with the change.
-- Every decision keeps `fingerprints` and `names`. Use the helpers in `decisions.ts`, never hand-written entries; after a hand edit run `yarn data:wh40k11e:decide --stamp`.
+- A decision in the review file always wins over the parser, so parser changes can only move rules that had no decision (unresolved ones). After any parser change run `yarn data:generate`; if it reports a difference, run `generate:write`, diff the rules before and after, and make sure every change is an unresolved rule gaining a correct timing. Commit the regenerated `runtime.json` with the change.
+- Every decision keeps `fingerprints` and `names`. Use the helpers in `decisions.ts`, never hand-written entries; after a hand edit run `yarn data:decide --stamp`.
 - Keep the strict WHEN grammar untouched; add new spellings to the lenient pass so every clause that parsed before parses the same way.
 - Tests that pick real units or detachments from the generated catalog must use names that survive a codex change (for example `/^Custodian Guard(?: Sodality)?$/` and the "Lions of the Emperor" detachment), or a refresh fails at step 7.
 - Do not trim `git status --porcelain` output: a leading space is part of the status code.

@@ -20,6 +20,14 @@ Instructions for AI coding assistants working in this repository. Humans should 
 - Treat display names as text, never as identity. Rules, datasheets, and detachments are keyed by stable source-record IDs.
 - The domain, selection, reminder, state, view, and generated layers under `src/wh40k11e/` must not import the Node-only data pipeline. `src/tests/wh40k11e/architectureBoundaries.test.ts` enforces it.
 
+## Working with the owner
+
+- The owner maintains this alone, often with an assistant that has no memory of earlier sessions. Leave the repository so the next person or assistant can pick it up: decisions in the review files with reasons, gotchas in the docs or the skill below, and follow-ups in TODO.md.
+- Explain in plain language and keep replies short: what happened, what it means, what to do next.
+- Write Markdown prose as one line per paragraph; do not hard-wrap it.
+- Implement and push rather than only suggesting, but never act on `upstream` and never delete files you find unused: list them in TODO.md for the owner to judge.
+- Rules-data refreshes and the updater: read [.claude/skills/refresh-rules-data/SKILL.md](.claude/skills/refresh-rules-data/SKILL.md) first. It records how the updater works, how to test it without Wahapedia access, and what earlier refreshes taught.
+
 ## Source precedence
 
 1. Games Workshop publications are the authority.

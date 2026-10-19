@@ -28,6 +28,13 @@ import {
   updateWh40kDispositionCounts,
 } from './decisions'
 import {
+  askWh40kYes,
+  captureWh40kCommand,
+  commitAndPushWh40kData,
+  runWh40kCommand,
+  wh40kChildEnv,
+} from './gitSteps'
+import {
   runWh40kSourcePipeline,
   WH40K_DEFAULT_PIPELINE_OPTIONS,
   WH40K_PIPELINE_CONFIG_PATH,
@@ -52,21 +59,10 @@ interface Flags {
 
 const step = (title: string) => console.log(`\n━━ ${title} ━━`)
 
-// vite-node sets NODE_ENV=development and VITE_* variables; a child `vite build` must not inherit them.
-const childEnv = Object.fromEntries(
-  Object.entries(process.env).filter(([key]) => key !== 'NODE_ENV' && !key.startsWith('VITE_'))
-)
-
-const run = (command: string, args: string[]): number =>
-  spawnSync(command, args, { stdio: 'inherit', env: childEnv }).status ?? 1
-
-const capture = (command: string, args: string[]): string =>
-  (spawnSync(command, args, { encoding: 'utf8', env: childEnv }).stdout ?? '').trim()
-
-const yes = async (io: Wh40kPromptIo, question: string, fallback = true): Promise<boolean> => {
-  const answer = (await io.ask(`${question} ${fallback ? '[Y/n]' : '[y/N]'} `)).trim().toLowerCase()
-  return answer ? answer.startsWith('y') : fallback
-}
+const childEnv = wh40kChildEnv
+const run = runWh40kCommand
+const capture = captureWh40kCommand
+const yes = askWh40kYes
 
 interface CandidateProvenance {
   bsdata?: { repository: string; commit: string }
@@ -520,21 +516,14 @@ const main = async (): Promise<void> => {
       )
     }
 
-    if (flags.commit && (await yes(io, 'Commit the refreshed data?'))) {
-      run('git', ['add', '-A', 'data/wh40k11e', WH40K_RUNTIME_PATH])
-      if (run('git', ['commit', '-q', '-F', messagePath]) !== 0) {
-        io.print('\nThe commit failed; see the error above.')
-      } else if (await yes(io, 'Committed. Push to GitHub now (it then rebuilds the site)?')) {
-        // GitHub may have moved on during a long refresh; the refresh commit only touches data files.
-        const pushed =
-          run('git', ['push', '-q', 'origin', 'master']) === 0 ||
-          (run('git', ['pull', '-q', '--rebase', 'origin', 'master']) === 0 &&
-            run('git', ['push', '-q', 'origin', 'master']) === 0)
-        if (pushed)
-          io.print('\nPushed. GitHub is publishing the site; close the "Rules data sources changed" issue.')
-        else io.print('\nThe push failed; run git pull --rebase && git push origin master when it is sorted.')
-      } else io.print('\nPush when ready: git push origin master')
-    } else {
+    if (
+      !flags.commit ||
+      !(await commitAndPushWh40kData(
+        io,
+        ['-F', messagePath],
+        'GitHub is publishing the site; close the "Rules data sources changed" issue.'
+      ))
+    ) {
       io.print(`\nNot committed. The suggested message is in ${messagePath}.`)
     }
   } finally {

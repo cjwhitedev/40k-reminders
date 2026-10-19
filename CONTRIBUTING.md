@@ -111,13 +111,13 @@ Faction IDs (`AC`, `SM`, `CSM`, ...) are Wahapedia's; the full list is in `runti
 
 Most reports are one of these. In every case, the fix goes in the review file, never `runtime.json`.
 
-Players report timing with **Suggest a timing change** in a reminder's ⋯ menu. It opens a `timing-suggestion` issue whose last field is the command to run, such as `yarn data:decide --rule "<rule ID>"`. Check the command is only that before pasting it: whoever opened the issue can edit it. Then answer the prompt with the timing the issue suggests, run the checks in section 3, commit, and close the issue.
+Players report timing with **Suggest a timing change** in a reminder's ⋯ menu. It opens a `timing-suggestion` issue whose last field is the command to run, such as `yarn data:decide --rule "<rule ID>"`. Check the command is only that before pasting it: whoever opened the issue can edit it. Then answer the prompt with the timing the issue suggests; `decide` finishes by running the checks and offering to commit and push. Close the issue.
 
 1. Reproduce it, if you need to: `yarn data:reminders --faction <ID> --detachment "<name>" --unit "<name>"`.
 2. **Wrong timing, or should not be a reminder** (army-building rules, designer's notes): in the app, open the reminder's ⋯ menu and choose **Copy rule ID**, then run `yarn data:decide --rule "<rule ID>"` and answer the prompt (see section 8 for the keys). A rule name works too, but offers every rule with that name. It saves the decision, with its fingerprint, to the review file.
 3. **Rule from another army showing up:** check `armyFactionKeywords` for the faction in the review file. Rules that say "If your Army Faction is X" only appear for armies whose keywords include X. Edit by hand.
-4. `decide` rewrites `runtime.json` when it finishes (run `yarn data:generate:write` yourself after a hand edit). Then run the checks in section 3.
-5. Commit the review file and `runtime.json` together, saying in the message which rule changed and why.
+4. When you finish, `decide` rewrites `runtime.json`, runs the checks in section 3, and offers to commit the review file and `runtime.json` (only those) and push them, with Enter for yes. After a hand edit instead, run `yarn data:generate:write` and the checks yourself.
+5. If you commit by hand, commit the review file and `runtime.json` together, saying in the message which rule changed and why.
 
 The Chapter filter for Space Marines comes from `subFactionKeywords` in the review file: a faction ID, a label, and the faction keywords (as Wahapedia prints them on datasheets) that split its units into groups. Units carrying none of them are offered for every group. To give another faction a filter, add an entry; `yarn data:review` reports any keyword no datasheet of that faction carries.
 

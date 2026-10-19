@@ -6,6 +6,7 @@ import { WH40K_RUNTIME_PATH } from '../generate/runtime'
 import { writeWh40kRuntimeFile } from '../generate/runtimeCommand'
 import type { Wh40kDecisionCandidate } from './decisions'
 import { sameWh40kWording, stampWh40kDecisions } from './decisions'
+import { commitAndPushWh40kData, runWh40kCommand } from './gitSteps'
 import {
   buildWh40kDecisionContext,
   readWh40kReview,
@@ -168,21 +169,36 @@ const run = async (): Promise<void> => {
   }
 
   const io = createWh40kTerminalIo()
-  const done = await decideWh40kPending(
-    options,
-    io,
-    rules.length ? context => context.matching(rules) : undefined
-  ).finally(() => io.close())
-  // data:update regenerates in its own step, with the change report.
-  if (done) {
+  try {
+    let picked: string[] = []
+    const done = await decideWh40kPending(
+      options,
+      io,
+      rules.length
+        ? context => {
+            const matched = context.matching(rules)
+            picked = Array.from(new Set(matched.map(candidate => candidate.name)))
+            return matched
+          }
+        : undefined
+    )
+    if (!done) {
+      io.print('Run yarn data:decide again to finish the rest; runtime.json is regenerated when it finishes.')
+      return
+    }
+    // data:update regenerates in its own step, with the change report.
     await writeWh40kRuntimeFile(options)
-    console.log(
-      'Next: the checks in CONTRIBUTING.md section 3, then commit the review file and runtime.json.'
-    )
-  } else {
-    console.log(
-      'Run yarn data:decide again to finish the rest; runtime.json is regenerated when it finishes.'
-    )
+    io.print('\nChecking the site (lint, types, build, tests)...')
+    if (runWh40kCommand('yarn', ['prepush']) !== 0) {
+      io.print('\nThe checks failed; fix them, then commit the review file and runtime.json.')
+      process.exitCode = 1
+      return
+    }
+    const subject = picked.length ? `Retime ${picked.join(', ')}` : 'Decide rule timings'
+    if (!(await commitAndPushWh40kData(io, ['-m', `${subject} in ${path.basename(options.review)}`])))
+      io.print('\nNot committed; the review file and runtime.json are ready when you are.')
+  } finally {
+    io.close()
   }
 }
 

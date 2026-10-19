@@ -65,7 +65,8 @@ The checklist a human follows is [docs/refreshing-rules-data.md](../../../docs/r
 
 ## Invariants to keep
 
-- A decision in the review file always wins over the parser, so parser changes can only move rules that had no decision (unresolved ones). After any parser change run `yarn data:generate`; if it reports a difference, run `generate:write`, diff the rules before and after, and make sure every change is an unresolved rule gaining a correct timing. Commit the regenerated `runtime.json` with the change.
+- A decision in the review file always wins over the parser, so parser changes can only move rules that had no decision (unresolved ones). After any parser change run `yarn data:generate`; if it reports a difference, run `generate:write`, diff the rules before and after, and make sure every change is an unresolved rule gaining a correct timing. Commit the regenerated `runtime.json` with the change. If the sources `pipeline.json` names are not on this machine (they live in the ignored `.cache/` of whichever machine ran the refresh), say so: the owner runs `yarn data:generate:write` on that machine and pushes.
+- `yarn data:update` and `yarn data:decide` both end by running the checks and offering to commit only `data/wh40k11e` and `runtime.json` and push (`gitSteps.ts`).
 - Every decision keeps `fingerprints` and `names`. Use the helpers in `decisions.ts`, never hand-written entries; after a hand edit run `yarn data:decide --stamp`.
 - Keep the strict WHEN grammar untouched; add new spellings to the lenient pass so every clause that parsed before parses the same way.
 - Tests that pick real units or detachments from the generated catalog must use names that survive a codex change (for example `/^Custodian Guard(?: Sodality)?$/` and the "Lions of the Emperor" detachment), or a refresh fails at step 7.
@@ -95,6 +96,7 @@ Reading the official Core Rules: the PDF is in the official candidate (`node -p 
 - Combat Doctrines are picked at the start of your Command phase, so "select a doctrine one additional time" rules default there.
 - "At the end of a phase in which this model is destroyed" is a reaction (a trigger), not a window.
 - "In a turn this unit remained stationary/made a normal move, ..." and "Attacks allocated to this model have -1 D" are always active.
+- Core Rules 24.04 and 10.05: [ASSAULT] lets a unit that advanced use assault shooting, a shooting type of the Shooting phase. A rule whose whole effect is granting [ASSAULT] is timed in your Shooting phase; a rule that also grants something else (Move, re-rolls, [LETHAL HITS]) stays always active so its other effect is not buried.
 - Fight-phase rules are usually either player's turn ("the Fight phase").
 - On 2026-10-16 Wahapedia switched Space Marines and Custodes to their new codexes: chapter detachments and the old Blood Angels, Dark Angels and Deathwatch army rules went away, Custodian Guard became Custodian Guard Sodality, and Horus Heresy-era tanks left the Chaos legions. The Chapter filter's `armyRules` (in the review's `subFactionKeywords`) need relinking to the new rules (The Ravenwing, The Deathwing, Kill Team, Curse of the Wulfen); see TODO.md.
 - Tester feedback still open (TODO.md): reactions that name a phase belong in that phase, multi-select detachments with detachment points, Army rules then Detachment rules first in each section.

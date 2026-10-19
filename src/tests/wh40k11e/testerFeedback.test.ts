@@ -133,4 +133,14 @@ describe('tester feedback, 2026-10-19 timing issues', () => {
       endOfOpponentMovement,
     ])
   })
+
+  it('lists Chosen Marauders in your Shooting and Charge phases, not always active', () => {
+    const marauders = WH40K_CATALOG.rules.filter(rule => rule.name === 'Chosen Marauders')
+    expect(marauders.length).toBeGreaterThan(0)
+    for (const rule of marauders)
+      expect(rule.timing?.windows).toEqual([
+        { kind: 'turn-phase', phase: 'shooting', moment: 'during', perspective: 'your' },
+        { kind: 'turn-phase', phase: 'charge', moment: 'during', perspective: 'your' },
+      ])
+  })
 })

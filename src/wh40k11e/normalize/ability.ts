@@ -45,6 +45,9 @@ const ONLY_ASSAULT =
   /^(?:(?:while|whilst|if)\b[^.]*?,\s*)?(?:(?!\band\b)[^.,\n])*\b(?:ranged (?:attacks|weapons)|weapons)\b(?:(?!\band\b)[^.\n])*\b(?:have|has)\s+(?:the\s+)?\[assault\](?:\s+ability)?\.?$/i
 const PASSIVE_SUBJECT =
   /^[^,.:;]{1,80}? (?:units?|models?) (?:from your army|with this ability) (?:have|has|gain|gains|are eligible|is eligible|can ignore)\b/i
+// "Eligible to shoot and declare a charge in a turn in which it Advanced" matters in those phases, not all game.
+const AFTER_MOVING =
+  /\beligible to (shoot|declare a charge)(?: and (shoot|declare a charge))? in a turn in which (?:it|they|that unit|this unit) (?:advanced|fell back)\b(?: or (?:advanced|fell back)\b)?/i
 const USES_STRATAGEM =
   /^(?:(?:when|each time|every time|whenever) (?:you (?:target|select)|this [a-z]+ is (?:targeted|selected))|you can (?:target|use))\b/i
 
@@ -172,6 +175,23 @@ export const parseWh40kAbilityTiming = (
       const timing: Wh40kTiming = {
         windows: [{ kind: 'turn-phase', phase: 'shooting', moment: 'during', perspective: 'your' }],
         raw: 'Grants [ASSAULT], used for assault shooting in your Shooting phase (Core Rules 24.04, 10.05)',
+        ...(usage ? { usage } : {}),
+      }
+      return { ...base, kind: 'timed', timing, diagnostics }
+    }
+    const afterMoving = rest.match(AFTER_MOVING)
+    if (afterMoving) {
+      const verbs = [afterMoving[1], afterMoving[2]].map(verb => verb?.toLowerCase())
+      const timing: Wh40kTiming = {
+        windows: (['shoot', 'declare a charge'] as const)
+          .filter(verb => verbs.includes(verb))
+          .map(verb => ({
+            kind: 'turn-phase',
+            phase: verb === 'shoot' ? 'shooting' : 'charge',
+            moment: 'during',
+            perspective: 'your',
+          })),
+        raw: `Is ${afterMoving[0]}`,
         ...(usage ? { usage } : {}),
       }
       return { ...base, kind: 'timed', timing, diagnostics }

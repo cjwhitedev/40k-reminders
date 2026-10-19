@@ -208,6 +208,31 @@ describe('parseWh40kAbilityTiming', () => {
     }
   })
 
+  it('times shooting or charging after Advancing or Falling Back in those phases of your turn', () => {
+    const shooting = { kind: 'turn-phase', phase: 'shooting', moment: 'during', perspective: 'your' }
+    const charge = { kind: 'turn-phase', phase: 'charge', moment: 'during', perspective: 'your' }
+    const windows = (text: string) => parseWh40kAbilityTiming(text).timing?.windows
+    expect(
+      windows(
+        'This unit is eligible to shoot and declare a charge in a turn in which it Advanced or Fell Back.'
+      )
+    ).toEqual([shooting, charge])
+    expect(windows('This unit is eligible to declare a charge in a turn in which it Advanced.')).toEqual([
+      charge,
+    ])
+    expect(
+      windows(
+        'While this model is leading a unit, that unit is eligible to shoot in a turn in which it Fell Back.'
+      )
+    ).toEqual([shooting])
+    expect(
+      parseWh40kAbilityTiming(
+        'You can re-roll Charge rolls made for this unit, and this unit is eligible to declare a charge in a turn in which it Fell Back.'
+      ).timing?.raw
+    ).toBe('Is eligible to declare a charge in a turn in which it Fell Back')
+    expect(parseWh40kAbilityTiming('This unit is eligible to shoot while engaged.').kind).toBe('passive')
+  })
+
   it('leaves unfamiliar openers unclassified for review', () => {
     const result = parseWh40kAbilityTiming(
       'Keep a tally of how many enemy models are destroyed by this unit.'

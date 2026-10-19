@@ -148,7 +148,7 @@ Every prompt has a default that is normally right, so pressing Enter throughout 
    - rules the parsers cannot read, with a **suggested** answer from an earlier same-named rule or the wording (always active when the wording names no time);
    - rules reworded since they were decided, showing the text the decision was made against. Rules that changed only in spacing or capital letters are listed first and kept with one Enter.
 
-   For each, press **Enter** to accept the suggestion (or keep the old decision), or choose **t** timed (type the timing the way a WHEN: line reads, such as `start of your Command phase` or `before the battle: Deploy Armies step`), **r** reaction, **p** always active, **n** not a reminder, **s** skip, **q** save and quit. An answer covers every copy of the same rule on other datasheets or factions. Every answer is saved as you go.
+   For each, press **Enter** to accept the suggestion (or keep the old decision), or choose **t** timed (pick a numbered timing, several numbers such as `5 7` for more than one phase, or type the timing the way a WHEN: line reads, such as `start of your Command phase` or `before the battle: Deploy Armies step`, joining several with "or"), **r** reaction, **p** always active, **n** not a reminder, **s** skip, **q** save and quit. An answer covers every copy of the same rule on other datasheets or factions. Every answer is saved as you go.
 5. **Generates** `runtime.json`.
 6. **Reports what changed** by faction, and saves the list and a ready commit message under `.cache/wh40k11e/reports/`.
 7. **Runs the checks** from section 3.

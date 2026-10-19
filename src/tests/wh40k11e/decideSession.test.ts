@@ -134,6 +134,26 @@ describe('runWh40kDecisionSession', () => {
     ])
   })
 
+  it('takes more than one phase, by several numbers or by typing them joined with "or"', async () => {
+    const shooting = { kind: 'turn-phase', phase: 'shooting', moment: 'during', perspective: 'your' }
+    const charge = { kind: 'turn-phase', phase: 'charge', moment: 'during', perspective: 'your' }
+    const { result } = session(
+      [
+        candidate('Marauders', 'Keep a tally of moves.'),
+        candidate('Raiders', 'Keep a tally of raids.'),
+        candidate('Typo', 'Keep a tally of typos.'),
+      ],
+      ['t', '5 7', 't', 'your Shooting phase or your Charge phase', 'y', 't', '5 99', '5,7,5']
+    )
+    const decided = (await result).review.timingOverrides ?? []
+
+    expect(decided.map(entry => entry.windows)).toEqual([
+      [shooting, charge],
+      [shooting, charge],
+      [shooting, charge],
+    ])
+  })
+
   it('skips and quits without losing answers already saved', async () => {
     const { result, save } = session(
       [candidate('A', 'Keep a tally.'), candidate('B', 'Keep a tally.'), candidate('C', 'Keep a tally.')],

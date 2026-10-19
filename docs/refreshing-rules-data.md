@@ -68,7 +68,7 @@ Before the prompts start, rules whose wording changed only in spacing or capital
 | Key | Meaning |
 | --- | --- |
 | Enter | The answer shown after `[Enter]`: the suggestion, or keeping the existing decision. |
-| `t` | Timed. Pick a numbered timing, press Enter for the one shown (the suggestion, or the phase the wording points at), or type one the way a WHEN: line reads, such as `end of your opponent's Charge phase` or `before the battle: Deploy Armies step`. |
+| `t` | Timed. Pick a numbered timing, press Enter for the one shown (the suggestion, or the phase the wording points at), or type one the way a WHEN: line reads, such as `end of your opponent's Charge phase` or `before the battle: Deploy Armies step`. For a rule that belongs in more than one place, type several numbers (`5 7` for your Shooting and Charge phases), or join typed timings with "or". |
 | `r` | Reaction: happens in response to something (each time, when, after). You are asked what triggers it. |
 | `p` | Always active. |
 | `n` | Not a reminder: army building, a Designer's Note, framing text, or something else with your reason. |

@@ -263,12 +263,26 @@ export const runWh40kDecisionSession = async (input: {
       for (;;) {
         const typed = (
           await io.ask(
-            `  Number, or type a timing like a WHEN: line ('end of your opponent's Charge phase'), b to go back\n  [Enter] ${fallbackText} (${fallback.because}) > `
+            `  Number, or several for more than one (5 7), or type a timing like a WHEN: line ('end of your opponent's Charge phase'), b to go back\n  [Enter] ${fallbackText} (${fallback.because}) > `
           )
         ).trim()
         if (typed.toLowerCase() === 'b') return undefined
-        const listed = /^\d+$/.test(typed) ? WH40K_COMMON_TIMINGS[Number(typed) - 1]?.[1] : undefined
-        const windows = !typed ? fallback.windows : parseWh40kWindowsInput(listed ?? typed)
+        const picks = /^\d+(?:[\s,+]+\d+)*$/.test(typed)
+          ? typed.split(/[\s,+]+/).map(number => WH40K_COMMON_TIMINGS[Number(number) - 1]?.[1])
+          : undefined
+        const listed = picks?.every(Boolean) ? (picks as string[]) : undefined
+        const windows = !typed
+          ? fallback.windows
+          : listed
+            ? listed
+                .flatMap(phrase => parseWh40kWindowsInput(phrase) ?? [])
+                .filter(
+                  (window, index, all) =>
+                    all.findIndex(other => JSON.stringify(other) === JSON.stringify(window)) === index
+                )
+            : picks
+              ? undefined
+              : parseWh40kWindowsInput(typed)
         if (!windows?.length) {
           io.print('  Could not read that; pick a number or use the wording a WHEN: line would use.')
           continue

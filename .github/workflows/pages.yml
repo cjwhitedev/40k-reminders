@@ -14,7 +14,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  # Renamed from "pages" on 2026-10-19: GitHub left three runs wedged in that group and would not cancel them.
+  group: pages-deploy
   cancel-in-progress: false
 
 jobs:

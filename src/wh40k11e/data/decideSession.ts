@@ -219,7 +219,8 @@ export const runWh40kDecisionSession = async (input: {
     candidate: Wh40kDecisionCandidate,
     choice: string
   ): Promise<Wh40kDecision | undefined> => {
-    const reason = async (fallback: string) => (await io.ask(`  Reason [${fallback}]: `)).trim() || fallback
+    // The review file keeps a reason per decision; the rule's own opening words serve, so nobody is asked.
+    const reason = defaultWh40kReason(candidate.text)
     if (choice === 't') {
       const suggested = suggestWh40kDecision(candidate, new Map())
       const hint = hintWh40kPhase(candidate.text)
@@ -249,15 +250,15 @@ export const runWh40kDecisionSession = async (input: {
           const answer = await io.ask(`  → ${windows.map(describeWh40kWindow).join(' or ')}. Right? [Y/n] `)
           if (answer.trim().toLowerCase().startsWith('n')) continue
         }
-        return { kind: 'timed', windows, reason: await reason(defaultWh40kReason(candidate.text)) }
+        return { kind: 'timed', windows, reason }
       }
     }
     if (choice === 'r') {
       const fallback = candidate.text.replace(/^•\s*/, '').split(/,\s/)[0].replace(/\.$/, '')
       const trigger = (await io.ask(`  What triggers it? [${fallback}]: `)).trim() || fallback
-      return { kind: 'reaction', trigger, reason: await reason(defaultWh40kReason(candidate.text)) }
+      return { kind: 'reaction', trigger, reason }
     }
-    if (choice === 'p') return { kind: 'passive', reason: await reason(defaultWh40kReason(candidate.text)) }
+    if (choice === 'p') return { kind: 'passive', reason }
     if (choice === 'n') {
       const suggested = suggestWh40kDecision(candidate, new Map()).decision
       const fallback =

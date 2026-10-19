@@ -71,7 +71,7 @@ describe('runWh40kDecisionSession', () => {
         candidate('Blast', 'Each time this unit shoots, add 1 to Hit rolls.'),
         candidate('Tally', 'Keep a tally of destroyed models.'),
       ],
-      ['', 't', 'end of your Fight phase', 'y', '']
+      ['', 't', 'end of your Fight phase', 'y']
     )
     const { review: decided, decided: count, quit } = await result
 
@@ -123,7 +123,7 @@ describe('runWh40kDecisionSession', () => {
         ),
         candidate('Pod', 'When this unit is set up and its passengers have disembarked, they can act.'),
       ],
-      ['t', '', '', 't', '4', '']
+      ['t', '', 't', '4']
     )
     const decided = (await result).review.timingOverrides ?? []
 
@@ -137,7 +137,7 @@ describe('runWh40kDecisionSession', () => {
   it('skips and quits without losing answers already saved', async () => {
     const { result, save } = session(
       [candidate('A', 'Keep a tally.'), candidate('B', 'Keep a tally.'), candidate('C', 'Keep a tally.')],
-      ['s', 'p', '', 'q']
+      ['s', 'p', 'q']
     )
     const outcome = await result
 
@@ -156,7 +156,7 @@ describe('runWh40kDecisionSession', () => {
         copy('CSM', 'Chaos Space Marines › Mastodon', 'Keep a  tally of DESTROYED models.'),
         copy('DG', 'Death Guard › Mastodon', 'Different wording.'),
       ],
-      ['p', '', 's']
+      ['p', 's']
     )
     const outcome = await result
 

@@ -75,7 +75,7 @@ Before the prompts start, rules whose wording changed only in spacing or capital
 | `s` | Skip for now. |
 | `q` | Save and quit. |
 
-Every answer is saved as soon as you give it. Typing `t`, `r`, `p` or `n` asks for a reason; Enter accepts the quoted rule text.
+Every answer is saved as soon as you give it, with the opening of the rule's text as its reason in the review file.
 
 ## Finish
 

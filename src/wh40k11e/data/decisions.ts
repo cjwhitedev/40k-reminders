@@ -141,7 +141,11 @@ const PHASE_HINTS: Array<{ pattern: RegExp; window: Wh40kGameWindow; because: st
     window: MOVEMENT_PHASE,
     because: 'it is about moving or disembarking',
   },
-  { pattern: /\branged attack|\bshoot/i, window: yourPhase('shooting'), because: 'it is about shooting' },
+  {
+    pattern: /\branged attack|\bshoot|\[assault\]/i,
+    window: yourPhase('shooting'),
+    because: 'it is about shooting',
+  },
   { pattern: /\bcharge\b/i, window: yourPhase('charge'), because: 'it is about charging' },
   {
     pattern: /\bmelee attack|\bselected to fight|\bfights?\b|\bpile-in|\bconsolidat/i,

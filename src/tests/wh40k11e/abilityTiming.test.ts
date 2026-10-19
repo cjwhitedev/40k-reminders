@@ -136,6 +136,26 @@ describe('parseWh40kAbilityTiming', () => {
     ).toBe('unclassified')
   })
 
+  it('times a rule whose whole effect is granting [ASSAULT] in your Shooting phase (Core Rules 24.04, 10.05)', () => {
+    const shooting = [{ kind: 'turn-phase', phase: 'shooting', moment: 'during', perspective: 'your' }]
+    for (const text of [
+      'This unit’s ranged attacks have [ASSAULT].',
+      'While this model is leading a unit, ranged weapons equipped by models in that unit have the [ASSAULT] ability.',
+      'The bearer’s ranged weapons have the [assault] ability.',
+    ]) {
+      const result = parseWh40kAbilityTiming(text)
+      expect(result.kind).toBe('timed')
+      expect(result.timing?.windows).toEqual(shooting)
+    }
+    for (const text of [
+      'While this model is leading a unit, add 3" to the Move characteristic of models in that unit and ranged weapons equipped by models in that unit have the [ASSAULT] ability.',
+      'The bearer’s ranged weapons have the [ASSAULT] ability. In addition, once per battle, in the Fight phase, the bearer can fight first.',
+      'While a friendly unit is within 6" of this model, ranged weapons equipped by models in that unit have the [ASSAULT] and [LETHAL HITS] abilities.',
+    ]) {
+      expect(parseWh40kAbilityTiming(text).kind).toBe('passive')
+    }
+  })
+
   it('leaves unfamiliar openers unclassified for review', () => {
     const result = parseWh40kAbilityTiming(
       'Keep a tally of how many enemy models are destroyed by this unit.'

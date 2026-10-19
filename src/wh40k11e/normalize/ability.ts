@@ -40,6 +40,9 @@ const PASSIVE =
   /^(?:while|whilst|if|unless otherwise stated|for the purposes of|this (?:model|unit|officer|[a-z-]+ model)\b|this [a-z' -]{1,40}? can issue\b|the bearer|models in (?:this|the bearer's) unit|each model in this unit|friendly|enemy units|attacks that target|ranged weapons|melee weapons|weapons equipped|add \d|subtract \d|you can re-roll|you can ignore|units can|improve|worsen|you cannot include|your army cannot|your army can only include|you cannot re-roll|enemy models cannot|(?:ranged |melee )?attacks that target|(?:the area|certain areas) of the battlefield|in a turn\b|attacks (?:allocated to|made by)|each enemy unit|being (?:engaged|battle-shocked)|the [a-z, ]{1,80}? doctrines? (?:is|are) active)\b/i
 // "While this model is leading a unit, in your Command phase, ...": a standing condition before a window.
 const CONDITION_CLAUSE = /^(?:while|whilst|if)\b[^.:;]*?,\s*/i
+// The whole rule is "(While ..., ) <ranged weapons/attacks> have [ASSAULT]"; a rule that also grants something else is not.
+const ONLY_ASSAULT =
+  /^(?:(?:while|whilst|if)\b[^.]*?,\s*)?(?:(?!\band\b)[^.,\n])*\b(?:ranged (?:attacks|weapons)|weapons)\b(?:(?!\band\b)[^.\n])*\b(?:have|has)\s+(?:the\s+)?\[assault\](?:\s+ability)?\.?$/i
 const PASSIVE_SUBJECT =
   /^[^,.:;]{1,80}? (?:units?|models?) (?:from your army|with this ability) (?:have|has|gain|gains|are eligible|is eligible|can ignore)\b/i
 
@@ -134,7 +137,17 @@ export const parseWh40kAbilityTiming = (
   }
   // "At the end of a phase in which this model is destroyed" reads as a window but is a trigger.
   if (REACTION.test(rest)) return { ...base, kind: 'reaction', diagnostics }
-  if (PASSIVE.test(rest) || PASSIVE_SUBJECT.test(rest)) return { ...base, kind: 'passive', diagnostics }
+  if (PASSIVE.test(rest) || PASSIVE_SUBJECT.test(rest)) {
+    if (ONLY_ASSAULT.test(rest.trim())) {
+      const timing: Wh40kTiming = {
+        windows: [{ kind: 'turn-phase', phase: 'shooting', moment: 'during', perspective: 'your' }],
+        raw: 'Grants [ASSAULT], used for assault shooting in your Shooting phase (Core Rules 24.04, 10.05)',
+        ...(usage ? { usage } : {}),
+      }
+      return { ...base, kind: 'timed', timing, diagnostics }
+    }
+    return { ...base, kind: 'passive', diagnostics }
+  }
 
   diagnostics.push({
     code: 'unclassified-timing',

@@ -160,7 +160,7 @@ describe('reminder source menu', () => {
     expect(getSources).toHaveBeenCalledTimes(2)
   })
 
-  it('asks once when a menu is closed and reopened while the chunk is still in flight', () => {
+  it('asks once when a menu is closed and reopened while the chunk is still in flight', async () => {
     const getSources = vi.fn(() => new Promise<ReminderSourceLink[]>(() => {}))
     renderReminders(getSources, [reminder('reminder:one')])
 
@@ -175,6 +175,8 @@ describe('reminder source menu', () => {
     openMenu()
     expect(openMenuNode()).not.toBeNull()
     expect(getSources).toHaveBeenCalledTimes(1)
+    // The dropdown positions itself a tick later; let that land inside act().
+    await act(async () => {})
   })
 
   it('drops a resolution that lands after its reminder unmounted', async () => {

@@ -2,6 +2,7 @@
 
 import GenericModal from 'components/modals/generic/generic_modal'
 import { act } from 'react'
+import Modal from 'react-modal'
 import { render, unmountComponentAtNode } from 'tests/support/reactTestHelpers'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -23,6 +24,7 @@ describe('generic modal processing state', () => {
     container = document.createElement('div')
     container.id = 'root'
     document.body.appendChild(container)
+    Modal.setAppElement(container)
   })
 
   afterEach(() => {

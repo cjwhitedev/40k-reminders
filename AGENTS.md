@@ -58,6 +58,8 @@ yarn test --run
 
 After touching rules data, also run `yarn data:rules` (fails on unresolved matched-play timing) and `yarn data:generate` (fails if the checked-in runtime is stale). Both need the source candidates in `.cache/`; see CONTRIBUTING.md.
 
+Vitest switches to a quiet reporter when an AI agent runs it, which hides console output from passing tests. To see the warnings CI prints, run `yarn vitest run --reporter=default`.
+
 ## Conventions
 
 - Prettier: two spaces, no semicolons, single quotes, 110 columns. A pre-commit hook formats staged files.

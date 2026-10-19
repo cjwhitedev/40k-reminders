@@ -399,6 +399,7 @@ export default defineConfig({
      * starved the CPU enough that short tests began tripping the default 5s timeout under load.
      */
     environment: 'node',
+    setupFiles: ['src/tests/support/actEnvironment.ts'],
     globals: true,
   },
 })

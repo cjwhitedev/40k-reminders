@@ -1,13 +1,19 @@
 import Reminders from 'components/info/reminders'
 import { REMINDERS_ANCHOR_ID } from 'components/info/remindersAnchor'
 import { SelectionCards } from 'components/input/army_builder'
+import DisplayOptions from 'components/input/toolbar/displayOptions'
 import Toolbar from 'components/input/toolbar/toolbar'
 import Footer from 'components/page/footer'
 import { Header } from 'components/page/homeHeader'
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState, type CSSProperties } from 'react'
 import { AOS_REMINDERS_AUTHOR_URL, AOS_REMINDERS_URL, WH40K_AUTHOR_URL, WH40K_GITHUB_URL } from 'utils/env'
 import { WH40K_CATALOG } from '../../wh40k11e/generated/catalog'
 import { loadWh40kArmyDocument, saveWh40kArmyDocument } from '../../wh40k11e/runtime/armyStorage'
+import {
+  loadWh40kDisplaySettings,
+  saveWh40kDisplaySettings,
+  WH40K_DEFAULT_DISPLAY_SETTINGS,
+} from '../../wh40k11e/runtime/displaySettings'
 import {
   createWh40kArmyDocument,
   setWh40kReminderPreference,
@@ -15,6 +21,7 @@ import {
 } from '../../wh40k11e/state/armyDocument'
 import {
   createWh40kBuilderViewModel,
+  WH40K_ALLY_OPTION_PREFIX,
   type Wh40kBuilderGroup,
   type Wh40kBuilderGroupKey,
 } from '../../wh40k11e/view/builder'
@@ -71,12 +78,18 @@ const PrintHeader = ({
   const detachment = picked('detachment')[0]
   const enhancements = picked('enhancement')
   const units = picked('datasheet')
+  const allies = picked('ally')
 
   return (
     <header className="PrintHeader container">
       <h1>{armyName}</h1>
       {(subFaction || detachment) && (
         <p className="PrintStrap">{[subFaction, detachment].filter(Boolean).join(' · ')}</p>
+      )}
+      {allies.length > 0 && (
+        <p className="PrintRoster">
+          <strong>Allies:</strong> {allies.join(', ')}
+        </p>
       )}
       {enhancements.length > 0 && (
         <p className="PrintRoster">
@@ -102,10 +115,27 @@ const loadDocument = (): Wh40kArmyDocument => {
   }
 }
 
+const loadDisplaySettings = () => {
+  try {
+    return loadWh40kDisplaySettings(window.localStorage)
+  } catch {
+    return WH40K_DEFAULT_DISPLAY_SETTINGS
+  }
+}
+
 const Wh40kHome = () => {
   const [document, setDocument] = useState(loadDocument)
+  const [display, setDisplay] = useState(loadDisplaySettings)
   const [isGameMode, setIsGameMode] = useState(false)
   const [clearArmyModalIsOpen, setClearArmyModalIsOpen] = useState(false)
+
+  useEffect(() => {
+    try {
+      saveWh40kDisplaySettings(window.localStorage, display)
+    } catch {
+      // As with the army: without storage the choice lasts until the page closes.
+    }
+  }, [display])
 
   useEffect(() => {
     try {
@@ -138,6 +168,11 @@ const Wh40kHome = () => {
           .filter(sheet => sheet.context === 'legends')
           .map(sheet => sheet.sourceRecordId as string)
       ),
+    []
+  )
+  const datasheetFactions = useMemo(
+    () =>
+      new Map<string, string>(WH40K_CATALOG.datasheets.map(sheet => [sheet.sourceRecordId, sheet.factionId])),
     []
   )
   const hiddenCount = reminders.filter(reminder => reminder.hidden).length
@@ -174,6 +209,20 @@ const Wh40kHome = () => {
         return next
       }
       if (key === 'enhancement') return { ...current, enhancementIds: selectedIds }
+      if (key === 'ally') {
+        // Dropping an ally drops its units too.
+        const allyFactionIds = selectedIds.map(id => id.slice(WH40K_ALLY_OPTION_PREFIX.length))
+        const fielded = new Set([current.factionId, ...allyFactionIds])
+        const datasheetIds = current.datasheetIds.filter(id => fielded.has(datasheetFactions.get(id) ?? ''))
+        const next: Wh40kArmyDocument = {
+          ...current,
+          datasheetIds,
+          allowsLegends: datasheetIds.some(id => legendsIds.has(id)),
+        }
+        if (allyFactionIds.length) next.allyFactionIds = allyFactionIds
+        else delete next.allyFactionIds
+        return next
+      }
       return current
     })
   }
@@ -211,7 +260,10 @@ const Wh40kHome = () => {
     )
 
   return (
-    <div>
+    <div
+      className={display.printInColour ? 'PrintInColour' : undefined}
+      style={{ '--title-bar-colour': display.titleBarColour } as CSSProperties}
+    >
       <a
         className="SkipLink visually-hidden-focusable bg-light text-dark d-print-none"
         href={`#${REMINDERS_ANCHOR_ID}`}
@@ -259,6 +311,8 @@ const Wh40kHome = () => {
           updateArmyStatus="idle"
         />
       )}
+
+      {!isGameMode && <DisplayOptions settings={display} onChange={setDisplay} />}
 
       <Reminders
         getSources={noSources}

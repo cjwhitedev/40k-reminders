@@ -42,7 +42,7 @@ const SelectionCard = <Id extends string>({
   const isMobile = useIsMobile()
   const [isExpanded, setIsExpanded] = useState(initiallyExpanded)
   const toOption = (option: SelectionCardOption<Id>): Option<Id> => ({
-    label: option.name,
+    label: option.overlay === 'legends' ? `${option.name} [L]` : option.name,
     value: option.id,
     disabled: !option.available && !option.selected,
   })
@@ -130,6 +130,12 @@ const SelectionCard = <Id extends string>({
               },
             })}
           />
+          {legendsOptions.length > 0 && (
+            <p className="small text-muted mt-2 mb-0">
+              [L] marks Warhammer Legends units, listed last. They are not part of matched play, so check your
+              opponent is happy to use them.
+            </p>
+          )}
         </div>
       </div>
     </div>

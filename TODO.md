@@ -12,10 +12,10 @@ Follow-ups for 40K Reminders. Tick items off or delete them as they are done.
   - [ ] Reactions that name a phase belong in that phase: "makes a ranged attack" (Ballistus Strike) in the Shooting phase, "selected to fight" or "melee attack" (Deeds of Heroism) in the Fight phase, both for an attack of either kind (Executioner), and Deep Strike's ingress move in the Movement phase. Fight-phase rules are usually either player's turn.
   - [ ] Within each section, order Army rules first, then Detachment rules, then everything else.
   - [ ] Still no Deathwatch units under the Chapter filter (see Data below); recheck after the refresh, which brings the new Deathwatch detachments.
-- [ ] 2026-10-19 consolidated feedback:
-  - [ ] Colour the reminder section title bars by default, with a picker of a handful of choices and a colour or black-and-white print option. The 11th-edition Core Rules do not colour-code the phases: every page uses one olive green accent (`#36441d`), with a red (`#a6180e`) and a blue (`#003c62`) on the example diagrams. Olive green would make an on-brand default; blue and red could mark your turn and your opponent's.
-  - [ ] Mark Legends units in the unit list, for example with an [L] after the name, and add a short note near the list saying what it means. They already sit under a "Legends" heading at the end of the list (`army_builder.tsx`), but that heading is easy to scroll past.
-  - [ ] Let an army include more than one faction where its rules allow (allies). The army document holds a single `factionId` today, so this touches the army document, selection, and the builder.
+- [x] 2026-10-19 consolidated feedback. Ask the testers to look again:
+  - [x] Title-bar colours: the site's teal stays the default, with four more swatches (crimson, forest, purple, bronze) under the toolbar and a "Print in colour" switch; printing stays black and white unless it is on. The choice is kept apart from the army, so clearing or switching armies keeps it. (The Core Rules do not colour-code phases.)
+  - [x] Legends units carry an [L] after their name in the list and on the picked chips, with a note under the list when any are offered.
+  - [x] Allies: an Allies card adds other factions' units, listed under "Allies: <faction>" after the army's own. The army's own faction still decides the detachment, army rules, and Army Faction keyword checks; removing an ally removes its units.
 
 ## Print sheet
 

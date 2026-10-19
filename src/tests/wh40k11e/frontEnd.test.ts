@@ -6,6 +6,13 @@ import {
   WH40K_ARMY_STORAGE_KEY,
 } from '../../wh40k11e/runtime/armyStorage'
 import {
+  loadWh40kDisplaySettings,
+  saveWh40kDisplaySettings,
+  WH40K_DEFAULT_DISPLAY_SETTINGS,
+  WH40K_DISPLAY_STORAGE_KEY,
+  WH40K_TITLE_BAR_COLOURS,
+} from '../../wh40k11e/runtime/displaySettings'
+import {
   createWh40kArmyDocument,
   deserializeWh40kArmyDocument,
   serializeWh40kArmyDocument,
@@ -98,14 +105,79 @@ describe('40K army storage', () => {
   })
 })
 
+describe('40K allies', () => {
+  const agent = () =>
+    WH40K_CATALOG.datasheets.find(sheet => sheet.factionId === 'AoI' && sheet.context === 'current')!
+  const allied = (): Wh40kArmyDocument => ({
+    ...custodes(),
+    allyFactionIds: ['AoI'],
+    datasheetIds: [custodianGuard().sourceRecordId, agent().sourceRecordId],
+  })
+
+  it('lists an allied faction’s units under their own heading after the army’s own', () => {
+    const units = createWh40kBuilderViewModel(WH40K_CATALOG, allied()).groups[0].options
+    const sections = Array.from(new Set(units.map(option => option.section)))
+    expect(sections[sections.length - 1]).toBe('Allies: Imperial Agents')
+    expect(units.find(option => option.id === agent().sourceRecordId)?.selected).toBe(true)
+    const allies = createWh40kBuilderViewModel(WH40K_CATALOG, allied()).groups.find(
+      group => group.key === 'ally'
+    )!
+    expect(allies.options.filter(option => option.selected).map(option => option.name)).toEqual([
+      'Imperial Agents',
+    ])
+    expect(allies.options.some(option => option.name === 'Adeptus Custodes')).toBe(false)
+  })
+
+  it('keeps allied units through storage, and rejects another faction’s unit without the ally', () => {
+    const document = allied()
+    expect(deserializeWh40kArmyDocument(serializeWh40kArmyDocument(document), WH40K_CATALOG)).toEqual(
+      document
+    )
+    const withoutAlly = { ...document }
+    delete withoutAlly.allyFactionIds
+    expect(deserializeWh40kArmyDocument(JSON.stringify(withoutAlly), WH40K_CATALOG)).toBeNull()
+    expect(
+      deserializeWh40kArmyDocument(JSON.stringify({ ...document, allyFactionIds: ['AC'] }), WH40K_CATALOG)
+    ).toBeNull()
+  })
+
+  it('gives allied units their own reminders without an outside-faction warning', () => {
+    const reminders = createWh40kReminderViewModels(WH40K_CATALOG, allied())
+    expect(reminders.some(item => item.tags.some(tag => tag.label === agent().name))).toBe(true)
+  })
+})
+
+describe('40K display settings', () => {
+  it('defaults to the site colour and black-and-white print, and keeps only listed colours', () => {
+    const storage = memoryStorage()
+    expect(loadWh40kDisplaySettings(storage)).toEqual(WH40K_DEFAULT_DISPLAY_SETTINGS)
+    expect(WH40K_DEFAULT_DISPLAY_SETTINGS.titleBarColour).toBe('#1c7595')
+    expect(new Set(WH40K_TITLE_BAR_COLOURS.map(colour => colour.value)).size).toBe(5)
+
+    saveWh40kDisplaySettings(storage, {
+      titleBarColour: WH40K_TITLE_BAR_COLOURS[2].value,
+      printInColour: true,
+    })
+    expect(loadWh40kDisplaySettings(storage)).toEqual({
+      titleBarColour: WH40K_TITLE_BAR_COLOURS[2].value,
+      printInColour: true,
+    })
+    storage.setItem(
+      WH40K_DISPLAY_STORAGE_KEY,
+      JSON.stringify({ titleBarColour: 'url(evil)', printInColour: 'yes' })
+    )
+    expect(loadWh40kDisplaySettings(storage)).toEqual(WH40K_DEFAULT_DISPLAY_SETTINGS)
+  })
+})
+
 describe('40K builder view model', () => {
-  it('offers Units and Detachment, and Enhancements only once a detachment is chosen', () => {
+  it('offers Units and Detachment, Enhancements only once a detachment is chosen, then Allies', () => {
     const empty = createWh40kBuilderViewModel(WH40K_CATALOG, createWh40kArmyDocument(WH40K_CATALOG, 'AC'))
-    expect(empty.groups.map(group => group.title)).toEqual(['Units', 'Detachment'])
+    expect(empty.groups.map(group => group.title)).toEqual(['Units', 'Detachment', 'Allies'])
     expect(empty.factions.find(faction => faction.value === 'AC')?.label).toBe('Adeptus Custodes')
 
     const army = createWh40kBuilderViewModel(WH40K_CATALOG, custodes())
-    expect(army.groups.map(group => group.title)).toEqual(['Units', 'Detachment', 'Enhancements'])
+    expect(army.groups.map(group => group.title)).toEqual(['Units', 'Detachment', 'Enhancements', 'Allies'])
     expect(army.groups[0].options.filter(option => option.selected).map(option => option.name)).toEqual([
       custodianGuard().name,
     ])

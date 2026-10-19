@@ -15,6 +15,8 @@ export interface Wh40kArmyDocument {
   factionId: string
   /** Narrows the Units list to one sub-faction (e.g. a Chapter); it never changes which rules apply. */
   subFaction?: string
+  /** Other factions whose units the army fields as allies, where its rules allow them. */
+  allyFactionIds?: string[]
   detachmentId?: string
   datasheetIds: string[]
   enhancementIds: string[]
@@ -68,6 +70,7 @@ export const deserializeWh40kArmyDocument = (
     typeof value.name !== 'string' ||
     typeof value.factionId !== 'string' ||
     (value.detachmentId !== undefined && typeof value.detachmentId !== 'string') ||
+    (value.allyFactionIds !== undefined && !isStringArray(value.allyFactionIds)) ||
     !isStringArray(value.datasheetIds) ||
     !isStringArray(value.enhancementIds) ||
     typeof value.allowsLegends !== 'boolean' ||
@@ -77,6 +80,8 @@ export const deserializeWh40kArmyDocument = (
     return null
   }
   const { factionId, detachmentId, datasheetIds, enhancementIds } = value
+  const allyFactionIds = (value.allyFactionIds as string[] | undefined) ?? []
+  const fielded = new Set([factionId, ...allyFactionIds])
   const detachment = catalog.detachments.find(item => item.id === detachmentId)
   const datasheets = new Map(catalog.datasheets.map(item => [item.sourceRecordId as string, item]))
   const enhancements = new Map(
@@ -86,9 +91,10 @@ export const deserializeWh40kArmyDocument = (
   )
   const valid =
     catalog.factions.some(faction => faction.id === factionId) &&
+    allyFactionIds.every(id => id !== factionId && catalog.factions.some(faction => faction.id === id)) &&
     (detachmentId === undefined ||
       (detachment?.factionId === factionId && detachment.gameMode === 'matched-play')) &&
-    datasheetIds.every(id => datasheets.get(id)?.factionId === factionId) &&
+    datasheetIds.every(id => fielded.has(datasheets.get(id)?.factionId ?? '')) &&
     enhancementIds.every(id => {
       const scope = enhancements.get(id)?.scope
       return scope?.kind === 'detachment' && scope.detachmentId === detachmentId
@@ -105,6 +111,7 @@ export const deserializeWh40kArmyDocument = (
     name: value.name,
     factionId,
     ...(subFaction ? { subFaction } : {}),
+    ...(allyFactionIds.length ? { allyFactionIds } : {}),
     ...(typeof detachmentId === 'string' ? { detachmentId } : {}),
     datasheetIds,
     enhancementIds,

@@ -374,7 +374,23 @@ small {
   background-color: $themeDarkBlueSecondary;
 }
 .bg-themeLightBlue {
-  background-color: $themeLightBlue;
+  /* --title-bar-colour is the player's pick from the colour swatches on the home screen. */
+  background-color: var(--title-bar-colour, #{$themeLightBlue});
+}
+
+/* Title-colour swatches: 44px tap targets (DESIGN.md), the picked one ringed. */
+.ColourSwatch {
+  width: 44px;
+  height: 44px;
+  margin: 0 3px;
+  border: 3px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+}
+
+.ColourSwatch--selected {
+  box-shadow: 0 0 0 3px #212529;
 }
 .bg-profileHeader {
   background-color: rgba(28, 117, 149, 0.15);

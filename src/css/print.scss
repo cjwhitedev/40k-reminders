@@ -149,6 +149,11 @@ $print-mono: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
     -webkit-print-color-adjust: exact;
   }
 
+  /* "Print in colour" keeps the title-bar colour picked on screen. */
+  .PrintInColour .ReminderContainer .card-header {
+    background: var(--title-bar-colour, black) !important;
+  }
+
   .ReminderContainer .CardHeaderToggle,
   .ReminderContainer .CardHeaderToggle-Mobile {
     padding: 0 !important;

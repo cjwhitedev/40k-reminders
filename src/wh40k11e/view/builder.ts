@@ -11,7 +11,10 @@ export interface Wh40kBuilderOption {
   section?: string
 }
 
-export type Wh40kBuilderGroupKey = 'datasheet' | 'detachment' | 'enhancement'
+export type Wh40kBuilderGroupKey = 'datasheet' | 'detachment' | 'enhancement' | 'ally'
+
+/** Ally options carry this prefix so their IDs cannot collide with unit or detachment IDs. */
+export const WH40K_ALLY_OPTION_PREFIX = 'ally:'
 
 export interface Wh40kBuilderGroup {
   key: Wh40kBuilderGroupKey
@@ -50,9 +53,16 @@ export const wh40kUnitSection = (role: string | undefined): (typeof WH40K_UNIT_S
   return 'Other units'
 }
 
+// Allied factions' headings ("Allies: Imperial Agents") follow the army's own unit types.
+const sectionRank = (section: string | undefined): number => {
+  const index = WH40K_UNIT_SECTIONS.indexOf(section as (typeof WH40K_UNIT_SECTIONS)[number])
+  return index >= 0 ? index : WH40K_UNIT_SECTIONS.length
+}
+
 const bySection = (left: Wh40kBuilderOption, right: Wh40kBuilderOption) =>
-  WH40K_UNIT_SECTIONS.indexOf(left.section as (typeof WH40K_UNIT_SECTIONS)[number]) -
-    WH40K_UNIT_SECTIONS.indexOf(right.section as (typeof WH40K_UNIT_SECTIONS)[number]) || byName(left, right)
+  sectionRank(left.section) - sectionRank(right.section) ||
+  (left.section ?? '').localeCompare(right.section ?? '', 'en') ||
+  byName(left, right)
 
 /** The faction picker and the army's selection cards: Units, Detachment, then the detachment's Enhancements. */
 export const createWh40kBuilderViewModel = (
@@ -62,12 +72,15 @@ export const createWh40kBuilderViewModel = (
   const datasheetIds = new Set(document.datasheetIds)
   const enhancementIds = new Set(document.enhancementIds)
   const faction = catalog.factions.find(item => item.id === document.factionId)
+  const allies = new Set(document.allyFactionIds ?? [])
+  const factionNames = new Map(catalog.factions.map(item => [item.id, item.name]))
 
   // A sub-faction shows its own units and the ones open to every sub-faction; picked units always stay.
   const datasheets = catalog.datasheets
-    .filter(sheet => sheet.factionId === document.factionId)
+    .filter(sheet => sheet.factionId === document.factionId || allies.has(sheet.factionId))
     .filter(
       sheet =>
+        sheet.factionId !== document.factionId ||
         !document.subFaction ||
         !sheet.subFactionKeywords?.length ||
         sheet.subFactionKeywords.includes(document.subFaction) ||
@@ -78,7 +91,10 @@ export const createWh40kBuilderViewModel = (
       name: sheet.name,
       selected: datasheetIds.has(sheet.sourceRecordId),
       available: true,
-      section: wh40kUnitSection(sheet.role),
+      section:
+        sheet.factionId === document.factionId
+          ? wh40kUnitSection(sheet.role)
+          : `Allies: ${factionNames.get(sheet.factionId) ?? sheet.factionId}`,
       ...(sheet.context === 'legends' ? { overlay: 'legends' as const } : {}),
     }))
     .sort(bySection)
@@ -127,6 +143,19 @@ export const createWh40kBuilderViewModel = (
       ...(enhancements.length
         ? [{ key: 'enhancement' as const, title: 'Enhancements', options: enhancements }]
         : []),
+      {
+        key: 'ally',
+        title: 'Allies',
+        options: [...catalog.factions]
+          .filter(item => item.id !== document.factionId)
+          .sort(byName)
+          .map(item => ({
+            id: `${WH40K_ALLY_OPTION_PREFIX}${item.id}`,
+            name: item.name,
+            selected: allies.has(item.id),
+            available: true,
+          })),
+      },
     ],
   }
 }

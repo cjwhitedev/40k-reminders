@@ -10,6 +10,8 @@ export interface Wh40kArmySelection {
   allowsLegends?: boolean
   /** The chosen sub-faction, e.g. a Chapter; its own army rules apply even with none of its units yet. */
   subFaction?: string
+  /** Factions whose units the army fields as allies; their army rules and detachments do not apply. */
+  allyFactionIds?: string[]
 }
 
 export type Wh40kSelectionCause =
@@ -175,7 +177,7 @@ export const selectWh40kRules = (
       )
       continue
     }
-    if (sheet.factionId !== selection.factionId) {
+    if (sheet.factionId !== selection.factionId && !selection.allyFactionIds?.includes(sheet.factionId)) {
       diagnose('datasheet-outside-faction', 'warning', `${sheet.name} belongs to faction ${sheet.factionId}`)
     }
     for (const rule of ownRules.get(datasheetId) ?? []) select(rule, { kind: 'datasheet', datasheetId })

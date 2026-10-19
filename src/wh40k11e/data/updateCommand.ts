@@ -135,8 +135,8 @@ export const changedWh40kFiles = (porcelain: string): string[] =>
 
 /**
  * 1. Start from an up-to-date master: offers to continue or start over an unfinished refresh, and to
- * pull when behind. Returns 'resume' to pick up the unfinished refresh, 'restart' when a pull
- * brought new code (so the caller re-runs the command), or 'fresh'.
+ * pull when behind. Returns 'resume' to pick up the unfinished refresh, 'restart' after a pull or
+ * a start-over (so the caller re-runs the command with fresh files), or 'fresh'.
  */
 const checkGit = async (io: Wh40kPromptIo): Promise<'fresh' | 'resume' | 'restart' | 'stop'> => {
   step('1. Checking git')
@@ -170,7 +170,9 @@ const checkGit = async (io: Wh40kPromptIo): Promise<'fresh' | 'resume' | 'restar
     }
     run('git', ['restore', '--source=HEAD', '--staged', '--worktree', '--', ...REFRESH_PATHS])
     run('git', ['clean', '-fdq', '--', ...REFRESH_PATHS])
-    io.print('Discarded the unfinished refresh.')
+    // pipeline.json was read when this process started, so it still names the discarded review.
+    io.print('Discarded the unfinished refresh. Restarting...')
+    return 'restart'
   }
   if (run('git', ['fetch', '-q', 'origin']) !== 0) throw new Error('git fetch failed.')
   const behind = Number(capture('git', ['rev-list', '--count', 'HEAD..origin/master']))

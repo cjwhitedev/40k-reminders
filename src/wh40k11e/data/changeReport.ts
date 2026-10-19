@@ -170,7 +170,10 @@ export const formatWh40kChangeReport = (report: Wh40kChangeReport): string => {
 }
 
 /** A commit message: a subject line, then one line per faction. */
-export const formatWh40kCommitMessage = (report: Wh40kChangeReport): string => {
+export const formatWh40kCommitMessage = (
+  report: Wh40kChangeReport,
+  subject = `Refresh rules data to ${report.toRevision}`
+): string => {
   const body = [
     ...(report.datasheets.added.length || report.datasheets.removed.length
       ? [`Datasheets: ${report.datasheets.added.length} added, ${report.datasheets.removed.length} removed`]
@@ -182,5 +185,5 @@ export const formatWh40kCommitMessage = (report: Wh40kChangeReport): string => {
       : []),
     ...report.factions.map(entry => `${entry.factionName}: ${countLine(entry)}`),
   ]
-  return `Refresh rules data to ${report.toRevision}\n${body.length ? `\n${body.join('\n')}\n` : ''}`
+  return `${subject}\n${body.length ? `\n${body.join('\n')}\n` : ''}`
 }

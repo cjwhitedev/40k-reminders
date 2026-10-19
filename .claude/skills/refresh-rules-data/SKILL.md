@@ -39,7 +39,7 @@ The checklist a human follows is [docs/refreshing-rules-data.md](../../../docs/r
 `src/wh40k11e/data/updateCommand.ts`, steps printed as `━━ N. … ━━`:
 
 1. **Git.** Must be on `master`. Offers to pull (then reinstalls and re-runs itself), and to continue / start over / quit an unfinished refresh (files under `data/wh40k11e/` and `src/wh40k11e/generated/`). Start over restores those files and re-runs itself, because `pipeline.json` was read at startup.
-2. **Download.** Wahapedia exports, official PDFs (reused unless `data/wh40k11e/official-urls.json` changed), BSData's latest commit. "Nothing to do" if Wahapedia and the PDFs are unchanged.
+2. **Download.** Wahapedia exports, official PDFs (reused unless `data/wh40k11e/official-urls.json` changed), BSData's latest commit. "Nothing to do" if Wahapedia and the PDFs are unchanged, unless the updater improved since the rules file was built: then it rebuilds from the same sources (`updaterImproved`) and carries on from step 4. This is how a parser fix reaches the app without new Wahapedia data.
 3. **New review.** Copies the review file to `data/wh40k11e/reviews/sources-<date>.json` bound to the new checksums and points `data/wh40k11e/pipeline.json` at it.
 4. **Review** (`settleReview`). In order: relink decisions for renumbered rules by name, then offer to drop decisions for rules that are gone, update link-disposition counts, ask for a new faction's Army Faction keywords, then ask each fix from `reviewFixes.ts`. Then the decision prompts (`decideWh40kPending` → `runWh40kDecisionSession`). Only findings with no automatic answer ask for a hand edit.
 5. **Generate** `src/wh40k11e/generated/runtime.json`.

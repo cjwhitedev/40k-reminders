@@ -5,6 +5,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { Wh40kRuntime } from '../domain/runtime'
 import { buildWh40kRuntime, serializeWh40kRuntime, WH40K_RUNTIME_PATH } from '../generate/runtime'
+import { buildWh40kRuntimeFile } from '../generate/runtimeCommand'
 import { compareWh40kRuntimes, formatWh40kChangeReport, formatWh40kCommitMessage } from './changeReport'
 import {
   createWh40kTerminalIo,
@@ -261,7 +262,7 @@ const fetchAndRefresh = async (
     if (!flags.wahapediaCandidate) await rm(wahapediaDirectory, { recursive: true, force: true })
     if (officialDirectory !== current.officialCandidate)
       await rm(officialDirectory, { recursive: true, force: true })
-    console.log(`\nWahapedia and the official PDFs are unchanged since ${review.revision}. Nothing to do.`)
+    console.log(`\nWahapedia and the official PDFs are unchanged since ${review.revision}.`)
     return undefined
   }
 
@@ -431,8 +432,32 @@ const settleReview = async (options: Wh40kPipelineOptions, io: Wh40kPromptIo): P
   }
 }
 
+/**
+ * With nothing new upstream: whether rebuilding the rules file from the sources it was built from
+ * would change it, because the parsers or suggestions improved since. A review the new code
+ * blocks counts as a change, so step 4 can settle it.
+ */
+const updaterImproved = async (options: Wh40kPipelineOptions): Promise<boolean> => {
+  if (![options.bsdataCandidate, options.wahapediaCandidate, options.officialCandidate].every(existsSync)) {
+    console.log(
+      'Nothing to do. (The sources the rules file was built from are not on this machine, so updater improvements wait for the next refresh.)'
+    )
+    return false
+  }
+  const changed = await buildWh40kRuntimeFile(options).then(
+    async built => built.serialized !== (await readFile(WH40K_RUNTIME_PATH, 'utf8')),
+    () => true
+  )
+  console.log(
+    changed
+      ? 'The updater has improved since the rules file was built; rebuilding it from the same sources.'
+      : 'The rules file is up to date with the updater too. Nothing to do.'
+  )
+  return changed
+}
+
 /** 5–6. Regenerate the runtime and report what changed. */
-const generate = async (options: Wh40kPipelineOptions): Promise<string> => {
+const generate = async (options: Wh40kPipelineOptions, subject?: string): Promise<string> => {
   step('5. Generating the rules file')
   const { review, decoded, linked, reviewed } = await runWh40kSourcePipeline(options)
   const { rules } = buildWh40kRules(decoded.records, linked, reviewed)
@@ -447,8 +472,8 @@ const generate = async (options: Wh40kPipelineOptions): Promise<string> => {
   const reportPath = path.join(REPORTS, `${review.revision}.md`)
   const messagePath = path.join(REPORTS, `${review.revision}.commit.txt`)
   await writeFile(reportPath, formatWh40kChangeReport(report), 'utf8')
-  await writeFile(messagePath, formatWh40kCommitMessage(report), 'utf8')
-  console.log(formatWh40kCommitMessage(report))
+  await writeFile(messagePath, formatWh40kCommitMessage(report, subject), 'utf8')
+  console.log(formatWh40kCommitMessage(report, subject))
   console.log(`Full list: ${reportPath}`)
   return messagePath
 }
@@ -482,10 +507,13 @@ const main = async (): Promise<void> => {
       }
       if (start === 'resume') flags.fetch = false
     }
-    let options: Wh40kPipelineOptions | undefined = { ...WH40K_DEFAULT_PIPELINE_OPTIONS }
+    let options: Wh40kPipelineOptions = { ...WH40K_DEFAULT_PIPELINE_OPTIONS }
+    let rebuild = false
     if (flags.fetch) {
-      options = await fetchAndRefresh(options, flags)
-      if (!options) return
+      const refreshed = await fetchAndRefresh(options, flags)
+      if (refreshed) options = refreshed
+      else if (await updaterImproved(options)) rebuild = true
+      else return
     } else step('2–3. Using the sources already named in data/wh40k11e/pipeline.json')
 
     if (!(await settleReview(options, io))) {
@@ -493,7 +521,10 @@ const main = async (): Promise<void> => {
       process.exitCode = 1
       return
     }
-    const messagePath = await generate(options)
+    const messagePath = await generate(
+      options,
+      rebuild ? 'Rebuild the rules file with the improved updater' : undefined
+    )
 
     step('7. Checking the site (lint, types, build, tests)')
     if (run('yarn', ['prepush']) !== 0) {

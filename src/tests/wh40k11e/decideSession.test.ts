@@ -127,7 +127,7 @@ describe('runWh40kDecisionSession', () => {
     )
     const decided = (await result).review.timingOverrides ?? []
 
-    expect(io.printed.join('\n')).toContain("4) your opponent's Movement phase")
+    expect(io.printed.join('\n')).toContain("4) Opponent's Movement Phase")
     expect(decided.map(entry => entry.windows)).toEqual([
       [{ kind: 'turn-phase', phase: 'shooting', moment: 'during', perspective: 'your' }],
       [{ kind: 'turn-phase', phase: 'movement', moment: 'during', perspective: 'opponent' }],

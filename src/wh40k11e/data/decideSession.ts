@@ -10,6 +10,7 @@ import {
   describeWh40kDecision,
   describeWh40kWindow,
   findWh40kDecisionEntry,
+  hintWh40kPhase,
   parseWh40kWindowsInput,
   sameWh40kWording,
   stampWh40kDecisions,
@@ -153,6 +154,23 @@ export const buildWh40kDecisionContext = (
   return { pending, earlierByName, checksums, names, describe, matching }
 }
 
+/** The timings most rules use, offered by number when a rule is marked timed. */
+const COMMON_TIMINGS = [
+  'start of your Command phase',
+  'your Command phase',
+  'your Movement phase',
+  "your opponent's Movement phase",
+  'your Shooting phase',
+  "your opponent's Shooting phase",
+  'your Charge phase',
+  "your opponent's Charge phase",
+  'the Fight phase',
+  'your Shooting phase or the Fight phase',
+  'end of any phase',
+  'start of the battle round',
+  'before the battle: Declare Battle Formations step',
+] as const
+
 const wrap = (text: string, indent = '    ', width = Math.min(process.stdout.columns || 100, 110)): string =>
   text
     .split('\n')
@@ -203,18 +221,34 @@ export const runWh40kDecisionSession = async (input: {
   ): Promise<Wh40kDecision | undefined> => {
     const reason = async (fallback: string) => (await io.ask(`  Reason [${fallback}]: `)).trim() || fallback
     if (choice === 't') {
+      const suggested = suggestWh40kDecision(candidate, new Map())
+      const hint = hintWh40kPhase(candidate.text)
+      const fallback =
+        suggested.decision.kind === 'timed'
+          ? { windows: suggested.decision.windows, because: suggested.because }
+          : hint
+            ? { windows: [hint.window], because: hint.because }
+            : { windows: parseWh40kWindowsInput(COMMON_TIMINGS[0]) ?? [], because: 'the first choice' }
+      const fallbackText = fallback.windows.map(describeWh40kWindow).join(' or ')
+      io.print('  When?')
+      COMMON_TIMINGS.forEach((timing, index) => io.print(`    ${String(index + 1).padStart(2)}) ${timing}`))
       for (;;) {
-        const typed = await io.ask(
-          "  When? e.g. 'start of your Command phase', 'your Shooting phase or the Fight phase',\n  'end of any phase', 'before the battle: Deploy Armies step' (blank to go back): "
-        )
-        if (!typed.trim()) return undefined
-        const windows = parseWh40kWindowsInput(typed)
-        if (!windows) {
-          io.print('  Could not read that timing; try the wording a WHEN: line would use.')
+        const typed = (
+          await io.ask(
+            `  Number, or type a timing like a WHEN: line ('end of your opponent's Charge phase'), b to go back\n  [Enter] ${fallbackText} (${fallback.because}) > `
+          )
+        ).trim()
+        if (typed.toLowerCase() === 'b') return undefined
+        const listed = /^\d+$/.test(typed) ? COMMON_TIMINGS[Number(typed) - 1] : undefined
+        const windows = !typed ? fallback.windows : parseWh40kWindowsInput(listed ?? typed)
+        if (!windows?.length) {
+          io.print('  Could not read that; pick a number or use the wording a WHEN: line would use.')
           continue
         }
-        const answer = await io.ask(`  → ${windows.map(describeWh40kWindow).join(' or ')}. Right? [Y/n] `)
-        if (answer.trim().toLowerCase().startsWith('n')) continue
+        if (typed && !listed) {
+          const answer = await io.ask(`  → ${windows.map(describeWh40kWindow).join(' or ')}. Right? [Y/n] `)
+          if (answer.trim().toLowerCase().startsWith('n')) continue
+        }
         return { kind: 'timed', windows, reason: await reason(defaultWh40kReason(candidate.text)) }
       }
     }

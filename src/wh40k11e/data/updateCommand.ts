@@ -35,6 +35,7 @@ import {
 } from './pipeline'
 import type { Wh40kPinnedArtifact } from './review'
 import { buildWh40kCatalog, buildWh40kRules } from './rules'
+import { planWh40kReviewFixes, wh40kReviewFixInputOf } from './reviewFixes'
 
 const CANDIDATES = path.join('.cache', 'wh40k11e', 'candidates')
 const REPORTS = path.join('.cache', 'wh40k11e', 'reports')
@@ -396,11 +397,25 @@ const settleReview = async (options: Wh40kPipelineOptions, io: Wh40kPromptIo): P
           ],
         }
       }
+      for (const fix of planWh40kReviewFixes(wh40kReviewFixInputOf(result, today()))) {
+        io.print('')
+        fix.lines.forEach(line => io.print(line))
+        const picked = await choose(
+          io,
+          fix.question,
+          fix.choices.map(choice => [choice.key, choice.label]),
+          fix.choices[0].key
+        )
+        const apply = fix.choices.find(choice => choice.key === picked)?.apply
+        if (apply) review = apply(review)
+      }
       await saveWh40kReview(options.review, review)
       const left = otherWh40kFindings(await runWh40kSourcePipeline(options))
       if (left.length) {
         left.forEach(item => io.print(`  FINDING ${item.code}: ${item.message}`))
-        io.print(`\nThese need an edit to ${options.review} by hand (CONTRIBUTING.md section 8).`)
+        io.print(
+          `\nThe updater has no automatic answer for these. Edit ${options.review} by hand; "If something stops it" in docs/refreshing-rules-data.md says how.`
+        )
         const answer = await io.ask('Edit it, then press Enter to check again, or q to stop: ')
         if (answer.trim().toLowerCase() === 'q') return false
         continue
@@ -510,9 +525,14 @@ const main = async (): Promise<void> => {
       if (run('git', ['commit', '-q', '-F', messagePath]) !== 0) {
         io.print('\nThe commit failed; see the error above.')
       } else if (await yes(io, 'Committed. Push to GitHub now (it then rebuilds the site)?')) {
-        if (run('git', ['push', '-q', 'origin', 'master']) === 0)
+        // GitHub may have moved on during a long refresh; the refresh commit only touches data files.
+        const pushed =
+          run('git', ['push', '-q', 'origin', 'master']) === 0 ||
+          (run('git', ['pull', '-q', '--rebase', 'origin', 'master']) === 0 &&
+            run('git', ['push', '-q', 'origin', 'master']) === 0)
+        if (pushed)
           io.print('\nPushed. GitHub is publishing the site; close the "Rules data sources changed" issue.')
-        else io.print('\nThe push failed; run git push origin master when it is sorted.')
+        else io.print('\nThe push failed; run git pull --rebase && git push origin master when it is sorted.')
       } else io.print('\nPush when ready: git push origin master')
     } else {
       io.print(`\nNot committed. The suggested message is in ${messagePath}.`)

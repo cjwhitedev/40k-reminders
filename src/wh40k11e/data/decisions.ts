@@ -125,6 +125,41 @@ const PASSIVE =
   /^(?:while|whilst|if|this (?:unit|model)|models in|the bearer|each model|add \d|subtract \d|improve|[^,.]{1,60} (?:units?|models?) from your army (?:have|has|gain|can))\b/i
 
 const FRAMING = /^(?:the following are special move types|(?:maximum distance|set-up distance|eligible if):)/i
+
+const yourPhase = (phase: (typeof WH40K_TURN_PHASES)[number]['id']): Wh40kGameWindow => ({
+  kind: 'turn-phase',
+  phase,
+  moment: 'during',
+  perspective: 'your',
+})
+const MOVEMENT_PHASE = yourPhase('movement')
+
+const PHASE_HINTS: Array<{ pattern: RegExp; window: Wh40kGameWindow; because: string }> = [
+  {
+    pattern:
+      /\b(?:dis)?embark|\bingress move|\bdeep strike|\breinforcements\b|\b(?:normal|advance|fall-back) move|\bselected to move\b/i,
+    window: MOVEMENT_PHASE,
+    because: 'it is about moving or disembarking',
+  },
+  { pattern: /\branged attack|\bshoot/i, window: yourPhase('shooting'), because: 'it is about shooting' },
+  { pattern: /\bcharge\b/i, window: yourPhase('charge'), because: 'it is about charging' },
+  {
+    pattern: /\bmelee attack|\bselected to fight|\bfights?\b|\bpile-in|\bconsolidat/i,
+    window: { kind: 'turn-phase', phase: 'fight', moment: 'during', perspective: 'either' },
+    because: 'it is about fighting',
+  },
+  {
+    pattern: /\bbattle-shock|\bcommand points?\b|\b\d?CP\b|\borders?\b/i,
+    window: yourPhase('command'),
+    because: 'it is about the Command phase',
+  },
+]
+
+/** The phase a rule's wording points at first, e.g. "ranged attack" to your Shooting phase; for the timed menu's default. */
+export const hintWh40kPhase = (text: string): { window: Wh40kGameWindow; because: string } | undefined =>
+  PHASE_HINTS.map(hint => ({ hint, at: text.search(hint.pattern) }))
+    .filter(item => item.at >= 0)
+    .sort((left, right) => left.at - right.at)[0]?.hint
 // "You can select the assault doctrine one additional time per battle": an extra Combat Doctrines pick.
 const EXTRA_DOCTRINE = /\bdoctrines?\b[^.]*\bone additional time\b/i
 
@@ -204,6 +239,13 @@ export const suggestWh40kDecision = (
     return {
       decision: { kind: 'timed', windows, reason },
       because: `it opens with "${parsed.timing?.raw ?? timed?.[0]}"`,
+    }
+  }
+  // Core Rules 18.03: units disembark only in the Movement phase (an emergency disembark aside).
+  if (/\bdisembark/i.test(text) && !/\bemergency disembark|\bis destroyed\b/i.test(text)) {
+    return {
+      decision: { kind: 'timed', windows: [MOVEMENT_PHASE], reason },
+      because: 'units disembark only in the Movement phase (Core Rules 18.03)',
     }
   }
   if (parsed.kind === 'reaction' || REACTION.test(rest)) {

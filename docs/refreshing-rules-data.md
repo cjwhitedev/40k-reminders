@@ -50,7 +50,7 @@ Every question has a default, shown in capitals or after `[Enter]`, and the defa
 | 1. Checks git | Must be on `master`. If GitHub has newer commits it offers to pull them (and reinstall), then restarts itself with the new code. If an earlier refresh was left unfinished it asks whether to continue it, start over (which discards it), or quit. | Enter. |
 | 2. Downloads | Fetches Wahapedia's exports, a second apart. Reuses the official PDFs unless their list changed. Stops with **Nothing to do** if nothing changed. | Nothing. |
 | 3. New review | Starts a dated review file bound to the new downloads; every earlier decision carries over. | Nothing. |
-| 4. Reviews | Moves decisions for renumbered rules to their new IDs by name. Lists by name any decisions whose rule is really gone and asks before dropping them. Asks before updating exclusion counts that changed, and asks for a new faction's Army Faction keywords. Then prompts for each rule that needs a decision (below). | Enter, reading each rule as it goes by. If it lists a finding it cannot fix, edit the review file it names, then press Enter to re-check. |
+| 4. Reviews | Moves decisions for renumbered rules to their new IDs by name. Lists by name any decisions whose rule is really gone and asks before dropping them. Asks before updating exclusion counts that changed, and asks for a new faction's Army Faction keywords. It also offers a fix, default first, for the other things a new export can bring: rows pointing at records Wahapedia does not publish (leave them out), new decoder warnings (accept), datasheets from a new kind of source (leave out, current, or Legends), a rule decided twice (keep one), quotes from an updated official PDF (drop the quote), and a faction or Chapter keyword Wahapedia dropped (remove it). Then prompts for each rule that needs a decision (below). | Enter, reading each rule as it goes by. Only a finding the updater has no answer for asks you to edit the review file; see the last rows below. |
 | 5. Generates | Rewrites `src/wh40k11e/generated/runtime.json`. | Nothing. |
 | 6. Reports | Lists what changed per faction and writes a commit message under `.cache/wh40k11e/reports/`. | Note which armies changed. |
 | 7. Checks | Lint, types, build, tests. | If they fail, fix them and resume (below). |
@@ -68,7 +68,7 @@ Before the prompts start, rules whose wording changed only in spacing or capital
 | Key | Meaning |
 | --- | --- |
 | Enter | The answer shown after `[Enter]`: the suggestion, or keeping the existing decision. |
-| `t` | Timed. Type when it happens the way a WHEN: line reads: `start of your Command phase`, `your Shooting phase or the Fight phase`, `end of any phase`, `before the battle: Deploy Armies step`. |
+| `t` | Timed. Pick a numbered timing, press Enter for the one shown (the suggestion, or the phase the wording points at), or type one the way a WHEN: line reads, such as `end of your opponent's Charge phase` or `before the battle: Deploy Armies step`. |
 | `r` | Reaction: happens in response to something (each time, when, after). You are asked what triggers it. |
 | `p` | Always active. |
 | `n` | Not a reminder: army building, a Designer's Note, framing text, or something else with your reason. |
@@ -93,3 +93,5 @@ The command offers to push at the end; GitHub then builds and publishes the site
 | You quit, skipped rules, or the checks failed | Fix what it says, then run `yarn data:update` again and press Enter to continue (or `--no-fetch`, which goes straight to step 4). |
 | You want to refresh even though nothing changed | `yarn data:update --force` |
 | You want to stop before committing | `yarn data:update --no-commit`; the commit message is still written under `.cache/wh40k11e/reports/`. |
+| `FINDING decoder-error` | Wahapedia changed the layout of an export (a renamed or missing column, a new file). The parser in `src/wh40k11e/data/wahapedia/` needs a code change before the refresh can go on. |
+| Any other `FINDING` it cannot fix | Open the review file it names (`data/wh40k11e/reviews/`), find the entry the message names, and fix or remove it; `CONTRIBUTING.md` section 8 describes each section of the file. Press Enter to re-check. |

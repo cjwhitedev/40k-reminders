@@ -115,6 +115,21 @@ describe('suggestWh40kDecision', () => {
     ).toMatchObject({ kind: 'reaction', trigger: 'At the end of a phase in which this model is destroyed' })
   })
 
+  it('puts disembarking in your Movement phase (Core Rules 18.03), but not an emergency disembark', () => {
+    expect(
+      suggest(
+        'When this unit is set up and all units embarked within it have disembarked, units cannot embark.'
+      ).decision
+    ).toMatchObject({
+      kind: 'timed',
+      windows: [{ kind: 'turn-phase', phase: 'movement', moment: 'during', perspective: 'your' }],
+    })
+    expect(
+      suggest('Each time this model is destroyed, its passengers make an emergency disembark move.').decision
+        .kind
+    ).toBe('reaction')
+  })
+
   it('falls back to always active, so every prompt has a default', () => {
     expect(suggest('Keep a tally of destroyed enemy models.')).toMatchObject({
       decision: { kind: 'passive' },

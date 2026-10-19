@@ -114,6 +114,26 @@ describe('runWh40kDecisionSession', () => {
     expect(io.printed.join('\n')).toContain('Old wording.')
   })
 
+  it('offers numbered timings, with Enter taking the timing the wording points at', async () => {
+    const { result, io } = session(
+      [
+        candidate(
+          'Gaze',
+          'Select one enemy unit within 6" that this unit could make a ranged attack against.'
+        ),
+        candidate('Pod', 'When this unit is set up and its passengers have disembarked, they can act.'),
+      ],
+      ['t', '', '', 't', '4', '']
+    )
+    const decided = (await result).review.timingOverrides ?? []
+
+    expect(io.printed.join('\n')).toContain("4) your opponent's Movement phase")
+    expect(decided.map(entry => entry.windows)).toEqual([
+      [{ kind: 'turn-phase', phase: 'shooting', moment: 'during', perspective: 'your' }],
+      [{ kind: 'turn-phase', phase: 'movement', moment: 'during', perspective: 'opponent' }],
+    ])
+  })
+
   it('skips and quits without losing answers already saved', async () => {
     const { result, save } = session(
       [candidate('A', 'Keep a tally.'), candidate('B', 'Keep a tally.'), candidate('C', 'Keep a tally.')],

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { WH40K_CATALOG } from '../../wh40k11e/generated/catalog'
+import { groupWh40kReminders, projectWh40kReminders } from '../../wh40k11e/reminders/projectReminders'
 import { selectWh40kRules } from '../../wh40k11e/select/selectRules'
 import { createWh40kArmyDocument } from '../../wh40k11e/state/armyDocument'
 import {
@@ -165,5 +166,28 @@ describe('tester feedback, 2026-10-19 timing issues', () => {
     expect(windowsOf('Rapid Assault', /made a Charge move this turn/)).toEqual([[phase('fight', 'your')]])
     expect(windowsOf('Siege Shield', /When making ranged attacks/)).toEqual([[phase('shooting', 'your')]])
     expect(windowsOf('Veterans of the Long War', /with a melee attack/)).toEqual([[phase('fight', 'either')]])
+  })
+})
+
+describe('tester feedback, 2026-10-16 section order', () => {
+  it('lists army rules first in each section, then detachment rules, then everything else', () => {
+    const rank = (kind: string) => (kind === 'army-rule' ? 0 : kind === 'detachment-rule' ? 1 : 2)
+    const detachment = WH40K_CATALOG.detachments.find(
+      item => item.factionId === 'SM' && item.gameMode === 'matched-play'
+    )!
+    const units = WH40K_CATALOG.datasheets
+      .filter(item => item.factionId === 'SM' && item.context === 'current')
+      .slice(0, 12)
+      .map(item => item.sourceRecordId)
+    const groups = groupWh40kReminders(
+      projectWh40kReminders(
+        selectWh40kRules(WH40K_CATALOG, { factionId: 'SM', detachmentId: detachment.id, datasheetIds: units })
+          .selected
+      )
+    )
+    for (const group of groups) {
+      const ranks = group.reminders.map(reminder => rank(reminder.kind))
+      expect(ranks).toEqual([...ranks].sort((left, right) => left - right))
+    }
   })
 })

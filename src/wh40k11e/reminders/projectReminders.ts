@@ -40,6 +40,9 @@ export interface Wh40kReminderGroup {
 
 const PERSPECTIVE_ORDER: Record<Wh40kPerspective, number> = { your: 0, either: 1, opponent: 2 }
 const LANE_ORDER: Record<Wh40kReminderLane, number> = { timed: 0, reaction: 1, passive: 2, unresolved: 3 }
+// Within a section, the rules a whole army plays by come before unit abilities and stratagems.
+const kindOrder = (kind: Wh40kReminder['kind']): number =>
+  kind === 'army-rule' ? 0 : kind === 'detachment-rule' ? 1 : 2
 
 const phaseName = (phase: string) => WH40K_TURN_PHASES.find(item => item.id === phase)?.name ?? phase
 const ordinal = (round: number) =>
@@ -194,6 +197,7 @@ export const projectWh40kReminders = (selected: Wh40kSelectedRule[]): Wh40kRemin
     (left, right) =>
       orderOf(left.window) - orderOf(right.window) ||
       compare(left.groupKey, right.groupKey) ||
+      kindOrder(left.kind) - kindOrder(right.kind) ||
       LANE_ORDER[left.lane] - LANE_ORDER[right.lane] ||
       perspectiveOf(left.window) - perspectiveOf(right.window) ||
       compare(left.name, right.name) ||

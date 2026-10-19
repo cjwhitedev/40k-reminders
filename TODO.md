@@ -8,7 +8,6 @@ Follow-ups for 40K Reminders. Tick items off or delete them as they are done.
 - [ ] Spot-check reported rules with `yarn data:reminders --faction <ID> --detachment "<name>" --unit "<name>"` and fix them in the review file (see CONTRIBUTING.md section 7).
 - [ ] 2026-10-16 second round (ArbitraryNerd), after the refresh lands:
   - [ ] Detachment picker should be multi-select: armies now take up to three detachments. Show each detachment's detachment points (Wahapedia's `Detachments.csv` has a `dp` column, and `Detachments_chapter_dp.csv` per-Chapter costs).
-  - [ ] Within each section, order Army rules first, then Detachment rules, then everything else.
   - [ ] Still no Deathwatch units under the Chapter filter (see Data below); recheck after the refresh, which brings the new Deathwatch detachments.
 
 ## Print sheet

@@ -522,25 +522,6 @@
       }
     },
     {
-      "id": "core-stealth",
-      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008337%3A"],
-      "kind": "passive",
-      "reason": "Core Rules 24.33: a standing benefit of cover against ranged attacks.",
-      "officialEvidence": [
-        {
-          "url": "https://assets.warhammer-community.com/eng_01-06_warhammer40k_new40k_core_rules-was6fbu1ix-hfewhmxyiy.pdf",
-          "page": 85,
-          "quote": "each time a ranged attack targets that unit, that unit has the benefit of cover against that attack"
-        }
-      ],
-      "fingerprints": {
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008337%3A": "eec45053331906bd70138e3540981127782a3758a06ea001598b548e24891790"
-      },
-      "names": {
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008337%3A": "Stealth"
-      }
-    },
-    {
       "id": "core-super-heavy-walker",
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000010844%3A"],
       "kind": "reaction",
@@ -558,18 +539,6 @@
       },
       "names": {
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000010844%3A": "Super-heavy Walker"
-      }
-    },
-    {
-      "id": "core-damaged",
-      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000011125%3A"],
-      "kind": "passive",
-      "reason": "Wahapedia prints Damaged as Core Rules 24.39, a standing modifier while a model’s remaining wounds are at or below a threshold. Neither the Core Rules nor the Universal Rules Updates candidate documents print 24.39, so this relies on the Wahapedia text until an official source is pinned.",
-      "fingerprints": {
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011125%3A": "6b669cb133eb1eeba20aa006a399b7b28ccaaf6ec5b56ccd3a4a8db33f66deda"
-      },
-      "names": {
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011125%3A": "Damaged"
       }
     },
     {
@@ -734,19 +703,6 @@
       },
       "names": {
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008459%3AQI": "Bondsman"
-      }
-    },
-    {
-      "id": "acts-of-faith",
-      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008466%3AAS"],
-      "kind": "reaction",
-      "trigger": "Before making a dice roll for a model or unit from your army with this ability",
-      "reason": "Wahapedia text: an Act of Faith is performed 'Before making a dice roll for a model or unit from your army'; Miracle dice are gained at the start of each turn and each time an ADEPTA SORORITAS unit is destroyed.",
-      "fingerprints": {
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008466%3AAS": "c9790460aa03866cfaf5ba4d8fc96410824b2f0ecef3c8ca18f18a6e9f2f038a"
-      },
-      "names": {
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008466%3AAS": "Acts of Faith"
       }
     },
     {
@@ -1860,6 +1816,304 @@
       "names": {
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011160%3ASM": "Devastator Doctrine"
       }
+    },
+    {
+      "id": "stealth",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008337%3A"],
+      "kind": "timed",
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "shooting",
+          "moment": "during",
+          "perspective": "opponent"
+        }
+      ],
+      "reason": "Wahapedia text: 'If every model in a unit has this ability, each time a ranged attack targets that unit, that unit has the benefit of cover against that attack (13.08).'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008337%3A": "eec45053331906bd70138e3540981127782a3758a06ea001598b548e24891790"
+      },
+      "names": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008337%3A": "Stealth"
+      }
+    },
+    {
+      "id": "damaged",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000011125%3A"],
+      "kind": "timed",
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "shooting",
+          "moment": "during",
+          "perspective": "your"
+        },
+        {
+          "kind": "turn-phase",
+          "phase": "fight",
+          "moment": "during",
+          "perspective": "either"
+        }
+      ],
+      "reason": "Wahapedia text: 'This ability always takes the form Damaged X. While a model’s remaining wounds are equal to or less than X, that model is damaged: while damaged, that model’...'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011125%3A": "6b669cb133eb1eeba20aa006a399b7b28ccaaf6ec5b56ccd3a4a8db33f66deda"
+      },
+      "names": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011125%3A": "Damaged"
+      }
+    },
+    {
+      "id": "assault-doctrine",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000011159%3ASM"],
+      "kind": "timed",
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "movement",
+          "moment": "during",
+          "perspective": "your"
+        }
+      ],
+      "reason": "Wahapedia text: 'When this unit is selected to make an advance move, that advance move does not prevent this unit from being eligible to declare a charge.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011159%3ASM": "94fd663ac867739a4c064ed43f1ac9848043470b0f542b42323ffc48c2a9bfd6"
+      },
+      "names": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011159%3ASM": "Assault Doctrine"
+      }
+    },
+    {
+      "id": "veteran-recruits",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000011165%3ASM"],
+      "kind": "timed",
+      "windows": [
+        {
+          "kind": "pre-battle",
+          "step": "Declare Battle Formations step"
+        }
+      ],
+      "reason": "Wahapedia text: 'Your army cannot include the following ADEPTUS ASTARTES units: SCOUT SQUAD units. TERMINATOR SQUAD units. TERMINATOR ASSAULT SQUAD units.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011165%3ASM": "6cca81951dbad102da5977238a6915ffca1ac76e05bba057ccc791b7c0eabc6c"
+      },
+      "names": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011165%3ASM": "Veteran Recruits"
+      }
+    },
+    {
+      "id": "auspex-array",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000000358%3A7"],
+      "kind": "timed",
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "shooting",
+          "moment": "during",
+          "perspective": "your"
+        }
+      ],
+      "reason": "Wahapedia text: 'Ranged weapons equipped by the bearer have the [IGNORES COVER] ability.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000000358%3A7": "fa855e632ab53f38d837d6f4f0974059baf764acff2f250f0a603e74aaf314c9"
+      },
+      "names": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000000358%3A7": "Auspex Array"
+      }
+    },
+    {
+      "id": "solemn-procession",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002063%3A4"],
+      "kind": "timed",
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "command",
+          "moment": "start",
+          "perspective": "your"
+        }
+      ],
+      "reason": "Wahapedia text: 'Each time you gain 1 Miracle dice at the start of your turn, if this model is on the battlefield, do not roll one D6 to determine the value of that Miracle d...'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002063%3A4": "f79aabf2459fcb516c541091ad90e538728840cddd32ab8731b7b0652ec924cd"
+      },
+      "names": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002063%3A4": "Solemn Procession"
+      }
+    },
+    {
+      "id": "wrath-of-the-machine-spirit",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002173%3A5"],
+      "kind": "timed",
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "shooting",
+          "moment": "during",
+          "perspective": "your"
+        }
+      ],
+      "reason": "Wahapedia text: 'This unit’s ranged attacks that target a unit within 12\" of this unit have [Devastating Wounds: non-Monster/vehicle].'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002173%3A5": "3b56d6719b92682a165628f6071f013d32f226197f5068590711309da47fa48a"
+      },
+      "names": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002173%3A5": "Wrath of the Machine Spirit"
+      }
+    },
+    {
+      "id": "never-shall-the-standard-fall",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002677%3A5"],
+      "kind": "timed",
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "shooting",
+          "moment": "during",
+          "perspective": "opponent"
+        },
+        {
+          "kind": "turn-phase",
+          "phase": "fight",
+          "moment": "during",
+          "perspective": "either"
+        }
+      ],
+      "reason": "Wahapedia text: 'While this unit is within range of an objective, attacks that target this unit with a S greater than this unit’s T have -1 to wound rolls.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002677%3A5": "a33b49f39ca1e58ef91740f5e0809c3deccbd0b120df552bfe5f837b7250fd99"
+      },
+      "names": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002677%3A5": "Never Shall the Standard Fall"
+      }
+    },
+    {
+      "id": "death-to-the-alien",
+      "sourceRecordIds": [
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002783%3A2",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000003816%3A1",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004174%3A1",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004175%3A2"
+      ],
+      "kind": "timed",
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "shooting",
+          "moment": "during",
+          "perspective": "your"
+        },
+        {
+          "kind": "turn-phase",
+          "phase": "fight",
+          "moment": "during",
+          "perspective": "either"
+        }
+      ],
+      "reason": "Wahapedia text: 'This unit’s attacks can: Re-roll hit rolls of 1. Or: If the target of those attacks does not have IMPERIUM/CHAOS, re-roll hit rolls.'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002783%3A2": "6091187b29c955e4cd51871657fe53c2e357355583ba0c8216f05f30156a7350",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000003816%3A1": "ae04483816c6eef29f8ac787666e7373d66e62bbe93320e151ffb6bfb685a3d9",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004174%3A1": "80670cc195fb66f03610943a2f1ac5b433ceabd67cf34a360e4e08e77439bede",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004175%3A2": "400879e576465679200e91f2886098b50652864d03cdd6a5add1cff9143cf48e"
+      },
+      "names": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002783%3A2": "Death to the Alien",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000003816%3A1": "Death to the Alien",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004174%3A1": "Death to the Alien",
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000004175%3A2": "Death to the Alien"
+      }
+    },
+    {
+      "id": "strategic-knowledge",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000003871%3A4"],
+      "kind": "timed",
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "movement",
+          "moment": "during",
+          "perspective": "your"
+        }
+      ],
+      "reason": "Wahapedia text: 'This unit’s ranged attacks have [ASSAULT]. When this unit is selected to make an advance move, that advance move does not prevent this unit from being eligib...'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000003871%3A4": "e24286ad53262fd8da7c9e5e79dbc091eb2d54798a19aeb57dcdb32f1fc8240f"
+      },
+      "names": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000003871%3A4": "Strategic Knowledge"
+      }
+    },
+    {
+      "id": "terminatus-assault",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000003873%3A3"],
+      "kind": "timed",
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "charge",
+          "moment": "during",
+          "perspective": "your"
+        }
+      ],
+      "reason": "Wahapedia text: 'This unit can re-roll charge rolls. After this unit ends a charge move, each enemy unit engaged with this unit makes a battle-shock roll, with -1 to that bat...'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000003873%3A3": "7068f0e67a60208ae33d920b9308462563ec7d700498334daeb05b1b869698ba"
+      },
+      "names": {
+        "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000003873%3A3": "Terminatus Assault"
+      }
+    },
+    {
+      "id": "mission-tactics",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000008521"],
+      "kind": "timed",
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "command",
+          "moment": "start",
+          "perspective": "your"
+        }
+      ],
+      "reason": "Wahapedia text: 'Friendly KILL TEAM units with this ability have the following abilities: Furor Tactics: If the devastator doctrine is active for your unit, your unit’s attac...'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000008521": "d0f54cfc89ab3e6669cbd2a5a3382b1124000406d1fe23da41785e235a638965"
+      },
+      "names": {
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000008521": "Mission Tactics"
+      }
+    },
+    {
+      "id": "beacon-angelis",
+      "sourceRecordIds": [
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000011168002",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000008522003"
+      ],
+      "kind": "timed",
+      "windows": [
+        {
+          "kind": "turn-phase",
+          "phase": "movement",
+          "moment": "during",
+          "perspective": "your"
+        },
+        {
+          "kind": "turn-phase",
+          "phase": "movement",
+          "moment": "during",
+          "perspective": "opponent"
+        }
+      ],
+      "reason": "Wahapedia text: 'ADEPTUS ASTARTES model only. If this unit is a Kill Team unit, this unit has: Deep Strike. When you target this unit with the Rapid Ingress Stratagem, that u...'",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000011168002": "1ccf8d17e2752184a19a7d23bcc68aa55bce965567c1b3b5ab7177ff15d905e9",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000008522003": "ee432dfda7eb89f02538e16a78bce97c6054b3f2478fa170163237fe690f370a"
+      },
+      "names": {
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000011168002": "Beacon Angelis",
+        "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000008522003": "Beacon Angelis"
+      }
     }
   ],
   "ignoredRules": [
@@ -2213,6 +2467,17 @@
       "names": {
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011231%3AAC": "Anathema Psykana",
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008351%3ASM": "Space Marine Chapters"
+      }
+    },
+    {
+      "id": "army-building-2026-10-27",
+      "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008466%3AAS"],
+      "reason": "Only decides what an army may include or which keywords units carry at muster; nothing to remind in play.",
+      "fingerprints": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008466%3AAS": "c9790460aa03866cfaf5ba4d8fc96410824b2f0ecef3c8ca18f18a6e9f2f038a"
+      },
+      "names": {
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008466%3AAS": "Acts of Faith"
       }
     }
   ],

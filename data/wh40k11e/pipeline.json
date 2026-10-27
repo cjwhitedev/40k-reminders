@@ -1,6 +1,6 @@
 {
-  "review": "data/wh40k11e/reviews/sources-2026-10-19.json",
-  "bsdataCandidate": ".cache/wh40k11e/candidates/2026-10-19-bsdata-3",
-  "wahapediaCandidate": ".cache/wh40k11e/candidates/2026-10-19-wahapedia-exports-3",
-  "officialCandidate": ".cache/wh40k11e/candidates/2026-10-19-official-3"
+  "review": "data/wh40k11e/reviews/sources-2026-10-27.json",
+  "bsdataCandidate": ".cache/wh40k11e/candidates/2026-10-27-bsdata",
+  "wahapediaCandidate": ".cache/wh40k11e/candidates/2026-10-27-wahapedia-exports",
+  "officialCandidate": ".cache/wh40k11e/candidates/2026-10-27-official"
 }

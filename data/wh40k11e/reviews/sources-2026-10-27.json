@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
-  "revision": "wh40k11e-sources-2026-10-19",
+  "revision": "wh40k11e-sources-2026-10-27",
   "inputs": {
     "bsdata": {
       "repository": "BSData/wh40k-11e",
-      "commit": "b8667d44504e025827a584cfc6bf2f2eba3cb9f8"
+      "commit": "c07b267d3a031651c39a0f46d163f01c34dc8422"
     },
     "wahapediaExports": [
       {
         "url": "https://wahapedia.ru/wh40k11ed/Abilities.csv",
-        "checksum": "df1a84b39f53ccf63e949f48709f9937600794bad665278eb92d3cc4b1e44a16"
+        "checksum": "4922f4c86c5b3ad31d5651feb4b395255a14912ec361e2296f80364a9a731410"
       },
       {
         "url": "https://wahapedia.ru/wh40k11ed/Datasheets.csv",
@@ -33,11 +33,11 @@
       },
       {
         "url": "https://wahapedia.ru/wh40k11ed/Datasheets_leader.csv",
-        "checksum": "1cc7e67ccfd005085705c9565b477c9b5c894f6bd407d9f329b4799f45c68b87"
+        "checksum": "af1d26d1d6188bb845777ad57aeb2a3c75e851c9a521b7c754b4607fa10abac4"
       },
       {
         "url": "https://wahapedia.ru/wh40k11ed/Datasheets_models.csv",
-        "checksum": "12d7689fc6ab4cd418cab1aeb103c5c935da18fbf84e1d3d657dd3fbbab09537"
+        "checksum": "9cb303097f003f2eaa3bfc7cba8d3d7579b0364a35a139bafa5c0705bbd68d03"
       },
       {
         "url": "https://wahapedia.ru/wh40k11ed/Datasheets_models_cost.csv",
@@ -61,7 +61,7 @@
       },
       {
         "url": "https://wahapedia.ru/wh40k11ed/Detachment_abilities.csv",
-        "checksum": "e95380c00e4d993935f4ef5dcd09c93f5d5548aa07d28151f68652c2b87b0e1c"
+        "checksum": "92121fb215c41e5ff2c7c33a38c7ca0835f91887fb41670dc6a17694d1c3d7fe"
       },
       {
         "url": "https://wahapedia.ru/wh40k11ed/Detachments.csv",
@@ -73,7 +73,7 @@
       },
       {
         "url": "https://wahapedia.ru/wh40k11ed/Enhancements.csv",
-        "checksum": "c39535264e62a8b3f8deb9f5bd0c09be9f7e76d4e0ab3a5347ec593f0623ea4c"
+        "checksum": "7df67f570117355fcf1e4f649b33806b7669456ab2fe839741db0ffc7889026f"
       },
       {
         "url": "https://wahapedia.ru/wh40k11ed/Factions.csv",
@@ -81,7 +81,7 @@
       },
       {
         "url": "https://wahapedia.ru/wh40k11ed/Last_update.csv",
-        "checksum": "f2be5332c4707688b6153b8504df5d7ad54c1a175d6abafdeece7827bc0c2930"
+        "checksum": "e39235a323535cd23fbcbc3813bf939df34511b9a10203ca93377700e2ec7485"
       },
       {
         "url": "https://wahapedia.ru/wh40k11ed/Source.csv",
@@ -285,7 +285,7 @@
         }
       ],
       "fingerprints": {
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008339%3A": "86cd0248b023d27448c65fde8515aff43d303cea900f4afb1dfe8c4f1154af51"
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008339%3A": "9957aa463d253769403c61fb158197adc46729c147807b54802ab6673ccd8963"
       },
       "names": {
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008339%3A": "Deadly Demise"
@@ -296,8 +296,18 @@
       "sourceRecordIds": ["source-record:wahapedia-wh40k11e:Abilities.csv%3A000008343%3A"],
       "kind": "timed",
       "windows": [
-        { "kind": "turn-phase", "phase": "movement", "moment": "during", "perspective": "your" },
-        { "kind": "turn-phase", "phase": "movement", "moment": "end", "perspective": "opponent" }
+        {
+          "kind": "turn-phase",
+          "phase": "movement",
+          "moment": "during",
+          "perspective": "your"
+        },
+        {
+          "kind": "turn-phase",
+          "phase": "movement",
+          "moment": "end",
+          "perspective": "opponent"
+        }
       ],
       "trigger": "Each time this unit makes an ingress move",
       "reason": "Core Rules 24.09, 09.02 and 15.07: an ingress move is made when the unit is selected to move in your Movement phase, or with Rapid Ingress at the end of your opponent's Movement phase (issue #3).",
@@ -319,7 +329,7 @@
         }
       ],
       "fingerprints": {
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008343%3A": "7c32426a053aa3aaa0656b2beccb0381028c7e17a8ef3e854781cd409144ee64"
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008343%3A": "fbd6d508851b3d10cc7541329f215f1150505caf6ef1175917d10db73c95ee86"
       },
       "names": {
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008343%3A": "Deep Strike"
@@ -386,7 +396,7 @@
         }
       ],
       "fingerprints": {
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008334%3A": "8911c650cd39205f47a7f4aa1880ec5e765e7afb4c4a47cd483b900dcddbcde1"
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008334%3A": "57868d32373504e1f81dc38238644c9dd75bb37ccc6de6a231165e04884aad75"
       },
       "names": {
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008334%3A": "Firing Deck"
@@ -480,7 +490,7 @@
         }
       ],
       "fingerprints": {
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008336%3A": "60e37d3a0c9c001af9d61411c1b51d19e3be3f1e6c8179a6d03942cceb9a824e"
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008336%3A": "4f5227d3b23b3b790e4984a5cfb59b81d05fcc532643efb676a6aa6a6ba689bc"
       },
       "names": {
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008336%3A": "Lone Operative"
@@ -524,7 +534,7 @@
         }
       ],
       "fingerprints": {
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008337%3A": "de98c6db43939c2b557544319b326f6df0c1ed1c658f43413b8dc8e9cfcb0013"
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008337%3A": "eec45053331906bd70138e3540981127782a3758a06ea001598b548e24891790"
       },
       "names": {
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008337%3A": "Stealth"
@@ -544,7 +554,7 @@
         }
       ],
       "fingerprints": {
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000010844%3A": "3dc1e0e9d3b780b4fdd20007b3a2592bc3ebdda0eb6d437281bf3808ee9892e7"
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000010844%3A": "9bcec1e1b34c01b3a68ce61c5b5a7bc1b692261b39cee57fabc3bf8dcff05882"
       },
       "names": {
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000010844%3A": "Super-heavy Walker"
@@ -556,7 +566,7 @@
       "kind": "passive",
       "reason": "Wahapedia prints Damaged as Core Rules 24.39, a standing modifier while a model’s remaining wounds are at or below a threshold. Neither the Core Rules nor the Universal Rules Updates candidate documents print 24.39, so this relies on the Wahapedia text until an official source is pinned.",
       "fingerprints": {
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011125%3A": "e5290e2d2832d20578854fa2d3c6050009f806481364fa0156b0bbd31eb95691"
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011125%3A": "6b669cb133eb1eeba20aa006a399b7b28ccaaf6ec5b56ccd3a4a8db33f66deda"
       },
       "names": {
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011125%3A": "Damaged"
@@ -610,7 +620,7 @@
         "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009083": "7cc7d099954e8a5c668a782fd0c0e7fe815316562b246e3bcaa2f19a3ddee2e7",
         "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009756": "e5b613ca0d2d389fe8278cafdde9295b9a7902a923ef8e387032d57bc5e859c2",
         "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009764": "1a1ff4abb082c7f7e7e57ad7024fa4ed7af72336d6f484244b73d81e4ed896af",
-        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009978": "79a53c70b3444018a53f454da6185899e6c0ef2a710a56b5c9d22058115e1d9f",
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009978": "2c9e2ca8a84d7b871750dd20c408b6f3390e7c2422f99bc4b2b30e01ee5906fe",
         "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010501": "08571b4772552ca3ad6d640eaed67f00eb4f5279ad85955cf392cd04335b9fae",
         "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010691": "680691e82f4942bd5736b33a7a7a6eaa8d9cf934b7cd089a100079584d710e04",
         "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000010697": "b8a5c7ef7748907ab6ec141de6863f3b7fb12c225ea32d8ec37d24ae6c6be912",
@@ -680,7 +690,7 @@
       "trigger": "OFFICER models issue Orders in your Command phase, and at the end of a phase in which they disembarked or were set up",
       "reason": "Wahapedia text: 'OFFICER models can issue Orders in your Command phase and at the end of a phase in which they disembarked from a Transport or were set up on the battlefield.'",
       "fingerprints": {
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008377%3AAM": "1273bbfc5b68f5f921c2bd90328eda2ab9a2028623715d46c1038180e3ebce88"
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008377%3AAM": "cf2172973f5bf85f516d4ce6faf716efa1ef4caf811b33d981cc8d40286d5980"
       },
       "names": {
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008377%3AAM": "Voice of Command"
@@ -796,7 +806,7 @@
       ],
       "reason": "Wahapedia text: 'at the start of the first, third and fifth battle rounds, you can either select one of the other Dread abilities or randomly select two'.",
       "fingerprints": {
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008512%3AQT": "7eb3d6ea97f1729a32cd2783d34c8c8a08cf97f05a17b5e3e8ebcecf49b976b5"
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008512%3AQT": "b21acf3f17462a85bfe76d51718e994eb056d7c8e0900068800cd388cf7b5da1"
       },
       "names": {
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008512%3AQT": "Harbingers of Dread"
@@ -1202,7 +1212,7 @@
       ],
       "reason": "Wahapedia text: Lethal Intent 'At the end of your opponent’s Shooting phase'; Lethal Reprisal 'At the start of the Fight phase'. Lethal Surge rides on the Fade Back Agile Manoeuvre.",
       "fingerprints": {
-        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009918": "a6d2afa494873b672f45bc98f670b64171a58808c384707c28dce0f17ef7eee8"
+        "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009918": "528b3809e156baa145f115adc22aa6a4942af2768759ad46bf9665d9f4c13960"
       },
       "names": {
         "source-record:wahapedia-wh40k11e:Detachment_abilities.csv%3A000009918": "Strength from Death"
@@ -1685,7 +1695,7 @@
       ],
       "reason": "Wahapedia text: 'SWIFT AS THE WIND TRIGGER: When an eligible unit from your army is selected to make a Normal, Advance or Fall Back move. You can trigger this Agile Manoeuvre...'",
       "fingerprints": {
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000009895%3AAE": "f77c4a92dba4bc248473800ea4e6ce430da3c669a63a2bfe27fe43d771dad870"
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000009895%3AAE": "08fd90b48e975f1f28d43d9e22ff0f4a689c7973b0a386a7c81c7d4561fdf5ce"
       },
       "names": {
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000009895%3AAE": "Agile Manoeuvres"
@@ -1870,8 +1880,8 @@
       "reason": "15 rules that only decide what an army may include or which keywords units carry at muster (Cult of the Dark Gods, Assigned Agents, Titanicus Traitoris, The Ravenwing, The Deathwing, Deathwatch, Corsairs and Travelling Players, retinue allowances, chapter Restrictions). Nothing to remind during a game.",
       "fingerprints": {
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008360%3ACSM": "0db46f5acf24d6e1b3f01a451a42d0bb85fd2cefca706f0edc82514063b5a28d",
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008452%3AAoI": "d58753064e9af738c7c48f07e5825772ef368844f00ffb8ea227c43165b4c608",
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008452%3ASM": "292b124e6070c7afb7e8c0eac4519f8bbe4bd928537f3bf12ba02eec163fe097",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008452%3AAoI": "6895ab1eaa55c56521c2ed7e1fe55fc327ee04299cc30e232288dbd7f44601dd",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008452%3ASM": "5ca739b85128c03ac6a38dd761f9a8569874a0f18f7d046900bff90d865cab47",
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008535%3ATL": "0e539e8dbec855318b700961faa2d2d007f2d3f871e891e8e44774ecf1887570",
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008768%3ASM": "b0c616716f20323d9e682470c8fcb59fe57dd39388c3504d0ca0044371c1ee9e",
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000008808%3ASM": "e97f94c8a294230c4dc988814352bfe368bed5667c3f84be5a51cf7eda5158ee",
@@ -1903,7 +1913,7 @@
       ],
       "reason": "Records with no playable rule of their own: the Sagas introduction ('Each Detachment rule in this book includes a Saga'), the Orks Special Move Types definitions that other rules invoke (like the excluded core move types), two FORTIFICATION assembly notes ('Both parts ... treated as a single model'), and the TL-4Ø9 enhancement, whose Wahapedia text is empty.",
       "fingerprints": {
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011129%3AORK": "25f529d6a9335f56ca35320adfae890a7de71379123e2291664159b67827a063",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011129%3AORK": "39dc41c542ad8fa4d6abb279188ba4f71ff70be75a5a76ffe35db474db010470",
         "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002459%3A5": "ae8a9df607dec20450a8bc0d23e1ed3b9b753cf32353d1f92d425e0e8ddbda70",
         "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000002462%3A6": "cf40bea0d3a03629e6ca7c2ae60b2ae73937118cfbf03e6d3100692e0aebe0e2",
         "source-record:wahapedia-wh40k11e:Enhancements.csv%3A000010875003": "47ec21103660943bfd48d9d366c2990fb4b5d72e3d673bf1486ea15ada4a8cec"
@@ -2178,7 +2188,7 @@
         "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000001447%3A5": "6ee76654561f869a9d0a0e33fa820a888585ec5bd1221dcda529758e40b8bf40",
         "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000001448%3A5": "a65beb18da060e6c58bca731fe21f5b01673f79b996b6619b6b76e7960a9fffe",
         "source-record:wahapedia-wh40k11e:Datasheets_abilities.csv%3A000001449%3A4": "b71c021c7e46d12def7ec96d9d18583fb09445f70d22ee447b85cb645b6a3a8e",
-        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011164%3ASM": "1b27155ce46bfaf667e040e815527d9475500e98fe264050284d2b40f59fca94",
+        "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011164%3ASM": "f365dae457a6fc58c7fe8db3eb012887cd5f831326c79fa56709ed313a8fb524",
         "source-record:wahapedia-wh40k11e:Abilities.csv%3A000011232%3AAC": "1c6a4f3a6d6a30ad8896555ed73ef561c1ec66be979f0e88adff0866117f1254"
       },
       "names": {
